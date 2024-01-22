@@ -1,6 +1,6 @@
 call plug#begin('~/.local/share/nvim/plugged')
 
-Plug 'sbdchd/neoformat'
+"Plug 'sbdchd/neoformat'
 Plug 'NLKNguyen/papercolor-theme'
 
 Plug 'nvim-lua/plenary.nvim'
@@ -54,7 +54,7 @@ filetype plugin on
 set cursorline
 set ttyfast
 set noswapfile
-set scrolloff=20
+set scrolloff=10
 set vb t_vb=
 
 autocmd FileType make set noexpandtab shiftwidth=8 softtabstop=0
@@ -85,8 +85,9 @@ nmap <silent> <c-j> :wincmd j<CR>
 nmap <silent> <c-h> :wincmd h<CR>
 nmap <silent> <c-l> :wincmd l<CR>
 
-noremap <C-f> :Telescope find_files<CR>
-noremap <C-l> :NvimTreeToggle<CR>
+nnoremap <C-f> :Telescope find_files<CR>
+nnoremap <S-f> :Telescope live_grep<CR>
+nnoremap <C-l> :NvimTreeToggle<CR>
 
 """Non-stupid indentation defaults
 let g:python_indent = {}
@@ -95,15 +96,13 @@ let g:python_indent.open_paren = 'shiftwidth()'
 let g:python_indent.continue = 'shiftwidth()'
 
 let g:python3_host_prog = '/projects/libdev_py/users/apriebe/venvs/neovim-venv/bin/python3'
-let g:neoformat_enabled_python = ['black']
+"let g:neoformat_enabled_python = ['black']
 let g:context_enabled = 1
 let g:context_add_mappings = 1
 let g:context_add_autocmds = 1
 let g:context_max_height = 21
 let g:context_max_per_indent = 11
 let g:context_skip_regex = '^\s*\($\|#\|//\|/\*\|\*\($\|/s\|\/\)\)'
-
-
 
 lua << EOF
 
@@ -113,7 +112,7 @@ require'lspconfig'.pylsp.setup{
     settings = {
         pylsp = {
             plugins = {
-                pylint = { enabled = true, executable = "pylint" },
+                -- pylint = { enabled = true, executable = "pylint" },
                 pylsp_mypy = { enabled = true },
                 jedi_completion = { fuzzy = true }
             }
@@ -124,6 +123,66 @@ require'lspconfig'.pylsp.setup{
     },
     capabilities = capabilities,
 }
+
+-- Linter config
+local opts = { noremap=true, silent=true }
+vim.keymap.set('n', '<space>e', vim.diagnostic.open_float, opts)
+vim.keymap.set('n', '[d', vim.diagnostic.goto_prev, opts)
+vim.keymap.set('n', ']d', vim.diagnostic.goto_next, opts)
+vim.keymap.set('n', '<space>q', vim.diagnostic.setloclist, opts)
+
+local on_attach = function(client, bufnr)
+    -- Enable completion triggered by <c-x><c-o>
+    vim.api.nvim_buf_set_option(bufnr, 'omnifunc', 'v:lua.vim.lsp.omnifunc')
+
+    -- Mappings.
+    -- See `:help vim.lsp.*` for documentation on any of the below functions
+    local bufopts = { noremap=true, silent=true, buffer=bufnr }
+    --vim.keymap.set('n', 'gD', vim.lsp.buf.declaration, bufopts)
+    vim.keymap.set('n', 'gd', vim.lsp.buf.definition, bufopts)
+    vim.keymap.set('n', 'K', vim.lsp.buf.hover, bufopts)
+    --vim.keymap.set('n', 'gi', vim.lsp.buf.implementation, bufopts)
+    vim.keymap.set('n', '<C-k>', vim.lsp.buf.signature_help, bufopts)
+    vim.keymap.set('n', '<space>wa', vim.lsp.buf.add_workspace_folder, bufopts)
+    vim.keymap.set('n', '<space>wr', vim.lsp.buf.remove_workspace_folder, bufopts)
+    vim.keymap.set('n', '<space>wl', function()
+    print(vim.inspect(vim.lsp.buf.list_workspace_folders()))
+    end, bufopts)
+    --vim.keymap.set('n', '<space>D', vim.lsp.buf.type_definition, bufopts)
+    vim.keymap.set('n', '<space>rn', vim.lsp.buf.rename, bufopts)
+    vim.keymap.set('n', '<space>ca', vim.lsp.buf.code_action, bufopts)
+    vim.keymap.set('n', 'gr', vim.lsp.buf.references, bufopts)
+    vim.keymap.set('n', '<space>f', function() vim.lsp.buf.format { async = true } end, bufopts)
+end
+
+local configs = require 'lspconfig.configs'
+if not configs.ruff_lsp then
+    configs.ruff_lsp = {
+        default_config = {
+            cmd = { 'ruff-lsp' },
+            filetypes = { 'python' },
+            root_dir = require('lspconfig').util.find_git_ancestor,
+            init_options = {
+                settings = {
+                    args = {}
+                }
+            }
+        }
+    }
+end
+
+require('lspconfig').ruff_lsp.setup {
+    cmd = { "/projects/libdev_py/users/apriebe/venvs/neovim-venv/bin/ruff-lsp" },
+    on_attach = on_attach,
+    init_options = {
+        settings = {
+            -- Any extra CLI arguments for `ruff` go here.
+            args = {},
+        }
+    }
+}
+
+
 
 -- Linter: Show floating window with linter error on current line
 vim.api.nvim_create_autocmd({"CursorHold"}, {
@@ -193,6 +252,28 @@ function _G.open_in_tab()
 end
 
 vim.api.nvim_set_keymap('n', 't', ':lua open_in_tab()<CR>', {noremap = true, silent = true})
+
+-- Telescope: Let 't' open file in new tab, not just <C-t>
+require'telescope'.setup({
+    pickers = {
+        find_files = {
+            mappings = {
+                n = {
+                    -- Do "Esc" to exit insert mode in Telescope, then "t"
+                    ["t"] = "select_tab",
+                }
+            }
+        },
+        live_grep = {
+            mappings = {
+                n = {
+                    -- Do "Esc" to exit insert mode in Telescope, then "t"
+                    ["t"] = "select_tab",
+                }
+            }
+        }
+    }
+})
 
 -- LSP: Autocompletion and signature help
 local cmp = require'cmp'
