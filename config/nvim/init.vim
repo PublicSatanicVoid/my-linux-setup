@@ -2,6 +2,7 @@ call plug#begin('~/.local/share/nvim/plugged')
 
 "Plug 'sbdchd/neoformat'
 Plug 'NLKNguyen/papercolor-theme'
+Plug 'xiyaowong/transparent.nvim'
 
 Plug 'nvim-lua/plenary.nvim'
 Plug 'nvim-telescope/telescope.nvim'
@@ -28,7 +29,18 @@ Plug 'jiangmiao/auto-pairs'
 
 call plug#end()
 
+
+let g:PaperColor_Theme_Options = {
+  \   'theme': {
+  \     'default': {
+  \       'transparent_background': 1
+  \     }
+  \   }
+  \ }
 colorscheme PaperColor
+"au ColorScheme * hi Normal ctermbg=none guibg=none
+"au ColorScheme myspecialcolors hi Normal ctermbg=red guibg=red
+
 
 set nocompatible
 "set showmatch   "Briefly jump to matching brace
@@ -45,7 +57,7 @@ set smarttab
 set number
 set relativenumber
 set wildmode=longest,list
-set cc=88
+set cc=89
 filetype plugin indent on
 syntax on
 set mouse=a
@@ -59,16 +71,14 @@ set vb t_vb=
 
 autocmd FileType make set noexpandtab shiftwidth=8 softtabstop=0
 
-autocmd BufReadPost *
-    \ if line("'\"") > 0 && line("'\"") <= line("$") |
-    \   exe "normal! g`\"" |
-    \ endif
+"""Not sure what this does, commenting it out for now
+"autocmd BufReadPost *
+"    \ if line("'\"") > 0 && line("'\"") <= line("$") |
+"    \   exe "normal! g`\"" |
+"    \ endif
 
 """Below code will format on save
-" augroup fmt
-"   autocmd!
-"   autocmd BufWritePre * undojoin | Neoformat
-" augroup END
+"autocmd BufWritePre * lua vim.lsp.buf.format()
 
 """Remap Ctrl+<Left/Right> to tab<p/n>
 "set t_Co=256
@@ -103,6 +113,7 @@ let g:context_add_autocmds = 1
 let g:context_max_height = 21
 let g:context_max_per_indent = 11
 let g:context_skip_regex = '^\s*\($\|#\|//\|/\*\|\*\($\|/s\|\/\)\)'
+
 
 lua << EOF
 
