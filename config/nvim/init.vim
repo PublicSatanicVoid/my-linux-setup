@@ -58,6 +58,7 @@ set number
 set relativenumber
 set wildmode=longest,list
 set cc=89
+set textwidth=89
 filetype plugin indent on
 syntax on
 set mouse=a
@@ -81,13 +82,8 @@ autocmd FileType make set noexpandtab shiftwidth=8 softtabstop=0
 "autocmd BufWritePre * lua vim.lsp.buf.format()
 
 """Remap Ctrl+<Left/Right> to tab<p/n>
-"set t_Co=256
-"let &t_kR = "\e[OC"
-"let &t_kL = "\e[OD"
 noremap <C-Right> :tabnext<CR>
 noremap <C-Left> :tabprevious<CR>
-"noremap <Esc>[OD :tabp<CR>
-"noremap <Esc>[OC :tabn<CR>
 
 """Remap Shift+<k/j/h/l> to navigate panes
 nmap <S-Up> :wincmd k<CR>
