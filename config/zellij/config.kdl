@@ -113,6 +113,7 @@ keybinds {
         bind "Ctrl o" { SwitchToMode "Normal"; }
         bind "Ctrl s" { SwitchToMode "Scroll"; }
         bind "d" { Detach; }
+        bind "Ctrl q" { Quit; }
         bind "w" {
             LaunchOrFocusPlugin "zellij:session-manager" {
                 floating true
@@ -146,7 +147,7 @@ keybinds {
     }
     shared_except "locked" {
         bind "Ctrl g" { SwitchToMode "Locked"; }
-        bind "Ctrl q" { Quit; }
+        unbind "Ctrl q"
         bind "Alt n" { NewPane; }
         bind "Alt h" "Alt Left" { MoveFocusOrTab "Left"; }
         bind "Alt l" "Alt Right" { MoveFocusOrTab "Right"; }

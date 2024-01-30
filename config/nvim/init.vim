@@ -89,15 +89,18 @@ noremap <C-Left> :tabprevious<CR>
 "noremap <Esc>[OD :tabp<CR>
 "noremap <Esc>[OC :tabn<CR>
 
-"""Remap Ctrl+<k/j/h/l> to navigate panes
-nmap <silent> <c-k> :wincmd k<CR>
-nmap <silent> <c-j> :wincmd j<CR>
-nmap <silent> <c-h> :wincmd h<CR>
-nmap <silent> <c-l> :wincmd l<CR>
+"""Remap Shift+<k/j/h/l> to navigate panes
+nmap <S-Up> :wincmd k<CR>
+nmap <S-Down> :wincmd j<CR>
+nmap <S-Left> :wincmd h<CR>
+nmap <S-Right> :wincmd l<CR>
 
 nnoremap <C-f> :Telescope find_files<CR>
 nnoremap <S-f> :Telescope live_grep<CR>
 nnoremap <C-l> :NvimTreeToggle<CR>
+
+"nnoremap / :%s%
+nnoremap / :%s###gn<Left><Left><Left><Left>
 
 """Non-stupid indentation defaults
 let g:python_indent = {}
