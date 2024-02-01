@@ -27,7 +27,13 @@ Plug 'wellle/context.vim'
 
 Plug 'jiangmiao/auto-pairs'
 
+Plug 'ojroques/vim-oscyank'
+
 call plug#end()
+
+"<space>y to copy text to system clipboard
+vmap <space>y <Plug>OSCYankVisual
+nmap <space>y <Plug>OSCYankVisual
 
 
 let g:PaperColor_Theme_Options = {
@@ -214,9 +220,9 @@ vim.o.updatetime = 1000
 
 -- Linter: Don't show linting messages by default
 vim.diagnostic.config({
-    virtual_text = false,
+    virtual_text = true,
     signs = true,
-    underline = false,
+    underline = true,
     update_in_insert = false,
     severity_sort = true,
 })
