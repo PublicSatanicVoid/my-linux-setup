@@ -1,5 +1,7 @@
 call plug#begin('~/.local/share/nvim/plugged')
 
+Plug 'catppuccin/nvim'
+
 "Plug 'sbdchd/neoformat'
 Plug 'NLKNguyen/papercolor-theme'
 Plug 'xiyaowong/transparent.nvim'
@@ -29,11 +31,9 @@ Plug 'jiangmiao/auto-pairs'
 
 Plug 'ojroques/vim-oscyank'
 
-call plug#end()
+Plug 'f-person/git-blame.nvim'
 
-"<space>y to copy text to system clipboard
-vmap <space>y <Plug>OSCYankVisual
-nmap <space>y <Plug>OSCYankVisual
+call plug#end()
 
 
 let g:PaperColor_Theme_Options = {
@@ -104,6 +104,13 @@ nnoremap <C-l> :NvimTreeToggle<CR>
 "nnoremap / :%s%
 nnoremap / :%s###gn<Left><Left><Left><Left>
 
+"<space>y to copy text to system clipboard
+vmap <space>y <Plug>OSCYankVisual
+nmap <space>y <Plug>OSCYankVisual
+
+# Go to definition in new tab
+nnoremap <C-w>gd <C-w><C-]><C-w>T
+
 """Non-stupid indentation defaults
 let g:python_indent = {}
 let g:python_indent.closed_paren_align_last_line = v:false
@@ -112,12 +119,17 @@ let g:python_indent.continue = 'shiftwidth()'
 
 let g:python3_host_prog = '/projects/libdev_py/users/apriebe/venvs/neovim-venv/bin/python3'
 "let g:neoformat_enabled_python = ['black']
-let g:context_enabled = 1
+let g:context_enabled = 0  "Off by default; enable with :GitBlameToggle
 let g:context_add_mappings = 1
 let g:context_add_autocmds = 1
 let g:context_max_height = 21
 let g:context_max_per_indent = 11
 let g:context_skip_regex = '^\s*\($\|#\|//\|/\*\|\*\($\|/s\|\/\)\)'
+
+let g:gitblame_display_virtual_text = 1
+let g:gitblame_enabled = 0  "Disable by default; can toggle with :GitBlameToggle
+let g:gitblame_date_format = '%r'
+let g:gitblame_message_template = ' <author>, <date> • [<sha>] <summary>'
 
 
 lua << EOF
@@ -218,7 +230,7 @@ vim.api.nvim_create_autocmd({"CursorHold"}, {
 -- Show the floating window faster when trigger condition is met
 vim.o.updatetime = 1000
 
--- Linter: Don't show linting messages by default
+-- Linter: Configure display of linting messages in-line
 vim.diagnostic.config({
     virtual_text = true,
     signs = true,
