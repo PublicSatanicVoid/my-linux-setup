@@ -1,6 +1,8 @@
 call plug#begin('~/.local/share/nvim/plugged')
 
 Plug 'catppuccin/nvim'
+Plug 'sainnhe/everforest'
+Plug 'sainnhe/sonokai'
 
 "Plug 'sbdchd/neoformat'
 Plug 'NLKNguyen/papercolor-theme'
@@ -43,10 +45,23 @@ let g:PaperColor_Theme_Options = {
   \     }
   \   }
   \ }
-colorscheme PaperColor
+"colorscheme PaperColor
 "au ColorScheme * hi Normal ctermbg=none guibg=none
 "au ColorScheme myspecialcolors hi Normal ctermbg=red guibg=red
 
+let g:sonokai_style = 'shusia'
+let g:sonokai_disable_italic_comment = 1
+let g:sonokai_enable_italic = 0
+let g:sonokai_better_performance = 1
+colorscheme sonokai
+
+let g:everforest_background = 'hard'
+let g:everforest_better_performance = 1
+let g:everforest_disable_italic_comment = 1
+let g:everforest_enable_italic = 0
+let g:everforest_transparent_background = 1
+let g:everforest_ui_contrast = 'low'
+"colorscheme everforest
 
 set nocompatible
 "set showmatch   "Briefly jump to matching brace
@@ -108,7 +123,7 @@ nnoremap / :%s###gn<Left><Left><Left><Left>
 vmap <space>y <Plug>OSCYankVisual
 nmap <space>y <Plug>OSCYankVisual
 
-# Go to definition in new tab
+" Go to definition in new tab
 nnoremap <C-w>gd <C-w><C-]><C-w>T
 
 """Non-stupid indentation defaults
@@ -133,6 +148,14 @@ let g:gitblame_message_template = ' <author>, <date> • [<sha>] <summary>'
 
 
 lua << EOF
+
+require("catppuccin").setup({
+    flavour = "mocha",
+    transparent_background = true,
+    no_italic = true,
+    no_underline = true
+})
+--vim.cmd.colorscheme "catppuccin"
 
 -- Linter config
 require'lspconfig'.pylsp.setup{
