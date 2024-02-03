@@ -1,11 +1,14 @@
 call plug#begin('~/.local/share/nvim/plugged')
 
-Plug 'catppuccin/nvim'
+"Plug 'catppuccin/nvim'
 Plug 'sainnhe/everforest'
-Plug 'sainnhe/sonokai'
+"Plug 'sainnhe/sonokai'
+"Plug 'EdenEast/nightfox.nvim'
+"Plug 'Shatur/neovim-ayu'
+"Plug 'Tsuzat/NeoSolarized.nvim'
+"Plug 'NLKNguyen/papercolor-theme'
 
 "Plug 'sbdchd/neoformat'
-Plug 'NLKNguyen/papercolor-theme'
 Plug 'xiyaowong/transparent.nvim'
 
 Plug 'nvim-lua/plenary.nvim'
@@ -38,30 +41,74 @@ Plug 'f-person/git-blame.nvim'
 call plug#end()
 
 
-let g:PaperColor_Theme_Options = {
-  \   'theme': {
-  \     'default': {
-  \       'transparent_background': 1
-  \     }
-  \   }
-  \ }
-"colorscheme PaperColor
+
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" COLOR SCHEME
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
 "au ColorScheme * hi Normal ctermbg=none guibg=none
 "au ColorScheme myspecialcolors hi Normal ctermbg=red guibg=red
 
-let g:sonokai_style = 'shusia'
-let g:sonokai_disable_italic_comment = 1
-let g:sonokai_enable_italic = 0
-let g:sonokai_better_performance = 1
-colorscheme sonokai
+"let g:PaperColor_Theme_Options = {
+"  \   'theme': {
+"  \     'default': {
+"  \       'transparent_background': 1
+"  \     }
+"  \   }
+"  \ }
+"colorscheme PaperColor
+
+"let g:sonokai_style = 'shusia'
+"let g:sonokai_disable_italic_comment = 1
+"let g:sonokai_enable_italic = 0
+"let g:sonokai_better_performance = 1
+"let g:sonokai_transparent_background = 2
+"colorscheme sonokai
 
 let g:everforest_background = 'hard'
 let g:everforest_better_performance = 1
 let g:everforest_disable_italic_comment = 1
 let g:everforest_enable_italic = 0
-let g:everforest_transparent_background = 1
+let g:everforest_transparent_background = 2
 let g:everforest_ui_contrast = 'low'
-"colorscheme everforest
+colorscheme everforest
+
+"colorscheme ayu-dark
+
+"colorscheme nightfox
+
+lua << EOF
+--    local ok_status, NeoSolarized = pcall(require, "NeoSolarized")
+--    NeoSolarized.setup {
+--        style = "dark",
+--        transparent = true,
+--        terminal_colors = true,
+--        enable_italics = false,
+--        styles = {
+--            comments = { italic = false },
+--            keywords = { italic = false },
+--            string = { italic = false }
+--        }
+--    }
+EOF
+
+"colorscheme NeoSolarized
+
+lua << EOF
+--require("catppuccin").setup({
+--    flavour = "mocha",
+--    transparent_background = true,
+--    no_italic = true,
+--    no_underline = true
+--})
+--vim.cmd.colorscheme "catppuccin"
+EOF
+
+
+
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" VIM OPTIONS
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
 set nocompatible
 "set showmatch   "Briefly jump to matching brace
@@ -102,6 +149,12 @@ autocmd FileType make set noexpandtab shiftwidth=8 softtabstop=0
 """Below code will format on save
 "autocmd BufWritePre * lua vim.lsp.buf.format()
 
+
+
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" KEY MAPPINGS
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
 """Remap Ctrl+<Left/Right> to tab<p/n>
 noremap <C-Right> :tabnext<CR>
 noremap <C-Left> :tabprevious<CR>
@@ -126,6 +179,12 @@ nmap <space>y <Plug>OSCYankVisual
 " Go to definition in new tab
 nnoremap <C-w>gd <C-w><C-]><C-w>T
 
+
+
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+" PLUGIN SETUP
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
 """Non-stupid indentation defaults
 let g:python_indent = {}
 let g:python_indent.closed_paren_align_last_line = v:false
@@ -134,7 +193,7 @@ let g:python_indent.continue = 'shiftwidth()'
 
 let g:python3_host_prog = '/projects/libdev_py/users/apriebe/venvs/neovim-venv/bin/python3'
 "let g:neoformat_enabled_python = ['black']
-let g:context_enabled = 0  "Off by default; enable with :GitBlameToggle
+let g:context_enabled = 1
 let g:context_add_mappings = 1
 let g:context_add_autocmds = 1
 let g:context_max_height = 21
@@ -144,19 +203,12 @@ let g:context_skip_regex = '^\s*\($\|#\|//\|/\*\|\*\($\|/s\|\/\)\)'
 let g:gitblame_display_virtual_text = 1
 let g:gitblame_enabled = 0  "Disable by default; can toggle with :GitBlameToggle
 let g:gitblame_date_format = '%r'
-let g:gitblame_message_template = ' <author>, <date> • [<sha>] <summary>'
+let g:gitblame_message_template = '    <author>, <date> • [<sha>] <summary>'
 
+command! BlameOn :GitBlameEnable
+command! BlameOff :GitBlameDisable
 
 lua << EOF
-
-require("catppuccin").setup({
-    flavour = "mocha",
-    transparent_background = true,
-    no_italic = true,
-    no_underline = true
-})
---vim.cmd.colorscheme "catppuccin"
-
 -- Linter config
 require'lspconfig'.pylsp.setup{
     cmd = { "/projects/libdev_py/users/apriebe/venvs/neovim-venv/bin/pylsp" },
@@ -269,11 +321,11 @@ require('nvim-tree').setup({
     renderer = {
         icons = {
             show = {
-                file = false,
-                folder = false,
-                folder_arrow = false,
-                git = false,
-                modified = false,
+                file = true,
+                folder = true,
+                folder_arrow = true,
+                git = true,
+                modified = true,
                 diagnostics = false,
                 bookmarks = false,
             }
