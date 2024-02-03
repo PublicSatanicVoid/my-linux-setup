@@ -207,6 +207,7 @@ let g:gitblame_message_template = '    <author>, <date> • [<sha>] <summary>'
 
 command! BlameOn :GitBlameEnable
 command! BlameOff :GitBlameDisable
+command! Blame :GitBlameToggle
 
 lua << EOF
 -- Linter config
