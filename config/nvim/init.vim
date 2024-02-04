@@ -7,6 +7,7 @@ Plug 'sainnhe/everforest'
 "Plug 'Shatur/neovim-ayu'
 "Plug 'Tsuzat/NeoSolarized.nvim'
 "Plug 'NLKNguyen/papercolor-theme'
+Plug 'rose-pine/neovim'
 
 "Plug 'sbdchd/neoformat'
 Plug 'xiyaowong/transparent.nvim'
@@ -73,9 +74,23 @@ let g:everforest_transparent_background = 2
 let g:everforest_ui_contrast = 'low'
 colorscheme everforest
 
+lua << EOF
+-- require("rose-pine").setup({
+--     variant = "main",
+--     dark_variant = "main",
+--     styles = {
+--         bold = true,
+--         italic = false,
+--         transparency = true,
+--     }
+-- })
+EOF
+
 "colorscheme ayu-dark
 
 "colorscheme nightfox
+"colorscheme nordfox
+"colorscheme duskfox
 
 lua << EOF
 --    local ok_status, NeoSolarized = pcall(require, "NeoSolarized")
@@ -120,8 +135,9 @@ set tabstop=4
 set softtabstop=4
 set expandtab
 set shiftwidth=4
-set autoindent
-set smarttab
+"set autoindent
+set smartindent
+"set smarttab
 set number
 set relativenumber
 set wildmode=longest,list
@@ -137,6 +153,7 @@ set ttyfast
 set noswapfile
 set scrolloff=10
 set vb t_vb=
+set t_Co=256  "What does this do
 
 autocmd FileType make set noexpandtab shiftwidth=8 softtabstop=0
 
@@ -191,7 +208,7 @@ let g:python_indent.closed_paren_align_last_line = v:false
 let g:python_indent.open_paren = 'shiftwidth()'
 let g:python_indent.continue = 'shiftwidth()'
 
-let g:python3_host_prog = '/projects/libdev_py/users/apriebe/venvs/neovim-venv/bin/python3'
+let g:python3_host_prog = $NEOVIM_VENV . '/bin/python3'
 "let g:neoformat_enabled_python = ['black']
 let g:context_enabled = 1
 let g:context_add_mappings = 1
@@ -210,9 +227,12 @@ command! BlameOff :GitBlameDisable
 command! Blame :GitBlameToggle
 
 lua << EOF
+
+local neovim_venv = os.getenv("NEOVIM_VENV") or "~/venvs/neovim_venv"
+
 -- Linter config
 require'lspconfig'.pylsp.setup{
-    cmd = { "/projects/libdev_py/users/apriebe/venvs/neovim-venv/bin/pylsp" },
+    cmd = { neovim_venv .. "/bin/pylsp" },
     settings = {
         pylsp = {
             plugins = {
@@ -259,24 +279,25 @@ local on_attach = function(client, bufnr)
     vim.keymap.set('n', '<space>f', function() vim.lsp.buf.format { async = true } end, bufopts)
 end
 
-local configs = require 'lspconfig.configs'
-if not configs.ruff_lsp then
-    configs.ruff_lsp = {
-        default_config = {
-            cmd = { 'ruff-lsp' },
-            filetypes = { 'python' },
-            root_dir = require('lspconfig').util.find_git_ancestor,
-            init_options = {
-                settings = {
-                    args = {}
-                }
-            }
-        }
-    }
-end
+--Below was causing problems with standalong Python files.
+-- local configs = require 'lspconfig.configs'
+-- if not configs.ruff_lsp then
+--     configs.ruff_lsp = {
+--         default_config = {
+--             cmd = { 'ruff-lsp' },
+--             filetypes = { 'python' },
+--             root_dir = require('lspconfig').util.find_git_ancestor,
+--             init_options = {
+--                 settings = {
+--                     args = {}
+--                 }
+--             }
+--         }
+--     }
+-- end
 
 require('lspconfig').ruff_lsp.setup {
-    cmd = { "/projects/libdev_py/users/apriebe/venvs/neovim-venv/bin/ruff-lsp" },
+    cmd = { neovim_venv .. "/bin/ruff-lsp" },
     on_attach = on_attach,
     init_options = {
         settings = {
