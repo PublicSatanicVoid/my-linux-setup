@@ -1,5 +1,9 @@
 :vsp <file>             open file in vertical split
 C-w <hjkl>              navigate windows
 :b <pat>                go to buffer matching <pat>
-<space>b                toggle buffer in current window
 
+CUSTOM
+======
+<space>b                select buffer in current window
+\2                      prev buffer
+\3                      next buffer
