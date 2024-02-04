@@ -37,6 +37,8 @@ Plug 'ojroques/vim-oscyank'
 
 Plug 'f-person/git-blame.nvim'
 
+Plug 'ThePrimeagen/harpoon', {'branch': 'harpoon2'}
+
 call plug#end()
 
 
@@ -198,10 +200,17 @@ command! Blame :GitBlameToggle
 
 lua << EOF
 
+
+local harpoon = require("harpoon")
+harpoon:setup()
+vim.keymap.set("n", "<space>a", function() harpoon:list():append() end)
+vim.keymap.set("n", "<C-e>", function() harpoon.ui:toggle_quick_menu(harpoon:list()) end)
+
+
 local neovim_venv = os.getenv("NEOVIM_VENV") or "~/venvs/neovim_venv"
 
 -- Linter config
-require'lspconfig'.pylsp.setup{
+require('lspconfig').pylsp.setup({
     cmd = { neovim_venv .. "/bin/pylsp" },
     settings = {
         pylsp = {
@@ -216,7 +225,7 @@ require'lspconfig'.pylsp.setup{
         debounce_text_changes = 200,
     },
     capabilities = capabilities,
-}
+})
 
 -- Linter config
 local opts = { noremap=true, silent=true }
@@ -249,8 +258,8 @@ local on_attach = function(client, bufnr)
     vim.keymap.set('n', '<space>f', function() vim.lsp.buf.format { async = true } end, bufopts)
 end
 
---Below was causing problems with standalong Python files.
--- local configs = require 'lspconfig.configs'
+--Below was causing problems with standalone Python files.
+-- local configs = require('lspconfig.configs')
 -- if not configs.ruff_lsp then
 --     configs.ruff_lsp = {
 --         default_config = {
@@ -266,7 +275,7 @@ end
 --     }
 -- end
 
-require('lspconfig').ruff_lsp.setup {
+require('lspconfig').ruff_lsp.setup({
     cmd = { neovim_venv .. "/bin/ruff-lsp" },
     on_attach = on_attach,
     init_options = {
@@ -275,7 +284,7 @@ require('lspconfig').ruff_lsp.setup {
             args = {},
         }
     }
-}
+})
 
 
 
@@ -349,7 +358,7 @@ end
 vim.api.nvim_set_keymap('n', 't', ':lua open_in_tab()<CR>', {noremap = true, silent = true})
 
 -- Telescope: Let 't' open file in new tab, not just <C-t>
-require'telescope'.setup({
+require('telescope').setup({
     pickers = {
         find_files = {
             mappings = {
@@ -371,7 +380,7 @@ require'telescope'.setup({
 })
 
 -- LSP: Autocompletion and signature help
-local cmp = require'cmp'
+local cmp = require('cmp')
 cmp.setup({
   snippet = {
     expand = function(args)

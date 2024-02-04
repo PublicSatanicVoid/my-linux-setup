@@ -2,6 +2,19 @@
 C-w <hjkl>              navigate windows
 :b <pat>                go to buffer matching <pat>
 
+va<brace>               visual select from opening <brace> to closing <brace>
+                            including <brace>s
+vi<brace>               visual select from opening <brace> to closing <brace>
+                            NOT including <brace>s
+
+u                       undo
+C-r                     redo
+
+A                       insert at end of line
+
+gq}                     reflow paragraph
+
+
 CUSTOM
 ======
 <space>b                select buffer in current window
