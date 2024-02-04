@@ -1,13 +1,9 @@
 call plug#begin('~/.local/share/nvim/plugged')
 
-"Plug 'catppuccin/nvim'
 Plug 'sainnhe/everforest'
 "Plug 'sainnhe/sonokai'
-"Plug 'EdenEast/nightfox.nvim'
-"Plug 'Shatur/neovim-ayu'
-"Plug 'Tsuzat/NeoSolarized.nvim'
-"Plug 'NLKNguyen/papercolor-theme'
-Plug 'rose-pine/neovim'
+Plug 'EdenEast/nightfox.nvim'
+"Plug 'rose-pine/neovim'
 
 "Plug 'sbdchd/neoformat'
 Plug 'xiyaowong/transparent.nvim'
@@ -50,20 +46,11 @@ call plug#end()
 "au ColorScheme * hi Normal ctermbg=none guibg=none
 "au ColorScheme myspecialcolors hi Normal ctermbg=red guibg=red
 
-"let g:PaperColor_Theme_Options = {
-"  \   'theme': {
-"  \     'default': {
-"  \       'transparent_background': 1
-"  \     }
-"  \   }
-"  \ }
-"colorscheme PaperColor
-
-"let g:sonokai_style = 'shusia'
-"let g:sonokai_disable_italic_comment = 1
-"let g:sonokai_enable_italic = 0
-"let g:sonokai_better_performance = 1
-"let g:sonokai_transparent_background = 2
+let g:sonokai_style = 'shusia'
+let g:sonokai_disable_italic_comment = 1
+let g:sonokai_enable_italic = 0
+let g:sonokai_better_performance = 1
+let g:sonokai_transparent_background = 2
 "colorscheme sonokai
 
 let g:everforest_background = 'hard'
@@ -75,49 +62,21 @@ let g:everforest_ui_contrast = 'low'
 colorscheme everforest
 
 lua << EOF
--- require("rose-pine").setup({
---     variant = "main",
---     dark_variant = "main",
---     styles = {
---         bold = true,
---         italic = false,
---         transparency = true,
---     }
--- })
+require("rose-pine").setup({
+    variant = "main",
+    dark_variant = "main",
+    styles = {
+        bold = true,
+        italic = false,
+        transparency = true,
+    }
+})
 EOF
-
-"colorscheme ayu-dark
+"colorscheme rose-pine
 
 "colorscheme nightfox
-"colorscheme nordfox
+"colorscheme nordfox     "Good for darker backgrounds
 "colorscheme duskfox
-
-lua << EOF
---    local ok_status, NeoSolarized = pcall(require, "NeoSolarized")
---    NeoSolarized.setup {
---        style = "dark",
---        transparent = true,
---        terminal_colors = true,
---        enable_italics = false,
---        styles = {
---            comments = { italic = false },
---            keywords = { italic = false },
---            string = { italic = false }
---        }
---    }
-EOF
-
-"colorscheme NeoSolarized
-
-lua << EOF
---require("catppuccin").setup({
---    flavour = "mocha",
---    transparent_background = true,
---    no_italic = true,
---    no_underline = true
---})
---vim.cmd.colorscheme "catppuccin"
-EOF
 
 
 
