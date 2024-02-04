@@ -159,8 +159,8 @@ nnoremap <C-w>gd <C-w><C-]><C-w>T
 
 " Select from buffers
 nnoremap <space>b :BufstopFast<CR>
-nnoremap \2 :bprev<CR>
-nnoremap \3 :bnext<CR>
+nnoremap <space>n :bprev<CR>
+nnoremap <space>p :bnext<CR>
 
 " Remap esc to go to normal mode from *any* mode (inc. terminal)
 tnoremap <esc> <C-\><C-N>
