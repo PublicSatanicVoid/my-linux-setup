@@ -1,0 +1,5 @@
+:vsp <file>             open file in vertical split
+C-w <hjkl>              navigate windows
+:b <pat>                go to buffer matching <pat>
+<space>b                toggle buffer in current window
+

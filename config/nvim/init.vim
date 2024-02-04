@@ -11,6 +11,8 @@ Plug 'xiyaowong/transparent.nvim'
 Plug 'nvim-lua/plenary.nvim'
 Plug 'nvim-telescope/telescope.nvim'
 
+Plug 'mihaifm/bufstop'
+
 Plug 'nvim-tree/nvim-tree.lua'
 
 Plug 'neovim/nvim-lspconfig'
@@ -62,21 +64,21 @@ let g:everforest_ui_contrast = 'low'
 colorscheme everforest
 
 lua << EOF
-require("rose-pine").setup({
-    variant = "main",
-    dark_variant = "main",
-    styles = {
-        bold = true,
-        italic = false,
-        transparency = true,
-    }
-})
+--require("rose-pine").setup({
+--    variant = "main",
+--    dark_variant = "main",
+--    styles = {
+--        bold = true,
+--        italic = false,
+--        transparency = true,
+--    }
+--})
 EOF
 "colorscheme rose-pine
 
-"colorscheme nightfox
-"colorscheme nordfox     "Good for darker backgrounds
-"colorscheme duskfox
+""colorscheme nightfox
+""colorscheme nordfox     "Good for darker backgrounds
+""colorscheme duskfox
 
 
 
@@ -88,7 +90,7 @@ set nocompatible
 "set showmatch   "Briefly jump to matching brace
 set ignorecase
 set mouse=v
-set hlsearch
+"set hlsearch
 set incsearch
 set tabstop=4
 set softtabstop=4
@@ -155,6 +157,11 @@ nmap <space>y <Plug>OSCYankVisual
 " Go to definition in new tab
 nnoremap <C-w>gd <C-w><C-]><C-w>T
 
+" Select from buffers
+nnoremap <space>b :BufstopFast<CR>
+
+" Remap esc to go to normal mode from *any* mode (inc. terminal)
+tnoremap <esc> <C-\><C-N>
 
 
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
