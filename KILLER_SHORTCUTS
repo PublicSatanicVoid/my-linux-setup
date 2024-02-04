@@ -5,5 +5,5 @@ C-w <hjkl>              navigate windows
 CUSTOM
 ======
 <space>b                select buffer in current window
-\2                      prev buffer
-\3                      next buffer
+<space>n                next buffer
+<space>p                prev buffer
