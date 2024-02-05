@@ -56,6 +56,11 @@ vim.opt.tabstop = 4
 vim.opt.softtabstop = 4
 vim.opt.expandtab = true
 vim.opt.shiftwidth = 4
+vim.cmd [[
+    filetype plugin on
+    filetype plugin indent on
+]]
+vim.opt.autoindent = true --Not sure about this one, TODO
 vim.opt.smartindent = true
 vim.opt.number = true
 vim.opt.relativenumber = true
@@ -264,6 +269,9 @@ require('nvim-treesitter.configs').setup({
     highlight = {
         enable = true,
         additional_vim_regex_highlighting = false,
+    },
+    indent = {
+        enable = true
     }
 })
 
@@ -384,12 +392,12 @@ cmp.setup({
         end
     end, { 'i', 's' }),
 
-    ['<CR>'] = cmp.mapping(function(fallback)
-        if cmp.visible() then
-            cmp.abort()
-        end
-        fallback()
-    end, { 'i', 's' }),
+--    ['<CR>'] = cmp.mapping(function(fallback)
+--        if cmp.visible() then
+--            cmp.abort()
+--        end
+--        fallback()
+--    end, { 'i', 's' }),
 
     ['<C-y>'] = cmp.mapping.confirm({ select = true }),
 
