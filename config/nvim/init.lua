@@ -102,6 +102,10 @@ nmap("<space>p", "<cmd>bnext<CR>")
 tmap("<esc>", "<C-\\><C-N>")
 nmap("<C-x>", "<cmd>!chmod +x %")
 
+vim.api.nvim_create_user_command('BlameOn', 'GitBlameEnable', {})
+vim.api.nvim_create_user_command('BlameOff', 'GitBlameDisable', {})
+vim.api.nvim_create_user_command('Blame', 'GitBlameToggle', {})
+
 
 NEOVIM_VENV = os.getenv("NEOVIM_VENV")
 
@@ -117,11 +121,10 @@ vim.g.context_add_autocmds = 1
 vim.g.context_max_height = 21
 vim.g.context_max_per_indent = 11
 vim.g.context_skip_regex = "^\\s*($|#|//|/\\*)"
+require('gitblame').setup({
+    enabled = false,
+})
 vim.g.gitblame_display_virtual_text = 1
-vim.g.gitblame_enabled = 0
-vim.g.gitblame_date_format = "%r"
-vim.g.gitblame_display_virtual_text = 1
-vim.g.gitblame_enabled = 0
 vim.g.gitblame_date_format = "%r"
 vim.g.gitblame_message_template = "    <author>, <date> • [<sha>] <summary>"
 
