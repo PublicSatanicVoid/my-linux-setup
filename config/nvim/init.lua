@@ -387,9 +387,8 @@ cmp.setup({
     ['<CR>'] = cmp.mapping(function(fallback)
         if cmp.visible() then
             cmp.abort()
-        else
-            fallback()
         end
+        fallback()
     end, { 'i', 's' }),
 
     ['<C-y>'] = cmp.mapping.confirm({ select = true }),
