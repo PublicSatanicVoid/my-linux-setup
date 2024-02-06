@@ -14,7 +14,7 @@ vim.opt.rtp:prepend(lazypath)
 require("lazy").setup({
     "sainnhe/everforest",
 --    "EdenEast/nightfox.nvim",
---    "rose-pine/neovim",
+    "rose-pine/neovim",
     "xiyaowong/transparent.nvim",
     "nvim-lua/plenary.nvim",
     "nvim-telescope/telescope.nvim",
@@ -31,7 +31,8 @@ require("lazy").setup({
 --    "hrsh7th/vim-vsnip-integ",
     "hrsh7th/cmp-nvim-lsp-signature-help",
     "nvim-treesitter/nvim-treesitter",
-    "wellle/context.vim",
+--    "wellle/context.vim",
+    "Hippo0o/context.vim",  -- fork that fixes issues with the original
     "jiangmiao/auto-pairs",
     "ojroques/vim-oscyank",
     "f-person/git-blame.nvim",
@@ -102,6 +103,7 @@ nmap("/", ":%s###gn<Left><Left><Left><Left>")
 vmap("<space>y", "<Plug>OSCYankVisual")
 nmap("<space>y", "<Plug>OSCYankVisual")
 nmap("<space>b", "<cmd>BufstopFast<CR>")
+--nmap("<space>b", "<cmd>Telescope buffers<CR>")
 nmap("<space>n", "<cmd>bprev<CR>")
 nmap("<space>p", "<cmd>bnext<CR>")
 tmap("<esc>", "<C-\\><C-N>")
@@ -134,48 +136,48 @@ vim.g.gitblame_date_format = "%r"
 vim.g.gitblame_message_template = "    <author>, <date> • [<sha>] <summary>"
 
 
--- require("rose-pine").setup({
--- 	variant = "auto",
--- 	dark_variant = "main",
--- 	enable = {
--- 		terminal = true,
--- 	},
--- 	styles = {
--- 		bold = false,
--- 		italic = false,
--- 		transparency = true,
--- 	},
---     groups = {
---         border = "muted",
---         link = "iris",
---         panel = "surface",
--- 
---         error = "love",
---         hint = "iris",
---         info = "foam",
---         note = "pine",
---         todo = "rose",
---         warn = "gold",
--- 
---         git_add = "foam",
---         git_change = "rose",
---         git_delete = "love",
---         git_dirty = "rose",
---         git_ignore = "muted",
---         git_merge = "iris",
---         git_rename = "pine",
---         git_stage = "iris",
---         git_text = "rose",
---         git_untracked = "subtle",
--- 
---         h1 = "iris",
---         h2 = "foam",
---         h3 = "rose",
---         h4 = "gold",
---         h5 = "pine",
---         h6 = "foam",
---     },
--- })
+--require("rose-pine").setup({
+--	variant = "auto",
+--	dark_variant = "main",
+--	enable = {
+--		terminal = true,
+--	},
+--	styles = {
+--		bold = false,
+--		italic = false,
+--		transparency = true,
+--	},
+--    groups = {
+--        border = "muted",
+--        link = "iris",
+--        panel = "surface",
+--
+--        error = "love",
+--        hint = "iris",
+--        info = "foam",
+--        note = "pine",
+--        todo = "rose",
+--        warn = "gold",
+--
+--        git_add = "foam",
+--        git_change = "rose",
+--        git_delete = "love",
+--        git_dirty = "rose",
+--        git_ignore = "muted",
+--        git_merge = "iris",
+--        git_rename = "pine",
+--        git_stage = "iris",
+--        git_text = "rose",
+--        git_untracked = "subtle",
+--
+--        h1 = "iris",
+--        h2 = "foam",
+--        h3 = "rose",
+--        h4 = "gold",
+--        h5 = "pine",
+--        h6 = "foam",
+--    },
+--})
 
 
 local harpoon = require("harpoon")

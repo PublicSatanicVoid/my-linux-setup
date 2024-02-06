@@ -19,10 +19,10 @@ if [ "$1" == "-h" ]; then
     exit 1
 fi
 
-NITER=25
+NITER=5
 NFILES=100
 DUMMYTEXT="The quick brown fox jumps over the lazy dog."
-NLINES=500
+NLINES=50
 WRITE_RATIO=1
 READ_RATIO=2
 STAT_RATIO=2
