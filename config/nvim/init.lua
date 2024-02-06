@@ -12,6 +12,7 @@ end
 vim.opt.rtp:prepend(lazypath)
 
 require("lazy").setup({
+    "nvim-lualine/lualine.nvim",
 --    "sainnhe/everforest",
 --    "EdenEast/nightfox.nvim",
 --    "rose-pine/neovim",
@@ -143,6 +144,7 @@ vim.opt.backup = false
 vim.opt.undodir = os.getenv("HOME") .. "/.vim/undodir"
 vim.opt.undofile = true
 vim.opt.scrolloff = 10
+vim.opt.showmode = false  -- lualine does this now
 --set vb t_vb=  --how to do this in lua?
 
 
@@ -271,6 +273,24 @@ local on_attach = function(client, bufnr)
     vim.keymap.set('n', 'gr', vim.lsp.buf.references, bufopts)
     vim.keymap.set('n', '<space>f', function() vim.lsp.buf.format { async = true } end, bufopts)
 end
+
+
+require('lualine').setup({
+    options = {
+        icons_enabled = false,
+        theme = 'auto',
+        refresh = {
+            statusline = 5000,
+        }
+    },
+    sections = {
+        lualine_a = {'mode'},
+        lualine_b = {'branch', 'diff', 'diagnostics'},
+        lualine_c = {'filename'},
+        lualine_y = {'progress'},
+        lualine_z = {'location'}
+    },
+})
 
 
 require('lspconfig').ruff_lsp.setup({
