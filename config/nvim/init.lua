@@ -18,6 +18,8 @@ require("lazy").setup({
     -- "sainnhe/everforest",
     -- "EdenEast/nightfox.nvim",
 
+    "junegunn/goyo.vim",
+
     -- "rose-pine/neovim",
     "PublicSatanicVoid/rose-pine.nvim",  -- fork with softer whites
     
@@ -261,7 +263,7 @@ nmap("<space>b", "<cmd>BufstopFast<CR>")
 nmap("<space>n", "<cmd>bprev<CR>")
 nmap("<space>p", "<cmd>bnext<CR>")
 tmap("<esc>", "<C-\\><C-N>")
-nmap("<C-x>", "<cmd>!chmod +x %")
+nmap("<C-x>", "<cmd>!chmod +x %<CR>")
 
 
 vim.g.context_enabled = 1
@@ -278,6 +280,45 @@ vim.g.python_indent.closed_paren_align_last_line = false
 vim.g.python_indent.open_paren = "shiftwidth()"
 vim.g.python_indent.continue = "shiftwidth()"
 vim.g.python3_host_prog = NEOVIM_VENV .. "/bin/python3"
+
+
+vim.cmd [[
+function! CenterContent()
+    let l:textwidth = 120
+
+    let l:width = winwidth(0)
+    let l:margin = (l:width - l:textwidth) / 2
+
+    setlocal nosplitright
+    vsplit
+    enew
+    setlocal nomodifiable
+    setlocal nonumber
+    setlocal norelativenumber
+    setlocal fillchars=eob:\ "
+    execute 'vertical resize ' . l:margin
+    wincmd l
+    setlocal splitright
+    vsplit
+    enew
+    setlocal nomodifiable
+    setlocal nonumber
+    setlocal norelativenumber
+    setlocal fillchars=eob:\ "
+    execute 'vertical resize ' . l:margin
+    wincmd h
+endfunction
+command! Focus call CenterContent()
+
+function! UnCenterContent()
+    wincmd h
+    q
+    wincmd l
+    q
+endfunction
+command! UnFocus call UnCenterContent()
+]]
+
 
 
 require("rose-pine").setup({
@@ -337,7 +378,7 @@ require('lualine').setup({
     },
     sections = {
         lualine_a = {'mode'},
-        lualine_b = {'branch', 'diff', 'diagnostics'},
+        lualine_b = {'branch', 'diagnostics'},
         lualine_c = {'filename'},
         lualine_y = {'progress'},
         lualine_z = {'location'}
