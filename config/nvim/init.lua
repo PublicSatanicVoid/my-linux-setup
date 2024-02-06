@@ -12,26 +12,94 @@ end
 vim.opt.rtp:prepend(lazypath)
 
 require("lazy").setup({
-    "sainnhe/everforest",
+--    "sainnhe/everforest",
 --    "EdenEast/nightfox.nvim",
 --    "rose-pine/neovim",
     "PublicSatanicVoid/rose-pine.nvim",  -- fork with softer whites
-    "xiyaowong/transparent.nvim",
+--    "xiyaowong/transparent.nvim",
     "nvim-lua/plenary.nvim",
     "nvim-telescope/telescope.nvim",
     "mihaifm/bufstop",
-    "nvim-tree/nvim-tree.lua",
+    {"nvim-tree/nvim-tree.lua", event = 'VeryLazy',
+        config = function()
+
+            require('nvim-tree').setup({
+                renderer = {
+                    icons = {
+                        show = {
+                            file = true,
+                            folder = true,
+                            folder_arrow = true,
+                            git = true,
+                            modified = true,
+                            diagnostics = false,
+                            bookmarks = false,
+                        }
+                    }
+                },
+                tab = {
+                    sync = {
+                        open = true,
+                        close = true
+                    }
+                },
+                actions = {
+                    open_file = {
+                        window_picker = { enable = false },
+                    }
+                }
+            })
+        end
+    },
     "neovim/nvim-lspconfig",
-    "hrsh7th/nvim-cmp",
+    {"hrsh7th/nvim-cmp", event = 'VeryLazy',
+        config = function()
+
+            -- LSP: Autocompletion and signature help
+            local cmp = require('cmp')
+            cmp.setup({
+              mapping = cmp.mapping.preset.insert({
+                ['<Tab>'] = cmp.mapping(function(fallback)
+                    if cmp.visible() then
+                        cmp.select_next_item()
+                    else
+                        fallback()
+                    end
+                end, { 'i', 's' }),
+
+                ['<S-Tab>'] = cmp.mapping(function(fallback)
+                    if cmp.visible() then
+                        cmp.select_prev_item()
+                    else
+                        fallback()
+                    end
+                end, { 'i', 's' }),
+
+                ['<C-y>'] = cmp.mapping.confirm({ select = true }),
+
+                ['<C-b>'] = cmp.mapping.scroll_docs(-4),
+                ['<C-f>'] = cmp.mapping.scroll_docs(4),
+                ['<C-Space>'] = cmp.mapping.complete(),
+                ['<C-e>'] = cmp.mapping.abort(),
+              }),
+              sources = cmp.config.sources({
+                { name = 'nvim_lsp' },
+                { name = 'nvim_lsp_signature_help' },
+              }, {
+                { name = 'buffer' },
+              })
+            })
+        end
+    },
     "hrsh7th/cmp-nvim-lsp",
     "hrsh7th/cmp-buffer",
-    "hrsh7th/cmp-path",
-    "hrsh7th/cmp-cmdline",
+--    "hrsh7th/cmp-path",
+--    "hrsh7th/cmp-cmdline",
 --    "hrsh7th/vim-vsnip",
 --    "hrsh7th/cmp-vsnip",
 --    "hrsh7th/vim-vsnip-integ",
     "hrsh7th/cmp-nvim-lsp-signature-help",
-    "nvim-treesitter/nvim-treesitter",
+    {"nvim-treesitter/nvim-treesitter", event = 'VeryLazy'},
 --    "wellle/context.vim",
     "Hippo0o/context.vim",  -- fork that fixes issues with the original
     "jiangmiao/auto-pairs",
@@ -69,8 +137,6 @@ vim.opt.relativenumber = true
 --vim.opt.wildmode = {"longest", "list"}  --is that how you do this?
 vim.opt.colorcolumn = "89"
 vim.opt.textwidth = 89
---filetype plugin indent on  --how to do this in lua?
---filetype plugin on  --how to do this in lua?
 vim.opt.ttyfast = true
 vim.opt.swapfile = false
 vim.opt.backup = false
@@ -79,7 +145,6 @@ vim.opt.undofile = true
 vim.opt.scrolloff = 10
 --set vb t_vb=  --how to do this in lua?
 
---autocmd FileType make set noexpandtab shiftwidth=8 softtabstop=0
 
 
 function nmap(shortcut, command)
@@ -96,7 +161,6 @@ end
 
 nmap("<C-Right>", "<cmd>tabnext<CR>")
 nmap("<C-Left>", "<cmd>tabprevious<CR>")
---TODOmaybe, S-<up/down/left-right> for panes
 nmap("<C-f>", "<cmd>Telescope find_files<CR>")
 nmap("<S-f>", "<cmd>Telescope live_grep<CR>")
 nmap("<C-l>", "<cmd>NvimTreeToggle<CR>")
@@ -104,7 +168,6 @@ nmap("/", ":%s###gn<Left><Left><Left><Left>")
 vmap("<space>y", "<Plug>OSCYankVisual")
 nmap("<space>y", "<Plug>OSCYankVisual")
 nmap("<space>b", "<cmd>BufstopFast<CR>")
---nmap("<space>b", "<cmd>Telescope buffers<CR>")
 nmap("<space>n", "<cmd>bprev<CR>")
 nmap("<space>p", "<cmd>bnext<CR>")
 tmap("<esc>", "<C-\\><C-N>")
@@ -148,36 +211,6 @@ require("rose-pine").setup({
 		italic = false,
 		transparency = true,
 	},
-    groups = {
-        border = "muted",
-        link = "iris",
-        panel = "surface",
-
-        error = "love",
-        hint = "iris",
-        info = "foam",
-        note = "pine",
-        todo = "rose",
-        warn = "gold",
-
-        git_add = "foam",
-        git_change = "rose",
-        git_delete = "love",
-        git_dirty = "rose",
-        git_ignore = "muted",
-        git_merge = "iris",
-        git_rename = "pine",
-        git_stage = "iris",
-        git_text = "rose",
-        git_untracked = "subtle",
-
-        h1 = "iris",
-        h2 = "foam",
-        h3 = "rose",
-        h4 = "gold",
-        h5 = "pine",
-        h6 = "foam",
-    },
 })
 vim.cmd.colorscheme 'rose-pine'
 
@@ -239,29 +272,12 @@ local on_attach = function(client, bufnr)
     vim.keymap.set('n', '<space>f', function() vim.lsp.buf.format { async = true } end, bufopts)
 end
 
---Below was causing problems with standalone Python files.
--- local configs = require('lspconfig.configs')
--- if not configs.ruff_lsp then
---     configs.ruff_lsp = {
---         default_config = {
---             cmd = { 'ruff-lsp' },
---             filetypes = { 'python' },
---             root_dir = require('lspconfig').util.find_git_ancestor,
---             init_options = {
---                 settings = {
---                     args = {}
---                 }
---             }
---         }
---     }
--- end
 
 require('lspconfig').ruff_lsp.setup({
     cmd = { neovim_venv .. "/bin/ruff-lsp" },
     on_attach = on_attach,
     init_options = {
         settings = {
-            -- Any extra CLI arguments for `ruff` go here.
             args = {},
         }
     }
@@ -309,32 +325,6 @@ vim.diagnostic.config({
 -- nvim-tree: Disable netrw, show icons, sync tab presence
 vim.g.loaded_netrw = 1
 vim.g.loaded_netrwPlugin = 1
-require('nvim-tree').setup({
-    renderer = {
-        icons = {
-            show = {
-                file = true,
-                folder = true,
-                folder_arrow = true,
-                git = true,
-                modified = true,
-                diagnostics = false,
-                bookmarks = false,
-            }
-        }
-    },
-    tab = {
-        sync = {
-            open = true,
-            close = true
-        }
-    },
-    actions = {
-        open_file = {
-            window_picker = { enable = false },
-        }
-    }
-})
 
 -- nvim-tree: Bind 't' to open file in new tab
 function _G.open_in_tab()
@@ -370,51 +360,3 @@ require('telescope').setup({
     }
 })
 
--- LSP: Autocompletion and signature help
-local cmp = require('cmp')
-cmp.setup({
-  --snippet = {
-  --  expand = function(args)
-  --    vim.fn["vsnip#anonymous"](args.body)
-  --  end,
-  --},
-  mapping = cmp.mapping.preset.insert({
-    ['<Tab>'] = cmp.mapping(function(fallback)
-        if cmp.visible() then
-            cmp.select_next_item()
-        else
-            fallback()
-        end
-    end, { 'i', 's' }),
-
-    ['<S-Tab>'] = cmp.mapping(function(fallback)
-        if cmp.visible() then
-            cmp.select_prev_item()
-        else
-            fallback()
-        end
-    end, { 'i', 's' }),
-
---    ['<CR>'] = cmp.mapping(function(fallback)
---        if cmp.visible() then
---            cmp.abort()
---        end
---        fallback()
---    end, { 'i', 's' }),
-
-    ['<C-y>'] = cmp.mapping.confirm({ select = true }),
-
-    ['<C-b>'] = cmp.mapping.scroll_docs(-4),
-    ['<C-f>'] = cmp.mapping.scroll_docs(4),
-    ['<C-Space>'] = cmp.mapping.complete(),
-    ['<C-e>'] = cmp.mapping.abort(),
-    --['<CR>'] = cmp.mapping.confirm({ select = true }),
-  }),
-  sources = cmp.config.sources({
-    { name = 'nvim_lsp' },
-    { name = 'nvim_lsp_signature_help' },
-    --{ name = 'vsnip' },
-  }, {
-    { name = 'buffer' },
-  })
-})
