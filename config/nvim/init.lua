@@ -1,3 +1,5 @@
+local neovim_venv = os.getenv("NEOVIM_VENV") or os.getenv("HOME") .."/venvs/neovim_venv"
+
 local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
 if not vim.loop.fs_stat(lazypath) then
     vim.fn.system({
@@ -13,16 +15,60 @@ vim.opt.rtp:prepend(lazypath)
 
 require("lazy").setup({
     "nvim-lualine/lualine.nvim",
---    "sainnhe/everforest",
---    "EdenEast/nightfox.nvim",
---    "rose-pine/neovim",
+    -- "sainnhe/everforest",
+    -- "EdenEast/nightfox.nvim",
+
+    -- "rose-pine/neovim",
     "PublicSatanicVoid/rose-pine.nvim",  -- fork with softer whites
---    "xiyaowong/transparent.nvim",
+    
     "nvim-lua/plenary.nvim",
-    "nvim-telescope/telescope.nvim",
-    "mihaifm/bufstop",
+    
+    {"nvim-telescope/telescope.nvim", event = 'VeryLazy',
+        config = function()
+            -- Telescope: Let 't' open file in new tab, not just <C-t>
+            require('telescope').setup({
+                pickers = {
+                    find_files = {
+                        mappings = {
+                            n = {
+                                -- Do "Esc" to exit insert mode in Telescope, then "t"
+                                ["t"] = "select_tab",
+                            }
+                        }
+                    },
+                    live_grep = {
+                        mappings = {
+                            n = {
+                                -- Do "Esc" to exit insert mode in Telescope, then "t"
+                                ["t"] = "select_tab",
+                            }
+                        }
+                    }
+                }
+            })
+
+        end
+    },
+    
+    {"mihaifm/bufstop", event = 'VeryLazy'},
+    
     {"nvim-tree/nvim-tree.lua", event = 'VeryLazy',
         config = function()
+            -- nvim-tree: Disable netrw, show icons, sync tab presence
+            vim.g.loaded_netrw = 1
+            vim.g.loaded_netrwPlugin = 1
+
+            -- nvim-tree: Bind 't' to open file in new tab
+            function _G.open_in_tab()
+                local lib = require'nvim-tree.lib'
+                local node = lib.get_node_at_cursor()
+                if node then
+                    vim.cmd('wincmd p')
+                    vim.cmd('tabnew ' .. node.absolute_path)
+                end
+            end
+
+            vim.api.nvim_set_keymap('n', 't', ':lua open_in_tab()<CR>', {noremap = true, silent = true})
 
             require('nvim-tree').setup({
                 renderer = {
@@ -52,69 +98,112 @@ require("lazy").setup({
             })
         end
     },
-    "neovim/nvim-lspconfig",
+
+    -- Load immediately or else LSP breaks
+    {"neovim/nvim-lspconfig"},
+
     {"hrsh7th/nvim-cmp", event = 'VeryLazy',
         config = function()
-
-            -- LSP: Autocompletion and signature help
             local cmp = require('cmp')
             cmp.setup({
-              mapping = cmp.mapping.preset.insert({
-                ['<Tab>'] = cmp.mapping(function(fallback)
-                    if cmp.visible() then
-                        cmp.select_next_item()
-                    else
-                        fallback()
-                    end
-                end, { 'i', 's' }),
+                mapping = cmp.mapping.preset.insert({
+                    ['<Tab>'] = cmp.mapping(function(fallback)
+                        if cmp.visible() then
+                            cmp.select_next_item()
+                        else
+                            fallback()
+                        end
+                    end, { 'i', 's' }),
 
-                ['<S-Tab>'] = cmp.mapping(function(fallback)
-                    if cmp.visible() then
-                        cmp.select_prev_item()
-                    else
-                        fallback()
-                    end
-                end, { 'i', 's' }),
+                    ['<S-Tab>'] = cmp.mapping(function(fallback)
+                        if cmp.visible() then
+                            cmp.select_prev_item()
+                        else
+                            fallback()
+                        end
+                    end, { 'i', 's' }),
 
-                ['<C-y>'] = cmp.mapping.confirm({ select = true }),
+                    ['<C-y>'] = cmp.mapping.confirm({ select = true }),
 
-                ['<C-b>'] = cmp.mapping.scroll_docs(-4),
-                ['<C-f>'] = cmp.mapping.scroll_docs(4),
-                ['<C-Space>'] = cmp.mapping.complete(),
-                ['<C-e>'] = cmp.mapping.abort(),
-              }),
-              sources = cmp.config.sources({
-                { name = 'nvim_lsp' },
-                { name = 'nvim_lsp_signature_help' },
-              }, {
-                { name = 'buffer' },
-              })
+                    ['<C-b>'] = cmp.mapping.scroll_docs(-4),
+                    ['<C-f>'] = cmp.mapping.scroll_docs(4),
+                    ['<C-Space>'] = cmp.mapping.complete(),
+                    ['<C-e>'] = cmp.mapping.abort(),
+                }),
+                sources = cmp.config.sources({
+                    { name = 'nvim_lsp' },
+                    { name = 'nvim_lsp_signature_help' },
+                }, {
+                    { name = 'buffer' },
+                })
             })
         end
     },
-    "hrsh7th/cmp-nvim-lsp",
-    "hrsh7th/cmp-buffer",
---    "hrsh7th/cmp-path",
---    "hrsh7th/cmp-cmdline",
---    "hrsh7th/vim-vsnip",
---    "hrsh7th/cmp-vsnip",
---    "hrsh7th/vim-vsnip-integ",
-    "hrsh7th/cmp-nvim-lsp-signature-help",
-    {"nvim-treesitter/nvim-treesitter", event = 'VeryLazy'},
---    "wellle/context.vim",
+
+    {"hrsh7th/cmp-nvim-lsp", event = 'VeryLazy'},
+    
+    {"hrsh7th/cmp-buffer", event = 'VeryLazy'},
+    -- "hrsh7th/cmp-path",
+    -- "hrsh7th/cmp-cmdline",
+    -- "hrsh7th/vim-vsnip",
+    -- "hrsh7th/cmp-vsnip",
+    -- "hrsh7th/vim-vsnip-integ",
+    {"hrsh7th/cmp-nvim-lsp-signature-help", event = 'VeryLazy'},
+
+    -- Load immediately so the colors don't flash
+    {"nvim-treesitter/nvim-treesitter", event = 'VimEnter',
+        config = function()
+            require('nvim-treesitter.configs').setup({
+                highlight = {
+                    enable = true,
+                    additional_vim_regex_highlighting = false,
+                },
+                indent = {
+                    enable = true
+                }
+            })
+        end
+    },
+
+    -- Load immediately or else it breaks
+    -- "wellle/context.vim",
     "Hippo0o/context.vim",  -- fork that fixes issues with the original
+
     "jiangmiao/auto-pairs",
-    "ojroques/vim-oscyank",
-    "f-person/git-blame.nvim",
-    {"ThePrimeagen/harpoon", branch = "harpoon2"},
+    
+    {"ojroques/vim-oscyank", event = 'VeryLazy'},
+    
+    {"f-person/git-blame.nvim", event = 'VeryLazy',
+        config = function()
+            vim.api.nvim_create_user_command('BlameOn', 'GitBlameEnable', {})
+            vim.api.nvim_create_user_command('BlameOff', 'GitBlameDisable', {})
+            vim.api.nvim_create_user_command('Blame', 'GitBlameToggle', {})
+            require('gitblame').setup({
+                enabled = false,
+            })
+            vim.g.gitblame_display_virtual_text = 1
+            vim.g.gitblame_date_format = "%r"
+            vim.g.gitblame_message_template = "    <author>, <date> • [<sha>] <summary>"
+        end
+    },
+    
+    {"ThePrimeagen/harpoon", branch = "harpoon2", event = 'VeryLazy',
+        config = function()
+            local harpoon = require("harpoon")
+            harpoon:setup()
+            vim.keymap.set("n", "<space>a", function() harpoon:list():append() end)
+            vim.keymap.set("n", "<space>d", function() harpoon:list():remove() end)
+            vim.keymap.set("n", "<space>h", function() harpoon.ui:toggle_quick_menu(harpoon:list()) end)
+        end
+    },
 })
 
-vim.g.everforest_background = "hard"
-vim.g.everforest_better_performance = 1
-vim.g.everforest_disable_italic_comment = 1
-vim.g.everforest_enable_italic = 0
-vim.g.everforest_transparent_background = 2
-vim.g.everforest_ui_contrast = "low"
+--vim.g.everforest_background = "hard"
+--vim.g.everforest_better_performance = 1
+--vim.g.everforest_disable_italic_comment = 1
+--vim.g.everforest_enable_italic = 0
+--vim.g.everforest_transparent_background = 2
+--vim.g.everforest_ui_contrast = "low"
 --vim.cmd.colorscheme "everforest"
 
 vim.opt.encoding = "utf-8"
@@ -148,7 +237,6 @@ vim.opt.showmode = false  -- lualine does this now
 --set vb t_vb=  --how to do this in lua?
 
 
-
 function nmap(shortcut, command)
     vim.api.nvim_set_keymap('n', shortcut, command, { noremap = true, silent = false })
 end
@@ -175,31 +263,21 @@ nmap("<space>p", "<cmd>bnext<CR>")
 tmap("<esc>", "<C-\\><C-N>")
 nmap("<C-x>", "<cmd>!chmod +x %")
 
-vim.api.nvim_create_user_command('BlameOn', 'GitBlameEnable', {})
-vim.api.nvim_create_user_command('BlameOff', 'GitBlameDisable', {})
-vim.api.nvim_create_user_command('Blame', 'GitBlameToggle', {})
 
-
-NEOVIM_VENV = os.getenv("NEOVIM_VENV")
-
-
-vim.g.python_indent = {}
-vim.g.python_indent.closed_paren_align_last_line = false
-vim.g.python_indent.open_paren = "shiftwidth()"
-vim.g.python_indent.continue = "shiftwidth()"
-vim.g.python3_host_prog = NEOVIM_VENV .. "/bin/python3"
 vim.g.context_enabled = 1
 vim.g.context_add_mappings = 1
 vim.g.context_add_autocmds = 1
 vim.g.context_max_height = 21
 vim.g.context_max_per_indent = 11
 vim.g.context_skip_regex = "^\\s*($|#|//|/\\*)"
-require('gitblame').setup({
-    enabled = false,
-})
-vim.g.gitblame_display_virtual_text = 1
-vim.g.gitblame_date_format = "%r"
-vim.g.gitblame_message_template = "    <author>, <date> • [<sha>] <summary>"
+
+
+NEOVIM_VENV = os.getenv("NEOVIM_VENV")
+vim.g.python_indent = {}
+vim.g.python_indent.closed_paren_align_last_line = false
+vim.g.python_indent.open_paren = "shiftwidth()"
+vim.g.python_indent.continue = "shiftwidth()"
+vim.g.python3_host_prog = NEOVIM_VENV .. "/bin/python3"
 
 
 require("rose-pine").setup({
@@ -216,32 +294,6 @@ require("rose-pine").setup({
 })
 vim.cmd.colorscheme 'rose-pine'
 
-local harpoon = require("harpoon")
-harpoon:setup()
-vim.keymap.set("n", "<space>a", function() harpoon:list():append() end)
-vim.keymap.set("n", "<space>d", function() harpoon:list():remove() end)
-vim.keymap.set("n", "<space>h", function() harpoon.ui:toggle_quick_menu(harpoon:list()) end)
-
-
-local neovim_venv = os.getenv("NEOVIM_VENV") or os.getenv("HOME") .."/venvs/neovim_venv"
-
--- Linter config
-require('lspconfig').pylsp.setup({
-    cmd = { neovim_venv .. "/bin/pylsp" },
-    settings = {
-        pylsp = {
-            plugins = {
-                -- pylint = { enabled = true, executable = "pylint" },
-                pylsp_mypy = { enabled = true },
-                jedi_completion = { fuzzy = true }
-            }
-        }
-    },
-    flags = {
-        debounce_text_changes = 200,
-    },
-    capabilities = capabilities,
-})
 
 -- Linter config
 local opts = { noremap=true, silent=true }
@@ -293,6 +345,25 @@ require('lualine').setup({
 })
 
 
+-- Linter config
+require('lspconfig').pylsp.setup({
+    cmd = { neovim_venv .. "/bin/pylsp" },
+    settings = {
+        pylsp = {
+            plugins = {
+                -- pylint = { enabled = true, executable = "pylint" },
+                pylsp_mypy = { enabled = true },
+                jedi_completion = { fuzzy = true }
+            }
+        }
+    },
+    flags = {
+        debounce_text_changes = 200,
+    },
+    capabilities = capabilities,
+})
+
+
 require('lspconfig').ruff_lsp.setup({
     cmd = { neovim_venv .. "/bin/ruff-lsp" },
     on_attach = on_attach,
@@ -300,17 +371,6 @@ require('lspconfig').ruff_lsp.setup({
         settings = {
             args = {},
         }
-    }
-})
-
-
-require('nvim-treesitter.configs').setup({
-    highlight = {
-        enable = true,
-        additional_vim_regex_highlighting = false,
-    },
-    indent = {
-        enable = true
     }
 })
 
@@ -330,8 +390,10 @@ vim.api.nvim_create_autocmd({"CursorHold"}, {
     end
 })
 
+
 -- Show the floating window faster when trigger condition is met
 vim.o.updatetime = 1000
+
 
 -- Linter: Configure display of linting messages in-line
 vim.diagnostic.config({
@@ -340,43 +402,5 @@ vim.diagnostic.config({
     underline = true,
     update_in_insert = false,
     severity_sort = true,
-})
-
--- nvim-tree: Disable netrw, show icons, sync tab presence
-vim.g.loaded_netrw = 1
-vim.g.loaded_netrwPlugin = 1
-
--- nvim-tree: Bind 't' to open file in new tab
-function _G.open_in_tab()
-    local lib = require'nvim-tree.lib'
-    local node = lib.get_node_at_cursor()
-    if node then
-        vim.cmd('wincmd p')
-        vim.cmd('tabnew ' .. node.absolute_path)
-    end
-end
-
-vim.api.nvim_set_keymap('n', 't', ':lua open_in_tab()<CR>', {noremap = true, silent = true})
-
--- Telescope: Let 't' open file in new tab, not just <C-t>
-require('telescope').setup({
-    pickers = {
-        find_files = {
-            mappings = {
-                n = {
-                    -- Do "Esc" to exit insert mode in Telescope, then "t"
-                    ["t"] = "select_tab",
-                }
-            }
-        },
-        live_grep = {
-            mappings = {
-                n = {
-                    -- Do "Esc" to exit insert mode in Telescope, then "t"
-                    ["t"] = "select_tab",
-                }
-            }
-        }
-    }
 })
 
