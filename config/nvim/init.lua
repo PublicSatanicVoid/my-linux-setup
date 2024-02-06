@@ -14,7 +14,8 @@ vim.opt.rtp:prepend(lazypath)
 require("lazy").setup({
     "sainnhe/everforest",
 --    "EdenEast/nightfox.nvim",
-    "rose-pine/neovim",
+--    "rose-pine/neovim",
+    "PublicSatanicVoid/rose-pine.nvim",  -- fork with softer whites
     "xiyaowong/transparent.nvim",
     "nvim-lua/plenary.nvim",
     "nvim-telescope/telescope.nvim",
@@ -45,7 +46,7 @@ vim.g.everforest_disable_italic_comment = 1
 vim.g.everforest_enable_italic = 0
 vim.g.everforest_transparent_background = 2
 vim.g.everforest_ui_contrast = "low"
-vim.cmd.colorscheme "everforest"
+--vim.cmd.colorscheme "everforest"
 
 vim.opt.encoding = "utf-8"
 vim.opt.cursorline = false
@@ -136,49 +137,49 @@ vim.g.gitblame_date_format = "%r"
 vim.g.gitblame_message_template = "    <author>, <date> • [<sha>] <summary>"
 
 
---require("rose-pine").setup({
---	variant = "auto",
---	dark_variant = "main",
---	enable = {
---		terminal = true,
---	},
---	styles = {
---		bold = false,
---		italic = false,
---		transparency = true,
---	},
---    groups = {
---        border = "muted",
---        link = "iris",
---        panel = "surface",
---
---        error = "love",
---        hint = "iris",
---        info = "foam",
---        note = "pine",
---        todo = "rose",
---        warn = "gold",
---
---        git_add = "foam",
---        git_change = "rose",
---        git_delete = "love",
---        git_dirty = "rose",
---        git_ignore = "muted",
---        git_merge = "iris",
---        git_rename = "pine",
---        git_stage = "iris",
---        git_text = "rose",
---        git_untracked = "subtle",
---
---        h1 = "iris",
---        h2 = "foam",
---        h3 = "rose",
---        h4 = "gold",
---        h5 = "pine",
---        h6 = "foam",
---    },
---})
+require("rose-pine").setup({
+	variant = "auto",
+	dark_variant = "main",
+	enable = {
+		terminal = true,
+	},
+	styles = {
+		bold = false,
+		italic = false,
+		transparency = true,
+	},
+    groups = {
+        border = "muted",
+        link = "iris",
+        panel = "surface",
 
+        error = "love",
+        hint = "iris",
+        info = "foam",
+        note = "pine",
+        todo = "rose",
+        warn = "gold",
+
+        git_add = "foam",
+        git_change = "rose",
+        git_delete = "love",
+        git_dirty = "rose",
+        git_ignore = "muted",
+        git_merge = "iris",
+        git_rename = "pine",
+        git_stage = "iris",
+        git_text = "rose",
+        git_untracked = "subtle",
+
+        h1 = "iris",
+        h2 = "foam",
+        h3 = "rose",
+        h4 = "gold",
+        h5 = "pine",
+        h6 = "foam",
+    },
+})
+vim.cmd.colorscheme 'rose-pine'
 
 local harpoon = require("harpoon")
 harpoon:setup()

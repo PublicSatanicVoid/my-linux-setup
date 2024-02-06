@@ -192,6 +192,12 @@ plugins {
     session-manager { path "session-manager"; }
 }
 
+ui {
+    pane_frames {
+        hide_session_name true
+    }
+}
+
 // Choose what to do when zellij receives SIGTERM, SIGINT, SIGQUIT or SIGHUP
 // eg. when terminal window with an active zellij session is closed
 // Options:
@@ -302,8 +308,9 @@ themes {
 
 	rose-pine {
 		bg "#403d52"
-		fg "#e0def4"
-		red "#eb6f92"
+		//fg "#e0def4"
+		fg "#c7c5d9"
+        red "#eb6f92"
 		green "#31748f"
 		blue "#9ccfd8"
 		yellow "#f6c177"
@@ -311,7 +318,8 @@ themes {
 		orange "#fe640b"
 		cyan "#ebbcba"
 		black "#26233a"
-		white "#e0def4"
+		//white "#e0def4"
+        white "#c7c5d9"
 	}
 }
 
@@ -319,8 +327,8 @@ themes {
 // Default: default
 //
 // theme "default"
-theme "everforest-dark-modified"
-//theme "rose-pine"
+//theme "everforest-dark-modified"
+theme "rose-pine"
 
 // The name of the default layout to load on startup
 // Default: "default"
