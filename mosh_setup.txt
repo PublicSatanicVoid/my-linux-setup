@@ -1,0 +1,7 @@
+The hacky way to get around UDP shit:
+=====================================
+1. Install mosh normally
+2. Follow https://github.com/domo141/ioiomxtx/blob/main/README.md#tldr
+    except:
+    $ mxtx-apu.sh sshmxtx 10.0.2.5 10.0.2.5 PATH=$HOME/bin:/usr/local/bin:/usr/bin:/bin
+
