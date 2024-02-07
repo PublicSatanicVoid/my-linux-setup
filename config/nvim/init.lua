@@ -18,8 +18,6 @@ require("lazy").setup({
     -- "sainnhe/everforest",
     -- "EdenEast/nightfox.nvim",
 
-    "junegunn/goyo.vim",
-
     -- "rose-pine/neovim",
     "PublicSatanicVoid/rose-pine.nvim",  -- fork with softer whites
     
