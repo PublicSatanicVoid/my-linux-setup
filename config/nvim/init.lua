@@ -1,4 +1,4 @@
-local neovim_venv = os.getenv("NEOVIM_VENV") or os.getenv("HOME") .."/venvs/neovim_venv"
+local neovim_venv = os.getenv("NEOVIM_VENV") or os.getenv("HOME") .. "/venvs/neovim_venv"
 
 local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
 if not vim.loop.fs_stat(lazypath) then
@@ -14,14 +14,49 @@ end
 vim.opt.rtp:prepend(lazypath)
 
 require("lazy").setup({
-    "nvim-lualine/lualine.nvim",
-    -- "sainnhe/everforest",
-    -- "EdenEast/nightfox.nvim",
+    {"nvim-lualine/lualine.nvim", event = 'VeryLazy',
+        config = function()
+            require('lualine').setup({
+                options = {
+                    icons_enabled = false,
+                    theme = 'auto',
+                    refresh = {
+                        statusline = 5000,
+                    }
+                },
+                sections = {
+                    lualine_a = {'mode'},
+                    lualine_b = {'branch', 'diagnostics'},
+                    lualine_c = {'filename'},
+                    lualine_y = {'progress'},
+                    lualine_z = {'location'}
+                },
+            })
+	    end
+    },
 
     -- "rose-pine/neovim",
-    "PublicSatanicVoid/rose-pine.nvim",  -- fork with softer whites
+    {"PublicSatanicVoid/rose-pine.nvim", 
+        init = function()
+            vim.cmd.colorscheme 'rose-pine'
+        end,
+        config = function()
+            require("rose-pine").setup({
+                variant = "auto",
+                dark_variant = "main",
+                enable = {
+                    terminal = true,
+                },
+                styles = {
+                    bold = false,
+                    italic = false,
+                    transparency = true,
+                },
+            })
+        end
+    },  -- fork with softer whites
     
-    "nvim-lua/plenary.nvim",
+    {"nvim-lua/plenary.nvim"},
     
     {"nvim-telescope/telescope.nvim", event = 'VeryLazy',
         config = function()
@@ -46,7 +81,6 @@ require("lazy").setup({
                     }
                 }
             })
-
         end
     },
     
@@ -100,7 +134,93 @@ require("lazy").setup({
     },
 
     -- Load immediately or else LSP breaks
-    {"neovim/nvim-lspconfig"},
+    {"neovim/nvim-lspconfig", event = 'BufRead *',
+        config = function()
+            local opts = { noremap=true, silent=true }
+            vim.keymap.set('n', '<space>e', vim.diagnostic.open_float, opts)
+            vim.keymap.set('n', '[d', vim.diagnostic.goto_prev, opts)
+            vim.keymap.set('n', ']d', vim.diagnostic.goto_next, opts)
+            vim.keymap.set('n', '<space>q', vim.diagnostic.setloclist, opts)
+
+            local on_attach = function(client, bufnr)
+                -- Enable completion triggered by <c-x><c-o>
+                vim.api.nvim_buf_set_option(bufnr, 'omnifunc', 'v:lua.vim.lsp.omnifunc')
+
+                -- Mappings.
+                -- See `:help vim.lsp.*` for documentation on any of the below functions
+                local bufopts = { noremap=true, silent=true, buffer=bufnr }
+                --vim.keymap.set('n', 'gD', vim.lsp.buf.declaration, bufopts)
+                vim.keymap.set('n', 'gd', vim.lsp.buf.definition, bufopts)
+                vim.keymap.set('n', 'K', vim.lsp.buf.hover, bufopts)
+                --vim.keymap.set('n', 'gi', vim.lsp.buf.implementation, bufopts)
+                vim.keymap.set('n', '<C-k>', vim.lsp.buf.signature_help, bufopts)
+                vim.keymap.set('n', '<space>wa', vim.lsp.buf.add_workspace_folder, bufopts)
+                vim.keymap.set('n', '<space>wr', vim.lsp.buf.remove_workspace_folder, bufopts)
+                vim.keymap.set('n', '<space>wl', function()
+                print(vim.inspect(vim.lsp.buf.list_workspace_folders()))
+                end, bufopts)
+                --vim.keymap.set('n', '<space>D', vim.lsp.buf.type_definition, bufopts)
+                vim.keymap.set('n', '<space>rn', vim.lsp.buf.rename, bufopts)
+                vim.keymap.set('n', '<space>ca', vim.lsp.buf.code_action, bufopts)
+                vim.keymap.set('n', 'gr', vim.lsp.buf.references, bufopts)
+                vim.keymap.set('n', '<space>f', function() vim.lsp.buf.format { async = true } end, bufopts)
+            end
+
+            -- Linter: Show floating window with linter error on current line
+            vim.api.nvim_create_autocmd({"CursorHold"}, {
+                callback = function()
+                    local opts = {
+                        focusable = false,
+                        close_events = {"BufLeave", "CursorMoved", "InsertEnter", "FocusLost"},
+                        border = 'rounded',
+                        source = 'always',
+                        prefix = ' ',
+                        scope = 'cursor',
+                    }
+                    vim.diagnostic.open_float(nil, opts)
+                end
+            })
+
+            -- Show the floating window faster when trigger condition is met
+            vim.o.updatetime = 1000
+
+            -- Linter: Configure display of linting messages in-line
+            vim.diagnostic.config({
+                virtual_text = true,
+                signs = true,
+                underline = true,
+                update_in_insert = false,
+                severity_sort = true,
+            })
+
+            require('lspconfig').pylsp.setup({
+                cmd = { neovim_venv .. "/bin/pylsp" },
+                settings = {
+                    pylsp = {
+                        plugins = {
+                            -- pylint = { enabled = true, executable = "pylint" },
+                            pylsp_mypy = { enabled = true },
+                            jedi_completion = { fuzzy = true }
+                        }
+                    }
+                },
+                flags = {
+                    debounce_text_changes = 200,
+                },
+                --capabilities = capabilities,
+            })
+
+            require('lspconfig').ruff_lsp.setup({
+                cmd = { neovim_venv .. "/bin/ruff-lsp" },
+                on_attach = on_attach,
+                init_options = {
+                    settings = {
+                        args = {},
+                    }
+                }
+            })
+        end
+    },
 
     {"hrsh7th/nvim-cmp", event = 'VeryLazy',
         config = function()
@@ -167,9 +287,9 @@ require("lazy").setup({
 
     -- Load immediately or else it breaks
     -- "wellle/context.vim",
-    "Hippo0o/context.vim",  -- fork that fixes issues with the original
+    {"Hippo0o/context.vim"},  -- fork that fixes issues with the original
 
-    "jiangmiao/auto-pairs",
+    {"jiangmiao/auto-pairs"},
     
     {"ojroques/vim-oscyank", event = 'VeryLazy'},
     
@@ -198,14 +318,6 @@ require("lazy").setup({
     },
 })
 
---vim.g.everforest_background = "hard"
---vim.g.everforest_better_performance = 1
---vim.g.everforest_disable_italic_comment = 1
---vim.g.everforest_enable_italic = 0
---vim.g.everforest_transparent_background = 2
---vim.g.everforest_ui_contrast = "low"
---vim.cmd.colorscheme "everforest"
-
 vim.opt.encoding = "utf-8"
 vim.opt.cursorline = false
 vim.opt.compatible = false
@@ -216,11 +328,11 @@ vim.opt.tabstop = 4
 vim.opt.softtabstop = 4
 vim.opt.expandtab = true
 vim.opt.shiftwidth = 4
-vim.cmd [[
-    filetype plugin on
-    filetype plugin indent on
-]]
-vim.opt.autoindent = true --Not sure about this one, TODO
+--vim.cmd [[
+--    filetype plugin on
+--    filetype plugin indent on
+--]]
+--vim.opt.autoindent = true --Not sure about this one, TODO
 vim.opt.smartindent = true
 vim.opt.number = true
 vim.opt.relativenumber = true
@@ -235,7 +347,6 @@ vim.opt.undofile = true
 vim.opt.scrolloff = 10
 vim.opt.showmode = false  -- lualine does this now
 --set vb t_vb=  --how to do this in lua?
-
 
 function nmap(shortcut, command)
     vim.api.nvim_set_keymap('n', shortcut, command, { noremap = true, silent = false })
@@ -263,7 +374,6 @@ nmap("<space>p", "<cmd>bnext<CR>")
 tmap("<esc>", "<C-\\><C-N>")
 nmap("<C-x>", "<cmd>!chmod +x %<CR>")
 
-
 vim.g.context_enabled = 1
 vim.g.context_add_mappings = 1
 vim.g.context_add_autocmds = 1
@@ -271,14 +381,11 @@ vim.g.context_max_height = 21
 vim.g.context_max_per_indent = 11
 vim.g.context_skip_regex = "^\\s*($|#|//|/\\*)"
 
-
-NEOVIM_VENV = os.getenv("NEOVIM_VENV")
 vim.g.python_indent = {}
 vim.g.python_indent.closed_paren_align_last_line = false
 vim.g.python_indent.open_paren = "shiftwidth()"
 vim.g.python_indent.continue = "shiftwidth()"
-vim.g.python3_host_prog = NEOVIM_VENV .. "/bin/python3"
-
+vim.g.python3_host_prog = neovim_venv .. "/bin/python3"
 
 vim.cmd [[
 function! CenterContent()
@@ -317,129 +424,4 @@ endfunction
 command! UnFocus call UnCenterContent()
 ]]
 
-
-
-require("rose-pine").setup({
-	variant = "auto",
-	dark_variant = "main",
-	enable = {
-		terminal = true,
-	},
-	styles = {
-		bold = false,
-		italic = false,
-		transparency = true,
-	},
-})
-vim.cmd.colorscheme 'rose-pine'
-
-
--- Linter config
-local opts = { noremap=true, silent=true }
-vim.keymap.set('n', '<space>e', vim.diagnostic.open_float, opts)
-vim.keymap.set('n', '[d', vim.diagnostic.goto_prev, opts)
-vim.keymap.set('n', ']d', vim.diagnostic.goto_next, opts)
-vim.keymap.set('n', '<space>q', vim.diagnostic.setloclist, opts)
-
-local on_attach = function(client, bufnr)
-    -- Enable completion triggered by <c-x><c-o>
-    vim.api.nvim_buf_set_option(bufnr, 'omnifunc', 'v:lua.vim.lsp.omnifunc')
-
-    -- Mappings.
-    -- See `:help vim.lsp.*` for documentation on any of the below functions
-    local bufopts = { noremap=true, silent=true, buffer=bufnr }
-    --vim.keymap.set('n', 'gD', vim.lsp.buf.declaration, bufopts)
-    vim.keymap.set('n', 'gd', vim.lsp.buf.definition, bufopts)
-    vim.keymap.set('n', 'K', vim.lsp.buf.hover, bufopts)
-    --vim.keymap.set('n', 'gi', vim.lsp.buf.implementation, bufopts)
-    vim.keymap.set('n', '<C-k>', vim.lsp.buf.signature_help, bufopts)
-    vim.keymap.set('n', '<space>wa', vim.lsp.buf.add_workspace_folder, bufopts)
-    vim.keymap.set('n', '<space>wr', vim.lsp.buf.remove_workspace_folder, bufopts)
-    vim.keymap.set('n', '<space>wl', function()
-    print(vim.inspect(vim.lsp.buf.list_workspace_folders()))
-    end, bufopts)
-    --vim.keymap.set('n', '<space>D', vim.lsp.buf.type_definition, bufopts)
-    vim.keymap.set('n', '<space>rn', vim.lsp.buf.rename, bufopts)
-    vim.keymap.set('n', '<space>ca', vim.lsp.buf.code_action, bufopts)
-    vim.keymap.set('n', 'gr', vim.lsp.buf.references, bufopts)
-    vim.keymap.set('n', '<space>f', function() vim.lsp.buf.format { async = true } end, bufopts)
-end
-
-
-require('lualine').setup({
-    options = {
-        icons_enabled = false,
-        theme = 'auto',
-        refresh = {
-            statusline = 5000,
-        }
-    },
-    sections = {
-        lualine_a = {'mode'},
-        lualine_b = {'branch', 'diagnostics'},
-        lualine_c = {'filename'},
-        lualine_y = {'progress'},
-        lualine_z = {'location'}
-    },
-})
-
-
--- Linter config
-require('lspconfig').pylsp.setup({
-    cmd = { neovim_venv .. "/bin/pylsp" },
-    settings = {
-        pylsp = {
-            plugins = {
-                -- pylint = { enabled = true, executable = "pylint" },
-                pylsp_mypy = { enabled = true },
-                jedi_completion = { fuzzy = true }
-            }
-        }
-    },
-    flags = {
-        debounce_text_changes = 200,
-    },
-    capabilities = capabilities,
-})
-
-
-require('lspconfig').ruff_lsp.setup({
-    cmd = { neovim_venv .. "/bin/ruff-lsp" },
-    on_attach = on_attach,
-    init_options = {
-        settings = {
-            args = {},
-        }
-    }
-})
-
-
--- Linter: Show floating window with linter error on current line
-vim.api.nvim_create_autocmd({"CursorHold"}, {
-    callback = function()
-        local opts = {
-            focusable = false,
-            close_events = {"BufLeave", "CursorMoved", "InsertEnter", "FocusLost"},
-            border = 'rounded',
-            source = 'always',
-            prefix = ' ',
-            scope = 'cursor',
-        }
-        vim.diagnostic.open_float(nil, opts)
-    end
-})
-
-
--- Show the floating window faster when trigger condition is met
-vim.o.updatetime = 1000
-
-
--- Linter: Configure display of linting messages in-line
-vim.diagnostic.config({
-    virtual_text = true,
-    signs = true,
-    underline = true,
-    update_in_insert = false,
-    severity_sort = true,
-})
 

@@ -3,6 +3,11 @@
 
 REPO_ROOT="$(dirname "$(readlink -f "$0")")"
 
+PYTHON3_EXE="python3"
+
+"$PYTHON3_EXE" -m venv venv
+./venv/bin/pip install --upgrade pip
+./venv/bin/pip install pynvim 'python-lsp-server[all]' ruff-lsp ruff
 
 # TODO download and install neovim
 
