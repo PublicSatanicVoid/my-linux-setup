@@ -1,3 +1,5 @@
+STANDARD
+========
 :vsp <file>             open file in vertical split
 C-w <hjkl>              navigate windows
 :b <pat>                go to buffer matching <pat>
@@ -6,6 +8,11 @@ va<brace>               visual select from opening <brace> to closing <brace>
                             including <brace>s
 vi<brace>               visual select from opening <brace> to closing <brace>
                             NOT including <brace>s
+
+zz                      center current line on screen
+zt                      scroll so current line is (near) top of screen
+
+'"                      jump to last line when file was last opened
 
 u                       undo
 C-r                     redo

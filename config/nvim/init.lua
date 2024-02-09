@@ -289,7 +289,8 @@ require("lazy").setup({
     -- "wellle/context.vim",
     {"Hippo0o/context.vim"},  -- fork that fixes issues with the original
 
-    {"jiangmiao/auto-pairs"},
+    -- Nice to have sometimes but too annoying when it's not
+    -- {"jiangmiao/auto-pairs"},
     
     {"ojroques/vim-oscyank", event = 'VeryLazy'},
     
