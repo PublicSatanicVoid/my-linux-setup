@@ -1,0 +1,5 @@
+Use Tango Dark color scheme, and modify
+
+Foreground = #D0D0D0
+#Background = #1C1C1C
+Background = (14, 10, 0)

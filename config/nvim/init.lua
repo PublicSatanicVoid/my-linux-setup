@@ -317,6 +317,8 @@ require("lazy").setup({
             vim.keymap.set("n", "<space>h", function() harpoon.ui:toggle_quick_menu(harpoon:list()) end)
         end
     },
+
+    {"mbbill/undotree", event = 'VeryLazy'}
 })
 
 vim.opt.encoding = "utf-8"
@@ -372,6 +374,7 @@ nmap("<space>y", "<Plug>OSCYankVisual")
 nmap("<space>b", "<cmd>BufstopFast<CR>")
 nmap("<space>n", "<cmd>bprev<CR>")
 nmap("<space>p", "<cmd>bnext<CR>")
+nmap("<space>u", "<cmd>UndotreeToggle<CR>")
 tmap("<esc>", "<C-\\><C-N>")
 nmap("<C-x>", "<cmd>!chmod +x %<CR>")
 
