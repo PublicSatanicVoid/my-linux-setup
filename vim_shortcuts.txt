@@ -21,9 +21,15 @@ A                       insert at end of line
 
 gq}                     reflow paragraph
 
+g;                      go back to last cursor pos
 
 CUSTOM
 ======
+
+<C-b>                   enter visual BLOCK mode
+                            - select multiple lines, do thing, Esc Esc, 
+                              it is applied to all selected lines
+
 <space>b                select buffer in current window
 <space>n                next buffer
 <space>p                prev buffer

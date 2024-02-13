@@ -134,7 +134,7 @@ require("lazy").setup({
     },
 
     -- Load immediately or else LSP breaks
-    {"neovim/nvim-lspconfig", event = 'BufRead *',
+    {"neovim/nvim-lspconfig", --event = 'VimEnter', --event = 'BufRead *',
         config = function()
             local opts = { noremap=true, silent=true }
             vim.keymap.set('n', '<space>e', vim.diagnostic.open_float, opts)
@@ -377,6 +377,7 @@ nmap("<space>p", "<cmd>bnext<CR>")
 nmap("<space>u", "<cmd>UndotreeToggle<CR>")
 tmap("<esc>", "<C-\\><C-N>")
 nmap("<C-x>", "<cmd>!chmod +x %<CR>")
+nmap("<C-b>", "<C-v>")
 
 vim.g.context_enabled = 1
 vim.g.context_add_mappings = 1
