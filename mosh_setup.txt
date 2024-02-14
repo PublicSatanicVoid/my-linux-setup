@@ -1,7 +1,13 @@
-The hacky way to get around UDP shit:
-=====================================
-1. Install mosh normally
-2. Follow https://github.com/domo141/ioiomxtx/blob/main/README.md#tldr
+The hacky way to get around UDP shit and broken CENT7 images:
+=============================================================
+(For server side)
+1. Build portable mosh dist on a standard CENT7 host with root access (for extra pkgs)
+    ./tools/build_mosh_cent7.sh
+2. Copy the resulting mosh-dist.tar.xz to the broken/unprivileged CENT7 host
+3. Unzip, add ./mosh-dist/usr/bin to $HOME/bin
+
+(For client side)
+4. Follow https://github.com/domo141/ioiomxtx/blob/main/README.md#tldr
     except:
     $ mxtx-apu.sh sshmxtx 10.0.2.5 10.0.2.5 PATH=$HOME/bin:/usr/local/bin:/usr/bin:/bin
-
+    these will also have instructions for some things on server side
