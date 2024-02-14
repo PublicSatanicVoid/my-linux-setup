@@ -87,6 +87,10 @@ else
         --executable="${BUILD_BASE}/mosh-1.4.0/target/bin/mosh-client"
     check_code $? linuxdeploy
 
+
+    cp -a "${BUILD_BASE}/mosh-1.4.0/target/bin/mosh" "${DIST_FILENAME}/usr/bin/mosh"
+    check_code $? cp
+
     chmod -R a-w "${DIST_FILENAME}"
 
     tar -cJf "${DIST_FILENAME}.tar.xz" "${DIST_FILENAME}"
