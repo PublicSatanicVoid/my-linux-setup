@@ -34,6 +34,8 @@ f/F<char>               forward/backward to next occurrence of <char> (on the ch
 t/T<char>               forward/backward to next occurrence of <char> (prev character)
 ;/,                     forward/backward to next match of t/T/f/F search
 
+S-p                     paste over selection without copying the selection
+
 
 CUSTOM
 ======
