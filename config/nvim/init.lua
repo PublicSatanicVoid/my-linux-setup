@@ -274,6 +274,8 @@ require("lazy").setup({
     {"nvim-treesitter/nvim-treesitter", event = 'VimEnter',
         config = function()
             require('nvim-treesitter.configs').setup({
+                ensure_installed = { "c", "lua", "vim", "bash", "python", "rust" },
+                auto_install = true,
                 highlight = {
                     enable = true,
                     additional_vim_regex_highlighting = false,
@@ -321,7 +323,7 @@ require("lazy").setup({
     {"mbbill/undotree", event = 'VeryLazy'}
 })
 
-vim.g.mapleader = "<space>"
+vim.g.mapleader = " "
 
 local opt = vim.opt
 
@@ -339,8 +341,12 @@ opt.shiftwidth = 4
 --    filetype plugin on
 --    filetype plugin indent on
 --]]
---opt.autoindent = true --Not sure about this one, TODO
+--
+opt.autoindent = true
 opt.smartindent = true
+vim.cmd [[
+    autocmd FileType python setlocal shiftwidth=4 tabstop=4 expandtab
+]]
 opt.number = true
 opt.relativenumber = true
 --opt.wildmode = {"longest", "list"}  --is that how you do this?
@@ -375,7 +381,7 @@ end
 nmap("<C-d>", "<C-d>zz")
 nmap("<C-u>", "<C-u>zz")
 nmap("<C-f>", "<cmd>Telescope find_files<CR>")
-nmap("<S-f>", "<cmd>Telescope live_grep<CR>")
+nmap("<C-g>", "<cmd>Telescope live_grep<CR>")
 nmap("<C-l>", "<cmd>NvimTreeToggle<CR>")
 nmap("/", ":%s###gn<Left><Left><Left><Left>")
 --nmap(";", ":")

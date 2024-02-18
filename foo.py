@@ -8,6 +8,13 @@ def foobar(x, y):
     return None
 
 
+try:
+    x = 5
+    y = 3
+    z = 12
+except:
+    pass
+
 x = 1
 y = 2
 z = 3
