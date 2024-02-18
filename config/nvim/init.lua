@@ -32,7 +32,7 @@ require("lazy").setup({
                     lualine_z = {'location'}
                 },
             })
-	    end
+        end
     },
 
     -- "rose-pine/neovim",
@@ -58,31 +58,7 @@ require("lazy").setup({
     
     {"nvim-lua/plenary.nvim"},
     
-    {"nvim-telescope/telescope.nvim", event = 'VeryLazy',
-        config = function()
-            -- Telescope: Let 't' open file in new tab, not just <C-t>
-            require('telescope').setup({
-                pickers = {
-                    find_files = {
-                        mappings = {
-                            n = {
-                                -- Do "Esc" to exit insert mode in Telescope, then "t"
-                                ["t"] = "select_tab",
-                            }
-                        }
-                    },
-                    live_grep = {
-                        mappings = {
-                            n = {
-                                -- Do "Esc" to exit insert mode in Telescope, then "t"
-                                ["t"] = "select_tab",
-                            }
-                        }
-                    }
-                }
-            })
-        end
-    },
+    {"nvim-telescope/telescope.nvim", event = 'VeryLazy'},
     
     {"mihaifm/bufstop", event = 'VeryLazy'},
     
@@ -92,49 +68,12 @@ require("lazy").setup({
             vim.g.loaded_netrw = 1
             vim.g.loaded_netrwPlugin = 1
 
-            -- nvim-tree: Bind 't' to open file in new tab
-            function _G.open_in_tab()
-                local lib = require'nvim-tree.lib'
-                local node = lib.get_node_at_cursor()
-                if node then
-                    vim.cmd('wincmd p')
-                    vim.cmd('tabnew ' .. node.absolute_path)
-                end
-            end
-
-            vim.api.nvim_set_keymap('n', 't', ':lua open_in_tab()<CR>', {noremap = true, silent = true})
-
-            require('nvim-tree').setup({
-                renderer = {
-                    icons = {
-                        show = {
-                            file = true,
-                            folder = true,
-                            folder_arrow = true,
-                            git = true,
-                            modified = true,
-                            diagnostics = false,
-                            bookmarks = false,
-                        }
-                    }
-                },
-                tab = {
-                    sync = {
-                        open = true,
-                        close = true
-                    }
-                },
-                actions = {
-                    open_file = {
-                        window_picker = { enable = false },
-                    }
-                }
-            })
+            require('nvim-tree').setup()
         end
     },
 
     -- Load immediately or else LSP breaks
-    {"neovim/nvim-lspconfig", --event = 'VimEnter', --event = 'BufRead *',
+    {"neovim/nvim-lspconfig",
         config = function()
             local opts = { noremap=true, silent=true }
             vim.keymap.set('n', '<leader>e', vim.diagnostic.open_float, opts)
@@ -157,13 +96,15 @@ require("lazy").setup({
                 vim.keymap.set('n', '<leader>wa', vim.lsp.buf.add_workspace_folder, bufopts)
                 vim.keymap.set('n', '<leader>wr', vim.lsp.buf.remove_workspace_folder, bufopts)
                 vim.keymap.set('n', '<leader>wl', function()
-                print(vim.inspect(vim.lsp.buf.list_workspace_folders()))
+                    print(vim.inspect(vim.lsp.buf.list_workspace_folders()))
                 end, bufopts)
                 --vim.keymap.set('n', '<leader>D', vim.lsp.buf.type_definition, bufopts)
                 vim.keymap.set('n', '<leader>rn', vim.lsp.buf.rename, bufopts)
                 vim.keymap.set('n', '<leader>ca', vim.lsp.buf.code_action, bufopts)
                 vim.keymap.set('n', 'gr', vim.lsp.buf.references, bufopts)
-                vim.keymap.set('n', '<leader>f', function() vim.lsp.buf.format { async = true } end, bufopts)
+                vim.keymap.set('n', '<leader>f',
+                    function() vim.lsp.buf.format { async = true }
+                end, bufopts)
             end
 
             -- Linter: Show floating window with linter error on current line
@@ -207,7 +148,6 @@ require("lazy").setup({
                 flags = {
                     debounce_text_changes = 200,
                 },
-                --capabilities = capabilities,
             })
 
             require('lspconfig').ruff_lsp.setup({
@@ -283,7 +223,7 @@ require("lazy").setup({
                 indent = {
                     enable = true,
 
-                    -- treesitter indents 2x shiftwidth in certain situations; not
+                    -- Treesitter indents 2x shiftwidth in certain situations; not
                     -- configurable, so drop treesitter's python indentation entirely and
                     -- fall back to defaults (which are exactly what I want)
                     disable = { "python" },
@@ -296,9 +236,6 @@ require("lazy").setup({
     -- "wellle/context.vim",
     {"Hippo0o/context.vim"},  -- fork that fixes issues with the original
 
-    -- Nice to have sometimes but too annoying when it's not
-    -- {"jiangmiao/auto-pairs"},
-    
     {"ojroques/vim-oscyank", event = 'VeryLazy'},
     
     {"f-person/git-blame.nvim", event = 'VeryLazy',
@@ -346,9 +283,9 @@ opt.autoindent = true
 opt.smartindent = true
 opt.number = true
 opt.relativenumber = true
---opt.wildmode = {"longest", "list"}  --is that how you do this?
-opt.colorcolumn = "89"
-opt.textwidth = 89
+opt.wildmode = "longest,list"
+opt.colorcolumn = "88"
+opt.textwidth = 88
 opt.ttyfast = true
 opt.swapfile = false
 opt.backup = false
@@ -373,15 +310,12 @@ function vmap(shortcut, command)
     vim.api.nvim_set_keymap('v', shortcut, command, { noremap = true, silent = false  })
 end
 
---nmap("<C-Right>", "<cmd>tabnext<CR>")
---nmap("<C-Left>", "<cmd>tabprevious<CR>")
 nmap("<C-d>", "<C-d>zz")
 nmap("<C-u>", "<C-u>zz")
 nmap("<C-f>", "<cmd>Telescope find_files<CR>")
-nmap("<C-g>", "<cmd>Telescope live_grep<CR>")
+nmap("<C-i>", "<cmd>Telescope live_grep<CR>")
 nmap("<C-l>", "<cmd>NvimTreeToggle<CR>")
 nmap("/", ":%s###gn<Left><Left><Left><Left>")
---nmap(";", ":")
 vmap("<leader>y", "<Plug>OSCYankVisual")
 nmap("<leader>y", "<Plug>OSCYankVisual")
 nmap("<leader>b", "<cmd>BufstopFast<CR>")
@@ -417,7 +351,7 @@ vim.g.python_indent = {
     continue = "shiftwidth()"
 }
 
--- Define :Focus command to center the buffer
+-- Define :Focus command to center the window
 vim.cmd [[
 function! CenterContent()
     let l:textwidth = 120
@@ -454,5 +388,4 @@ function! UnCenterContent()
 endfunction
 command! UnFocus call UnCenterContent()
 ]]
-
 
