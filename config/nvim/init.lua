@@ -344,10 +344,6 @@ opt.expandtab = true
 opt.shiftwidth = 4
 opt.autoindent = true
 opt.smartindent = true
---TESTS vim.cmd [[
---TESTS     autocmd FileType python setlocal shiftwidth=4 tabstop=4 expandtab
---TESTS     autocmd FileType pyrex setlocal shiftwidth=4 tabstop=4 expandtab
---TESTS ]]
 opt.number = true
 opt.relativenumber = true
 --opt.wildmode = {"longest", "list"}  --is that how you do this?
