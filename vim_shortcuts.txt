@@ -14,14 +14,26 @@ zt                      scroll so current line is (near) top of screen
 
 '"                      jump to last line when file was last opened
 
+#                       go to previous occurence of word under cursor
+*                       go to next occurrence of word under cursor
+
+{ }                     go to prev/next paragraph
+( )                     go to prev/next sentence
+
 u                       undo
 C-r                     redo
 
+I                       insert at beginning of line
 A                       insert at end of line
 
 gq}                     reflow paragraph
 
 g;                      go back to last cursor pos
+
+f/F<char>               forward/backward to next occurrence of <char> (on the character)
+t/T<char>               forward/backward to next occurrence of <char> (prev character)
+;/,                     forward/backward to next match of t/T/f/F search
+
 
 CUSTOM
 ======

@@ -137,10 +137,10 @@ require("lazy").setup({
     {"neovim/nvim-lspconfig", --event = 'VimEnter', --event = 'BufRead *',
         config = function()
             local opts = { noremap=true, silent=true }
-            vim.keymap.set('n', '<space>e', vim.diagnostic.open_float, opts)
+            vim.keymap.set('n', '<leader>e', vim.diagnostic.open_float, opts)
             vim.keymap.set('n', '[d', vim.diagnostic.goto_prev, opts)
             vim.keymap.set('n', ']d', vim.diagnostic.goto_next, opts)
-            vim.keymap.set('n', '<space>q', vim.diagnostic.setloclist, opts)
+            vim.keymap.set('n', '<leader>q', vim.diagnostic.setloclist, opts)
 
             local on_attach = function(client, bufnr)
                 -- Enable completion triggered by <c-x><c-o>
@@ -154,16 +154,16 @@ require("lazy").setup({
                 vim.keymap.set('n', 'K', vim.lsp.buf.hover, bufopts)
                 --vim.keymap.set('n', 'gi', vim.lsp.buf.implementation, bufopts)
                 vim.keymap.set('n', '<C-k>', vim.lsp.buf.signature_help, bufopts)
-                vim.keymap.set('n', '<space>wa', vim.lsp.buf.add_workspace_folder, bufopts)
-                vim.keymap.set('n', '<space>wr', vim.lsp.buf.remove_workspace_folder, bufopts)
-                vim.keymap.set('n', '<space>wl', function()
+                vim.keymap.set('n', '<leader>wa', vim.lsp.buf.add_workspace_folder, bufopts)
+                vim.keymap.set('n', '<leader>wr', vim.lsp.buf.remove_workspace_folder, bufopts)
+                vim.keymap.set('n', '<leader>wl', function()
                 print(vim.inspect(vim.lsp.buf.list_workspace_folders()))
                 end, bufopts)
-                --vim.keymap.set('n', '<space>D', vim.lsp.buf.type_definition, bufopts)
-                vim.keymap.set('n', '<space>rn', vim.lsp.buf.rename, bufopts)
-                vim.keymap.set('n', '<space>ca', vim.lsp.buf.code_action, bufopts)
+                --vim.keymap.set('n', '<leader>D', vim.lsp.buf.type_definition, bufopts)
+                vim.keymap.set('n', '<leader>rn', vim.lsp.buf.rename, bufopts)
+                vim.keymap.set('n', '<leader>ca', vim.lsp.buf.code_action, bufopts)
                 vim.keymap.set('n', 'gr', vim.lsp.buf.references, bufopts)
-                vim.keymap.set('n', '<space>f', function() vim.lsp.buf.format { async = true } end, bufopts)
+                vim.keymap.set('n', '<leader>f', function() vim.lsp.buf.format { async = true } end, bufopts)
             end
 
             -- Linter: Show floating window with linter error on current line
@@ -312,47 +312,54 @@ require("lazy").setup({
         config = function()
             local harpoon = require("harpoon")
             harpoon:setup()
-            vim.keymap.set("n", "<space>a", function() harpoon:list():append() end)
-            vim.keymap.set("n", "<space>d", function() harpoon:list():remove() end)
-            vim.keymap.set("n", "<space>h", function() harpoon.ui:toggle_quick_menu(harpoon:list()) end)
+            vim.keymap.set("n", "<leader>a", function() harpoon:list():append() end)
+            vim.keymap.set("n", "<leader>d", function() harpoon:list():remove() end)
+            vim.keymap.set("n", "<leader>h", function() harpoon.ui:toggle_quick_menu(harpoon:list()) end)
         end
     },
 
     {"mbbill/undotree", event = 'VeryLazy'}
 })
 
-vim.opt.encoding = "utf-8"
-vim.opt.cursorline = false
-vim.opt.compatible = false
-vim.opt.ignorecase = true
-vim.opt.hlsearch = false
-vim.opt.incsearch = true
-vim.opt.tabstop = 4
-vim.opt.softtabstop = 4
-vim.opt.expandtab = true
-vim.opt.shiftwidth = 4
+vim.g.mapleader = "<space>"
+
+local opt = vim.opt
+
+opt.compatible = false
+opt.encoding = "utf-8"
+opt.cursorline = false
+opt.ignorecase = true
+opt.hlsearch = false
+opt.incsearch = true
+opt.tabstop = 4
+opt.softtabstop = 4
+opt.expandtab = true
+opt.shiftwidth = 4
 --vim.cmd [[
 --    filetype plugin on
 --    filetype plugin indent on
 --]]
---vim.opt.autoindent = true --Not sure about this one, TODO
-vim.opt.smartindent = true
-vim.opt.number = true
-vim.opt.relativenumber = true
---vim.opt.wildmode = {"longest", "list"}  --is that how you do this?
-vim.opt.colorcolumn = "89"
-vim.opt.textwidth = 89
-vim.opt.ttyfast = true
-vim.opt.swapfile = false
-vim.opt.backup = false
-vim.opt.undodir = os.getenv("HOME") .. "/.vim/undodir"
-vim.opt.undofile = true
-vim.opt.scrolloff = 10
-vim.opt.showmode = false  -- lualine does this now
---set vb t_vb=  --how to do this in lua?
+--opt.autoindent = true --Not sure about this one, TODO
+opt.smartindent = true
+opt.number = true
+opt.relativenumber = true
+--opt.wildmode = {"longest", "list"}  --is that how you do this?
+opt.colorcolumn = "89"
+opt.textwidth = 89
+opt.ttyfast = true
+opt.swapfile = false
+opt.backup = false
+opt.undodir = os.getenv("HOME") .. "/.vim/undodir"
+opt.undofile = true
+opt.scrolloff = 10
+opt.showmode = false  -- lualine does this now
 
 function nmap(shortcut, command)
     vim.api.nvim_set_keymap('n', shortcut, command, { noremap = true, silent = false })
+end
+
+function imap(shortcut, command)
+    vim.api.nvim_set_keymap('i', shortcut, command, { noremap = true, silent = false })
 end
 
 function tmap(shortcut, command)
@@ -363,22 +370,36 @@ function vmap(shortcut, command)
     vim.api.nvim_set_keymap('v', shortcut, command, { noremap = true, silent = false  })
 end
 
-nmap("<C-Right>", "<cmd>tabnext<CR>")
-nmap("<C-Left>", "<cmd>tabprevious<CR>")
+--nmap("<C-Right>", "<cmd>tabnext<CR>")
+--nmap("<C-Left>", "<cmd>tabprevious<CR>")
+nmap("<C-d>", "<C-d>zz")
+nmap("<C-u>", "<C-u>zz")
 nmap("<C-f>", "<cmd>Telescope find_files<CR>")
 nmap("<S-f>", "<cmd>Telescope live_grep<CR>")
 nmap("<C-l>", "<cmd>NvimTreeToggle<CR>")
 nmap("/", ":%s###gn<Left><Left><Left><Left>")
-vmap("<space>y", "<Plug>OSCYankVisual")
-nmap("<space>y", "<Plug>OSCYankVisual")
-nmap("<space>b", "<cmd>BufstopFast<CR>")
-nmap("<space>n", "<cmd>bprev<CR>")
-nmap("<space>p", "<cmd>bnext<CR>")
-nmap("<space>u", "<cmd>UndotreeToggle<CR>")
+--nmap(";", ":")
+vmap("<leader>y", "<Plug>OSCYankVisual")
+nmap("<leader>y", "<Plug>OSCYankVisual")
+nmap("<leader>b", "<cmd>BufstopFast<CR>")
+nmap("<leader>n", "<cmd>bprev<CR>")
+nmap("<leader>p", "<cmd>bnext<CR>")
+nmap("<leader>u", "<cmd>UndotreeToggle<CR>")
 tmap("<esc>", "<C-\\><C-N>")
 nmap("<C-x>", "<cmd>!chmod +x %<CR>")
 nmap("<C-b>", "<C-v>")
 
+-- Break the habit of using arrow keys instead of vim motions
+nmap("<Up>", "<nop>")
+nmap("<Down>", "<nop>")
+nmap("<Left>", "<nop>")
+nmap("<Right>", "<nop>")
+vmap("<Up>", "<nop>")
+vmap("<Down>", "<nop>")
+vmap("<Left>", "<nop>")
+vmap("<Right>", "<nop>")
+
+-- Setup for plugins/features that use globals
 vim.g.context_enabled = 1
 vim.g.context_add_mappings = 1
 vim.g.context_add_autocmds = 1
@@ -392,6 +413,7 @@ vim.g.python_indent.open_paren = "shiftwidth()"
 vim.g.python_indent.continue = "shiftwidth()"
 vim.g.python3_host_prog = neovim_venv .. "/bin/python3"
 
+-- Define :Focus command to center the buffer
 vim.cmd [[
 function! CenterContent()
     let l:textwidth = 120
