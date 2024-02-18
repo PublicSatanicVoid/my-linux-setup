@@ -281,7 +281,12 @@ require("lazy").setup({
                     additional_vim_regex_highlighting = false,
                 },
                 indent = {
-                    enable = true
+                    enable = true,
+
+                    -- treesitter indents 2x shiftwidth in certain situations; not
+                    -- configurable, so drop treesitter's python indentation entirely and
+                    -- fall back to defaults (which are exactly what I want)
+                    disable = { "python" },
                 }
             })
         end
@@ -337,16 +342,12 @@ opt.tabstop = 4
 opt.softtabstop = 4
 opt.expandtab = true
 opt.shiftwidth = 4
---vim.cmd [[
---    filetype plugin on
---    filetype plugin indent on
---]]
---
 opt.autoindent = true
 opt.smartindent = true
-vim.cmd [[
-    autocmd FileType python setlocal shiftwidth=4 tabstop=4 expandtab
-]]
+--TESTS vim.cmd [[
+--TESTS     autocmd FileType python setlocal shiftwidth=4 tabstop=4 expandtab
+--TESTS     autocmd FileType pyrex setlocal shiftwidth=4 tabstop=4 expandtab
+--TESTS ]]
 opt.number = true
 opt.relativenumber = true
 --opt.wildmode = {"longest", "list"}  --is that how you do this?
@@ -413,11 +414,12 @@ vim.g.context_max_height = 21
 vim.g.context_max_per_indent = 11
 vim.g.context_skip_regex = "^\\s*($|#|//|/\\*)"
 
-vim.g.python_indent = {}
-vim.g.python_indent.closed_paren_align_last_line = false
-vim.g.python_indent.open_paren = "shiftwidth()"
-vim.g.python_indent.continue = "shiftwidth()"
 vim.g.python3_host_prog = neovim_venv .. "/bin/python3"
+vim.g.python_indent = {
+    closed_paren_align_last_line = false,
+    open_paren = "shiftwidth()",
+    continue = "shiftwidth()"
+}
 
 -- Define :Focus command to center the buffer
 vim.cmd [[
