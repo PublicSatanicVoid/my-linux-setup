@@ -16,12 +16,22 @@ echo "      export NEOVIM_VENV="$HOME/venvs/neovim_venv""
 
 mkdir ~/.config
 
+# TODO install npm
+
+
 # TODO download and install neovim
 
 # Configure neovim
 #mkdir -p "$HOME/.config/nvim"
 #ln -s "$REPO_ROOT/config/nvim/init.lua" "$HOME/.config/nvim/init.lua"
 ln -s "$REPO_ROOT/config/nvim" "$HOME/.config/nvim"
+
+
+# :TSUpdate
+# :MasonInstall rust-analyzer
+# :MasonInstall clangd
+# :MasonInstall ruff-lsp
+# :MasonInstall bash-language-server
 
 # TODO download and install zellij
 
