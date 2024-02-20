@@ -161,7 +161,7 @@ require("lazy").setup({
                 }
             })
 
-            require("lspconfig").bashls.setup({})
+            --require("lspconfig").bashls.setup({})
 
             require("lspconfig").clangd.setup({})
 
@@ -281,6 +281,16 @@ require("lazy").setup({
 
     {"mbbill/undotree", event = "VeryLazy"},
 
-    {"folke/zen-mode.nvim", event = "VeryLazy"}
+    {"folke/zen-mode.nvim", event = "VeryLazy",
+        --config = function()
+        --    require("zen-mode").setup({
+        --        window = {
+        --            width = 120
+        --        }
+        --    })
+        --end
+    },
+
+    {"nvim-pack/nvim-spectre", event = "VeryLazy"}
 })
 
