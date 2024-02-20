@@ -12,7 +12,8 @@ The hacky way to get around UDP shit and broken CENT7 images:
 
     To start daemon:
 
-        export MOSH_PREDICTION_DISPLAY="always"        
+        export MOSH_PREDICTION_DISPLAY="always"
+        export MOSH_PREDICTION_OVERWRITE="yes"
         ~/bin/mxtx-apu.sh \
                 sshmxtx \
                 localhost \
@@ -23,5 +24,6 @@ The hacky way to get around UDP shit and broken CENT7 images:
                 &
     To connect client:
         export MOSH_PREDICTION_DISPLAY="always"
+        export MOSH_PREDICTION_OVERWRITE="yes"
         export LANG=en_US.UTF-8
         ~/bin/mxtx-mosh localhost
