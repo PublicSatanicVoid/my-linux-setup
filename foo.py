@@ -1,3 +1,6 @@
+# Test file to quickly test LSP functionality in NeoVim
+
+
 def foo(x, y):
     """return x + y"""
     return x + y

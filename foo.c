@@ -1,3 +1,5 @@
+// Test file to quickly check LSP functionality in NeoVim
+
 #include <stdio.h>
 
 int func(int x) {
