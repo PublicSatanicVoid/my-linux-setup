@@ -291,6 +291,8 @@ require("lazy").setup({
         --end
     },
 
-    {"nvim-pack/nvim-spectre", event = "VeryLazy"}
+    {"nvim-pack/nvim-spectre", event = "VeryLazy"},
+
+    {"ThePrimeagen/vim-be-good", event = "VeryLazy"}
 })
 
