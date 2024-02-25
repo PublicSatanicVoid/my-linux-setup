@@ -1,5 +1,8 @@
 STANDARD
 ========
+
+%                       go to matching brace (or next closing brace if none selected)
+
 :vsp <file>             open file in vertical split
 C-w <hjkl>              navigate windows
 :b <pat>                go to buffer matching <pat>
@@ -8,6 +11,7 @@ va<brace>               visual select from opening <brace> to closing <brace>
                             including <brace>s
 vi<brace>               visual select from opening <brace> to closing <brace>
                             NOT including <brace>s
+                        (works with c,d,y as well as v)
 
 zz                      center current line on screen
 zt                      scroll so current line is (near) top of screen
@@ -20,13 +24,17 @@ zt                      scroll so current line is (near) top of screen
 { }                     go to prev/next paragraph
 ( )                     go to prev/next sentence
 
+[(                      go to unmatched opening (
+])                      go to unmatched closing )
+                        (works with other braces too)
+
 u                       undo
 C-r                     redo
 
 I                       insert at beginning of line
 A                       insert at end of line
 
-gq}                     reflow paragraph
+gq                      reflow paragraph
 
 g;                      go back to last cursor pos
 
