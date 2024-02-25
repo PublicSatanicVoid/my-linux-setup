@@ -16,7 +16,7 @@ echo "      export NEOVIM_VENV="$HOME/venvs/neovim_venv""
 
 mkdir ~/.config
 
-# TODO install npm
+# TODO install npm and cargo
 
 
 # TODO download and install neovim
