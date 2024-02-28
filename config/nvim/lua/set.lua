@@ -37,6 +37,9 @@ vim.g.context_max_height = 21
 vim.g.context_max_per_indent = 11
 vim.g.context_skip_regex = "^\\s*($|#|//|/\\*)"
 
+-- Highlight the first character in each word that can be jumped to with f/t.
+vim.g.qs_highlight_on_keys = {"f", "F", "t", "T"}
+
 vim.g.python3_host_prog = neovim_venv .. "/bin/python3"
 vim.g.python_indent = {
     closed_paren_align_last_line = false,

@@ -293,6 +293,8 @@ require("lazy").setup({
 
     {"nvim-pack/nvim-spectre", event = "VeryLazy"},
 
+    {"unblevable/quick-scope", event = "VeryLazy"},
+
     {"ThePrimeagen/vim-be-good", event = "VeryLazy"}
 })
 
