@@ -44,6 +44,7 @@ nmap("<leader>u", "<cmd>UndotreeToggle<CR>")
 
 -- Esc gets out of terminal mode as well
 tmap("<esc>", "<C-\\><C-N>")
+tmap("<C-c>", "<C-\\><C-N>")
 
 -- Make current file executable
 nmap("<C-x>", "<cmd>!chmod +x %<CR>")
@@ -70,4 +71,10 @@ vmap("<Up>", "<nop>")
 vmap("<Down>", "<nop>")
 vmap("<Left>", "<nop>")
 vmap("<Right>", "<nop>")
+
+-- Break the habit of using Esc instead of C-c
+imap("<Esc>", "<nop>")
+nmap("<Esc>", "<nop>")
+vmap("<Esc>", "<nop>")
+tmap("<Esc>", "<nop>")
 
