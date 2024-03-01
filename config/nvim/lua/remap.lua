@@ -38,6 +38,7 @@ nmap("<leader>y", "<Plug>OSCYankVisual")
 nmap("<leader>b", "<cmd>BufstopFast<CR>")
 nmap("<leader>n", "<cmd>bprev<CR>")
 nmap("<leader>p", "<cmd>bnext<CR>")
+nmap("<leader><leader>", "<C-^>")
 
 -- Open undo-tree panel
 nmap("<leader>u", "<cmd>UndotreeToggle<CR>")
