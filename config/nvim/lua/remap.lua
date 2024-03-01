@@ -24,6 +24,7 @@ nmap("<C-u>", "<C-u>zz")
 
 -- File search
 nmap("<C-f>", "<cmd>Telescope find_files<CR>")
+nmap("<leader>o", "<cmd>:lua require('telescope.builtin').find_files({cwd=require('telescope.utils').buffer_dir()})<CR>")
 nmap("<C-i>", "<cmd>Telescope live_grep<CR>")
 nmap("<C-l>", "<cmd>NvimTreeToggle<CR>")
 
