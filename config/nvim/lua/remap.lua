@@ -23,10 +23,10 @@ nmap("<C-d>", "<C-d>zz")
 nmap("<C-u>", "<C-u>zz")
 
 -- File search
-nmap("<C-f>", "<cmd>Telescope find_files<CR>")
-nmap("<leader>o", "<cmd>:lua require('telescope.builtin').find_files({cwd=require('telescope.utils').buffer_dir()})<CR>")
-nmap("<C-i>", "<cmd>Telescope live_grep<CR>")
-nmap("<C-l>", "<cmd>NvimTreeToggle<CR>")
+nmap("<leader>sf", "<cmd>Telescope find_files<CR>")
+nmap("<leader>sc", "<cmd>:lua require('telescope.builtin').find_files({cwd=require('telescope.utils').buffer_dir()})<CR>")
+nmap("<leader>sg", "<cmd>Telescope live_grep<CR>")
+nmap("<leader>t", "<cmd>NvimTreeToggle<CR>")
 
 -- Search that doesn't require escaping regexes
 nmap("/", ":%s###gn<Left><Left><Left><Left>")
@@ -49,7 +49,7 @@ tmap("<esc>", "<C-\\><C-N>")
 tmap("<C-c>", "<C-\\><C-N>")
 
 -- Make current file executable
-nmap("<C-x>", "<cmd>!chmod +x %<CR>")
+nmap("<leader>x", "<cmd>!chmod +x %<CR>")
 
 -- Ability to enter visual block mode when C-v is terminal paste
 nmap("<C-b>", "<C-v>")
