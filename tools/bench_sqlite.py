@@ -12,17 +12,20 @@ import os
 def gen_random_data(k: int, n: int) -> t.List[t.List[int]]:
     return [[random.random() for col in range(k)] for row in range(n)]
 
+
 print_lock = mp.RLock()
+
+
 def safe_print(*args, **kwargs):
     with print_lock:
         print(f"{os.getpid()}:", *args, **(kwargs | {"flush": True}))
+
 
 def bench(
     k: int,
     n: int,
     start_barrier: threading.Barrier,
     write_barrier: threading.Barrier,
-    read100_barrier: threading.Barrier,
     read10_barrier: threading.Barrier,
     read1_barrier: threading.Barrier,
 ):
@@ -31,12 +34,12 @@ def bench(
         try:
             db.execute("PRAGMA journal_mode = 'WAL'")
         except sqlite3.OperationalError:
-            #print("OOF")
+            # print("OOF")
             pass
         else:
             break
-    #db.execute("PRAGMA synchronous = 1")
-    #db.execute("PRAGMA cache_size = -64000")
+    # db.execute("PRAGMA synchronous = 1")
+    # db.execute("PRAGMA cache_size = -64000")
 
     cur = db.cursor()
 
@@ -59,74 +62,70 @@ def bench(
             try:
                 cur.execute(insert_cmd, row)
             except sqlite3.OperationalError:
-                #print("OOF")
+                # print("OOF")
                 pass
             else:
                 break
     db.commit()
     stop = time.perf_counter()
-    safe_print(f"write to db:             {stop-start:.03f}s,  {n/(stop-start):.03f} row/s")
+    safe_print(
+        f"write to db:             {stop-start:.03f}s,  {n/(stop-start):.03f} row/s"
+    )
 
     write_barrier.wait()
 
     start = time.perf_counter()
-    cur.execute("SELECT * FROM data")
-    stop = time.perf_counter()
-    safe_print(f"read 100% (cmd):         {stop-start:.03f}s,  {n/(stop-start):.03f} row/s")
-    start = time.perf_counter()
-    results = cur.fetchall()
-    stop = time.perf_counter()
-    safe_print(f"read 100% (fetchall):    {stop-start:.03f}s,  {n/(stop-start):.03f} row/s")
-    start = time.perf_counter()
-    for row in results:
-        if row[-1] > 1:
-            safe_print("whoops!")
-    stop = time.perf_counter()
-    safe_print(f"read 100% (iter):        {stop-start:.03f}s,  {n/(stop-start):.03f} row/s")
-
-    read100_barrier.wait()
-
-    start = time.perf_counter()
     cur.execute(f"SELECT * FROM data WHERE col{N_COLS-1} > 0.9")
     stop = time.perf_counter()
-    safe_print(f"read 10% (cmd):          {stop-start:.03f}s,  {n/(stop-start):.03f} row/s")
+    safe_print(
+        f"read 10% (cmd):          {stop-start:.03f}s,  {n/(stop-start):.03f} row/s"
+    )
     start = time.perf_counter()
     results = cur.fetchall()
     stop = time.perf_counter()
-    safe_print(f"read 10% (fetchall):     {stop-start:.03f}s,  {n/(stop-start):.03f} row/s")
+    safe_print(
+        f"read 10% (fetchall):     {stop-start:.03f}s,  {n/(stop-start):.03f} row/s"
+    )
     start = time.perf_counter()
     for row in results:
         if row[-1] > 1:
             safe_print("whoops!")
     stop = time.perf_counter()
-    safe_print(f"read 10% (iter):         {stop-start:.03f}s,  {n/(stop-start):.03f} row/s")
+    safe_print(
+        f"read 10% (iter):         {stop-start:.03f}s,  {n/(stop-start):.03f} row/s"
+    )
 
     read10_barrier.wait()
 
     start = time.perf_counter()
     cur.execute(f"SELECT * FROM data WHERE col{N_COLS-1} > 0.99")
     stop = time.perf_counter()
-    safe_print(f"read 1% (cmd):           {stop-start:.03f}s,  {n/(stop-start):.03f} row/s")
+    safe_print(
+        f"read 1% (cmd):           {stop-start:.03f}s,  {n/(stop-start):.03f} row/s"
+    )
     start = time.perf_counter()
     results = cur.fetchall()
     stop = time.perf_counter()
-    safe_print(f"read 1% (fetchall):      {stop-start:.03f}s,  {n/(stop-start):.03f} row/s")
+    safe_print(
+        f"read 1% (fetchall):      {stop-start:.03f}s,  {n/(stop-start):.03f} row/s"
+    )
     start = time.perf_counter()
     for row in results:
         if row[-1] > 1:
             safe_print("whoops!")
     stop = time.perf_counter()
-    safe_print(f"read 1% (iter):          {stop-start:.03f}s,  {n/(stop-start):.03f} row/s")
+    safe_print(
+        f"read 1% (iter):          {stop-start:.03f}s,  {n/(stop-start):.03f} row/s"
+    )
 
     read1_barrier.wait()
 
 
-N_PROC = 8
-N_COLS = 1000
-N_ROWS = 10000
+N_PROC = 12
+N_COLS = 10
+N_ROWS = int(10_000_000 / N_PROC)
 
-start_barrier, write_barrier, read100_barrier, read10_barrier, read1_barrier = (
-    mp.Barrier(N_PROC),
+start_barrier, write_barrier, read10_barrier, read1_barrier = (
     mp.Barrier(N_PROC),
     mp.Barrier(N_PROC),
     mp.Barrier(N_PROC),
@@ -140,7 +139,6 @@ def worker():
         N_ROWS,
         start_barrier,
         write_barrier,
-        read100_barrier,
         read10_barrier,
         read1_barrier,
     )
