@@ -75,7 +75,6 @@ require("lazy").setup({
             -- nvim-tree: Disable netrw, show icons, sync tab presence
             vim.g.loaded_netrw = 1
             vim.g.loaded_netrwPlugin = 1
-
             require("nvim-tree").setup()
         end
     },
@@ -135,6 +134,21 @@ require("lazy").setup({
             -- Show the floating window faster when trigger condition is met
             vim.o.updatetime = 1000
 
+            -- Specify how the border looks like
+            local border = "rounded"
+
+            -- Add the border on hover and on signature help popup window
+            local handlers = {
+                ['textDocument/hover'] = vim.lsp.with(
+                    vim.lsp.handlers.hover,
+                    { border = border }
+                ),
+                ['textDocument/signatureHelp'] = vim.lsp.with(
+                    vim.lsp.handlers.signature_help,
+                    { border = border }
+                ),
+            }
+
             -- Linter: Configure display of linting messages in-line
             vim.diagnostic.config({
                 virtual_text = true,
@@ -142,9 +156,12 @@ require("lazy").setup({
                 underline = true,
                 update_in_insert = false,
                 severity_sort = true,
+
+                float = { border = border },
             })
 
             require("lspconfig").pylsp.setup({
+                handlers = handlers,
                 cmd = { neovim_venv .. "/bin/pylsp" },
                 settings = {
                     pylsp = {
@@ -160,6 +177,7 @@ require("lazy").setup({
             })
 
             require("lspconfig").ruff_lsp.setup({
+                handlers = handlers,
                 cmd = { neovim_venv .. "/bin/ruff-lsp" },
                 on_attach = on_attach,
                 init_options = {
@@ -171,10 +189,13 @@ require("lazy").setup({
 
             --require("lspconfig").bashls.setup({})
 
-            require("lspconfig").clangd.setup({})
+            require("lspconfig").clangd.setup({
+                handlers = handlers
+            })
 
-            require("lspconfig").rust_analyzer.setup({})
-
+            require("lspconfig").rust_analyzer.setup({
+                handlers = handlers
+            })
 
         end
     },
@@ -189,6 +210,13 @@ require("lazy").setup({
         config = function()
             local cmp = require("cmp")
             cmp.setup({
+                completion = cmp.config.window.bordered(),
+
+                window = {
+                    completion = cmp.config.window.bordered(),
+                    documentation = cmp.config.window.bordered(),
+                },
+
                 mapping = cmp.mapping.preset.insert({
                     ["<Tab>"] = cmp.mapping(function(fallback)
                         if cmp.visible() then
@@ -305,4 +333,3 @@ require("lazy").setup({
 
     {"ThePrimeagen/vim-be-good", event = "VeryLazy"}
 })
-

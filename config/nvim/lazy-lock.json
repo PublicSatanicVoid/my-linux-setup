@@ -17,7 +17,7 @@
   "plenary.nvim": { "branch": "master", "commit": "4f71c0c4a196ceb656c824a70792f3df3ce6bb6d" },
   "quick-scope": { "branch": "master", "commit": "256d81e391a22eeb53791ff62ce65f870418fa71" },
   "rose-pine.nvim": { "branch": "main", "commit": "7392a026c24333c930054512a6f62a2cf539609e" },
-  "telescope.nvim": { "branch": "master", "commit": "aa83606299c5beeaf80e656efbf07bde258db7be" },
+  "telescope.nvim": { "branch": "master", "commit": "13c1436932d18e06639e21a3c4b5a0a70896274e" },
   "undotree": { "branch": "master", "commit": "9dbbf3b7d19dda0d22ceca461818e4739ad8154d" },
   "vim-be-good": { "branch": "master", "commit": "4fa57b7957715c91326fcead58c1fa898b9b3625" },
   "vim-oscyank": { "branch": "main", "commit": "c37c9d98e8a0aed749624fa14a7ece7913cf34de" },

@@ -8,7 +8,6 @@ import multiprocessing as mp
 import threading
 import os
 
-
 def gen_random_data(k: int, n: int) -> t.List[t.List[int]]:
     return [[random.random() for col in range(k)] for row in range(n)]
 
