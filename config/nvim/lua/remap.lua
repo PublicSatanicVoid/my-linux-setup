@@ -22,11 +22,14 @@ end
 nmap("<C-d>", "<C-d>zz")
 nmap("<C-u>", "<C-u>zz")
 
--- File search
+-- File search / replace
 nmap("<leader>sf", "<cmd>Telescope find_files<CR>")
-nmap("<leader>sc", "<cmd>:lua require('telescope.builtin').find_files({cwd=require('telescope.utils').buffer_dir()})<CR>")
+nmap("<leader>sn", "<cmd>lua require('telescope.builtin').find_files({cwd=require('telescope.utils').buffer_dir()})<CR>")
 nmap("<leader>sg", "<cmd>Telescope live_grep<CR>")
+nmap("<leader>ss", "<cmd>Telescope lsp_document_symbols<CR>")
+nmap("<leader>sb", "<cmd>Telescope nvim_buffer_fuzzy_find<CR>")
 nmap("<leader>t", "<cmd>NvimTreeToggle<CR>")
+nmap("<leader>S", "<cmd>lua require('spectre').toggle()<CR>")
 
 -- Search that doesn't require escaping regexes
 nmap("/", ":%s###gn<Left><Left><Left><Left>")
@@ -54,9 +57,6 @@ nmap("<leader>x", "<cmd>!chmod +x %<CR>")
 -- Ability to enter visual block mode when C-v is terminal paste
 nmap("<C-b>", "<C-v>")
 
--- Open spectre
-nmap("<leader>S", '<cmd>lua require("spectre").toggle()<CR>')
-
 -- Search current word
 nmap("<leader>sw", '<cmd>lua require("spectre").open_visual({select_word = true})<CR>')
 vmap("<leader>sw", '<cmd>lua require("spectre").open_visual({select_word = true})<CR>')
@@ -75,8 +75,8 @@ vmap("<Left>", "<nop>")
 vmap("<Right>", "<nop>")
 
 -- Break the habit of using Esc instead of C-c
-imap("<Esc>", "<nop>")
-nmap("<Esc>", "<nop>")
-vmap("<Esc>", "<nop>")
-tmap("<Esc>", "<nop>")
+--imap("<Esc>", "<nop>")
+--nmap("<Esc>", "<nop>")
+--vmap("<Esc>", "<nop>")
+--tmap("<Esc>", "<nop>")
 
