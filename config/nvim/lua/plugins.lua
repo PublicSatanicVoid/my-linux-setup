@@ -329,6 +329,11 @@ require("lazy").setup({
 
     {"nvim-pack/nvim-spectre", event = "VeryLazy"},
 
+    -- :Subvert/search/replace/g  to replace search, Search, SEARCH with case-matched
+    -- replace
+    -- And also supports variants, like :Subvert/ba{r,z}/car{,s}/g
+    {"tpope/vim-abolish", event = "VeryLazy"},
+
     {"unblevable/quick-scope", event = "VeryLazy"},
 
     {"ThePrimeagen/vim-be-good", event = "VeryLazy"}
