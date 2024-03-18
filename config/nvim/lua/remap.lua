@@ -27,12 +27,13 @@ nmap("<leader>sf", "<cmd>Telescope find_files<CR>")
 nmap("<leader>sn", "<cmd>lua require('telescope.builtin').find_files({cwd=require('telescope.utils').buffer_dir()})<CR>")
 nmap("<leader>sg", "<cmd>Telescope live_grep<CR>")
 nmap("<leader>ss", "<cmd>Telescope lsp_document_symbols<CR>")
-nmap("<leader>sb", "<cmd>Telescope nvim_buffer_fuzzy_find<CR>")
+nmap("<leader>sb", "<cmd>Telescope current_buffer_fuzzy_find<CR>")
 nmap("<leader>t", "<cmd>NvimTreeToggle<CR>")
 nmap("<leader>S", "<cmd>lua require('spectre').toggle()<CR>")
+nmap("<leader>sp", '<cmd>lua require("spectre").open_file_search({select_word = true})<CR>')
 
 -- Search that doesn't require escaping regexes
-nmap("/", ":%s###gn<Left><Left><Left><Left>")
+nmap("/", ":%s%%%gn<Left><Left><Left><Left>")
 
 -- Yank visual selection to system clipboard
 vmap("<leader>y", "<Plug>OSCYankVisual")
@@ -61,8 +62,8 @@ nmap("<C-b>", "<C-v>")
 nmap("<leader>sw", '<cmd>lua require("spectre").open_visual({select_word = true})<CR>')
 vmap("<leader>sw", '<cmd>lua require("spectre").open_visual({select_word = true})<CR>')
 
--- Search in current file
-nmap("<leader>sp", '<cmd>lua require("spectre").open_file_search({select_word = true})<CR>')
+-- Useful code snippets
+nmap("<leader>pdb", "a<CR>import ipdb<CR>ipdb.set_trace()<CR><C-c>")
 
 -- Break the habit of using arrow keys instead of vim motions
 nmap("<Up>", "<nop>")
