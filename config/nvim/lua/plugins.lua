@@ -167,7 +167,8 @@ require("lazy").setup({
                     pylsp = {
                         plugins = {
                             pylsp_mypy = { enabled = true },
-                            jedi_completion = { fuzzy = true }
+                            jedi_completion = { fuzzy = true },
+                            mccabe = { threshold = 20 },
                         }
                     }
                 },
