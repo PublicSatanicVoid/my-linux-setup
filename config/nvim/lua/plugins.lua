@@ -167,7 +167,27 @@ require("lazy").setup({
                     pylsp = {
                         plugins = {
                             pylsp_mypy = { enabled = true },
-                            jedi_completion = { fuzzy = true }
+                            jedi_completion = { fuzzy = true },
+                            jedi = {
+                                -- I HATE that I have to do this.
+                                -- This is DISGUSTING.
+                                -- If I have to do this, it is because our codebase is
+                                -- TOTALLY FUCKED.
+                                extra_paths = {
+                                    "buildcell",
+                                    "charflow",
+                                    "checkcell",
+                                    "libdev",
+                                    "memcomp",
+                                    "modelgen",
+                                    "modelok2",
+                                    "pathgen",
+                                    "qatools",
+                                    "spffy",
+                                    "tasker"
+                                }
+                            },
+                            mccabe = { threshold = 20 },
                         }
                     }
                 },

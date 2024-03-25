@@ -63,7 +63,7 @@ nmap("<leader>sw", '<cmd>lua require("spectre").open_visual({select_word = true}
 vmap("<leader>sw", '<cmd>lua require("spectre").open_visual({select_word = true})<CR>')
 
 -- Useful code snippets
-nmap("<leader>pdb", "a<CR>import ipdb<CR>ipdb.set_trace()<CR><C-c>")
+nmap("<leader>ipdb", "a<CR>import ipdb<CR>ipdb.set_trace()<CR><C-c>")
 
 -- Break the habit of using arrow keys instead of vim motions
 nmap("<Up>", "<nop>")
