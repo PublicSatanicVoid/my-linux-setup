@@ -1,5 +1,4 @@
 local neovim_venv = os.getenv("NEOVIM_VENV") or os.getenv("HOME") .. "/venvs/neovim_venv"
-
 local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
 if not vim.loop.fs_stat(lazypath) then
     vim.fn.system({
@@ -22,6 +21,9 @@ augroup END
 ]]
 
 require("lazy").setup({
+
+--Lualine causes the cursor to disappear occasionally.
+--[===[
     {"nvim-lualine/lualine.nvim", event = "VeryLazy",
         config = function()
             require("lualine").setup({
@@ -40,6 +42,44 @@ require("lazy").setup({
                     lualine_z = {"location"}
                 },
             })
+        end
+    },
+--]===]
+
+    {"nvim-tree/nvim-web-devicons",
+        config = function()
+            require("nvim-web-devicons").setup()
+        end
+    },
+
+    {"lewis6991/gitsigns.nvim",
+        config = function()
+            require("gitsigns").setup({
+                signcolumn = false
+            })
+        end
+    },
+
+    -- "famiu/feline.nvim",
+    {"PublicSatanicVoid/feline.nvim",
+        config = function()
+            local feline = require("feline")
+            feline.setup()
+
+            local palette = require("rose-pine.palette")
+            
+            theme = {
+                red = palette.rose,
+                --red = palette.love,
+                oceanblue = palette.overlay,
+                --bg = palette.base,
+                bg = "NONE",
+                fg = palette.text,
+                skyblue = palette.foam,
+                green = palette.iris,
+            }
+
+            feline.use_theme(theme)
         end
     },
 
@@ -63,9 +103,9 @@ require("lazy").setup({
             })
         end
     },  -- fork with softer whites
-    
+
     {"nvim-lua/plenary.nvim"},
-    
+
     {"nvim-telescope/telescope.nvim", event = "VeryLazy"},
     
     {"mihaifm/bufstop", event = "VeryLazy"},
@@ -191,10 +231,21 @@ require("lazy").setup({
             --require("lspconfig").bashls.setup({})
 
             require("lspconfig").clangd.setup({
-                handlers = handlers
+                handlers = handlers,
+                --cmd = {
+                --    "clangd",
+                --    "--background-index",
+                --    "--suggest-missing-includes",
+                --    "--clang-tidy",
+                --    "--completion-style=detailed"
+                --}
             })
 
             require("lspconfig").rust_analyzer.setup({
+                handlers = handlers
+            })
+
+            require("lspconfig").arduino_language_server.setup({
                 handlers = handlers
             })
 
