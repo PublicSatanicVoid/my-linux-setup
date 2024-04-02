@@ -60,6 +60,7 @@ require("lazy").setup({
         end
     },
 
+    -- Okay, this also causes the cursor to disappear occasionally, but a lot less often.
     -- "famiu/feline.nvim",
     {"PublicSatanicVoid/feline.nvim",
         config = function()
@@ -336,8 +337,27 @@ require("lazy").setup({
     },
 
     -- Load immediately or else it breaks
+    -- NOTE: Both of these were causing terrible slowness when scrolling,
+    -- 	so I replaced them with nvim-treesitter-context
     -- "wellle/context.vim",
-    {"Hippo0o/context.vim"},  -- fork that fixes issues with the original
+    --{"Hippo0o/context.vim"},  -- fork that fixes issues with the original
+    
+    {"nvim-treesitter/nvim-treesitter-context",
+        config = function()
+            require("treesitter-context").setup({
+                enable = true,
+                max_lines = 0,
+                min_window_height = 0,
+                line_numbers = true,
+                multiline_threshold = 20,
+                trim_scope = 'outer',
+                mode = 'cursor',
+                separator = '-',
+                zindex = 20,
+                on_attach = nil,
+            })
+        end
+    },
 
     {"ojroques/vim-oscyank", event = "VeryLazy"},
     
