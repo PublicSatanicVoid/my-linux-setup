@@ -24,8 +24,10 @@ opt.textwidth = 88
 opt.ttyfast = true
 opt.swapfile = false
 opt.backup = false
-opt.undodir = os.getenv("HOME") .. "/.vim/undodir"
+--opt.undodir = os.getenv("HOME") .. "/.vim/undodir"
+opt.undodir = os.getenv("HOME") .. "/.vim/undo"
 opt.undofile = true
+pcall(function() opt.undofilehash = true end)  -- custom, not mainlined (yet)
 opt.scrolloff = 10
 opt.showmode = false  -- lualine does this now
 
