@@ -45,6 +45,7 @@ require("lazy").setup({
         end
     },
 --]===]
+    {"pixelastic/vim-undodir-tree"},
 
     {"nvim-tree/nvim-web-devicons",
         config = function()
@@ -253,11 +254,11 @@ require("lazy").setup({
         end
     },
 
-    {"williamboman/mason.nvim",
-        config = function()
-            require("mason").setup()
-        end
-    },
+    --{"williamboman/mason.nvim",
+    --    config = function()
+    --        require("mason").setup()
+    --    end
+    --},
 
     {"hrsh7th/nvim-cmp", event = "VeryLazy",
         config = function()
@@ -349,10 +350,10 @@ require("lazy").setup({
                 max_lines = 0,
                 min_window_height = 0,
                 line_numbers = true,
-                multiline_threshold = 20,
+                multiline_threshold = 2,
                 trim_scope = 'outer',
                 mode = 'cursor',
-                separator = '-',
+                separator = '—',
                 zindex = 20,
                 on_attach = nil,
             })
