@@ -68,6 +68,14 @@ PATH=""
 PATH+=":$HOME/bin"
 # PATH+=":/home/$USER/.local/bin"
 
+if [ -d "$HOME/opt" ]; then
+    for pkg in "$HOME/opt"/*; do
+        if [ -d "$pkg/bin" ]; then
+            PATH+=":$pkg/bin"
+        fi
+    done
+fi
+
 [ -f "$ETC_SITE/zshrc-path-mid" ] && source "$ETC_SITE/zshrc-path-mid"
 
 # standard Unix bin folders
