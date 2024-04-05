@@ -3,6 +3,7 @@
 # Cmake: 3.26.3
 # GCC: 13.1.0
 # Binutils: 2.41
+# Gettext 0.21
 # Set CC, CXX to correct location
 # Ensure they match PATH gcc/g++
 
@@ -52,7 +53,8 @@ echo "  Git clean: $GITCLEAN"
 echo "Tool versions:"
 echo "  GCC: $(which gcc) -- $(gcc --version | head -n1)"
 echo "  LD: $(which ld) -- $(ld --version | head -n1)"
-echo "  CMake: $(which cmake)  -- $(cmake --version | head -n1)"
+echo "  CMake: $(which cmake) -- $(cmake --version | head -n1)"
+echo "  Gettext: $(which gettext) -- $(gettext --version | head -n1)"
 
 if [ $DRYRUN -eq 1 ]; then
 	echo "Exiting now due to -d (dry run) flag"

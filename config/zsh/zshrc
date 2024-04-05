@@ -21,13 +21,13 @@ ulimit -Sn unlimited  # Unlimited number of open files (up to system max)
 bindkey "^A" beginning-of-line
 bindkey "^E" end-of-line
 
-bindkey ";5D" backward-word
+#bindkey ";5D" backward-word
 bindkey "^[[1;5D" backward-word
-bindkey "^[OD" backward-word
+#bindkey "^[OD" backward-word
 
-bindkey ";5C" forward-word
+#bindkey ";5C" forward-word
 bindkey "^[[1;5C" forward-word
-bindkey "^[OC" forward-word
+#bindkey "^[OC" forward-word
 
 bindkey '\e[A' history-search-backward
 bindkey '\e[B' history-search-forward
@@ -63,9 +63,12 @@ chgrp users /tmp/run /tmp/run/user 2>/dev/null
 PATH=""
 
 [ -f "$ETC_SITE/zshrc-path-pre" ] && source "$ETC_SITE/zshrc-path-pre"
+if [[ "$PATH" != *":" && "$PATH" != "" ]]; then
+    PATH+=":"
+fi
 
 # user-specific bin folders
-PATH+=":$HOME/bin"
+PATH+="$HOME/bin"
 # PATH+=":/home/$USER/.local/bin"
 
 if [ -d "$HOME/opt" ]; then
@@ -77,9 +80,12 @@ if [ -d "$HOME/opt" ]; then
 fi
 
 [ -f "$ETC_SITE/zshrc-path-mid" ] && source "$ETC_SITE/zshrc-path-mid"
+if [[ "$PATH" != *":" ]]; then
+    PATH+=":"
+fi
 
 # standard Unix bin folders
-PATH+=':/usr/local/sbin'
+PATH+='/usr/local/sbin'
 PATH+=':/usr/local/bin'
 PATH+=':/usr/sbin'
 PATH+=':/usr/bin'
