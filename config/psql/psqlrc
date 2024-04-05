@@ -1,0 +1,9 @@
+\set PROMPT1 '%[%033[1;36m%](%m/%/) %[%033[0m%]%R%#%x '
+\set PROMPT2 '%[%033[36m%](%m/%/) %[%033[0m%]%R%#%x '
+
+\pset null '(null)'
+
+\x auto
+
+\set HISTCONTROL ignoredups
+\set COMP_KEYWORD_CASE upper
