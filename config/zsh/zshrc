@@ -1,0 +1,108 @@
+ETC="$HOME/etc"
+ETC_SETUP="$ETC/setup"
+ETC_SETUP_ZSH="$ETC_SETUP/config/zsh"
+ETC_SITE="$ETC/site"
+
+[ -f "$ETC_SITE/zshrc-pre" ] && source "$ETC_SITE/zshrc-pre"
+
+
+################################## Shell options #################################
+
+set -o noclobber  # Refuse to redirect output to existing files
+set -o physical  # Leave symlinks unresolved
+
+set -o extended_glob  # Enable ** etc
+
+setopt no_nomatch  # Don't treat #,?,etc as wildcards
+
+ulimit -c 0  # No core dumps! Gah!
+ulimit -Sn unlimited  # Unlimited number of open files (up to system max)
+
+bindkey "^A" beginning-of-line
+bindkey "^E" end-of-line
+
+bindkey ";5D" backward-word
+bindkey "^[[1;5D" backward-word
+bindkey "^[OD" backward-word
+
+bindkey ";5C" forward-word
+bindkey "^[[1;5C" forward-word
+bindkey "^[OC" forward-word
+
+bindkey '\e[A' history-search-backward
+bindkey '\e[B' history-search-forward
+
+umask u=rwx,g=rwx,o=rx
+
+setopt PROMPT_SUBST  # zsh: evaluate $(...) in prompt
+unsetopt BEEP
+
+autoload -U colors && colors
+
+
+############################### Standard exports ################################
+
+export EDITOR=nvim
+export VISUAL=nvim
+export PAGER=less
+#export TERM=xterm-256color  # let the terminal set this
+
+export TZ='America/Chicago'
+export LANG='en_US.UTF-8'  # could cause python decoding issues? if so, try 'en_US'
+
+export NO_AT_BRIDGE=1
+export XDG_RUNTIME_DIR="/tmp/run/user/$(id -u)"
+mkdir -p "$XDG_RUNTIME_DIR" 2>/dev/null
+chmod u=rwx,go= "$XDG_RUNTIME_DIR" 2>/dev/null
+chmod a+rwx,g+s,+t /tmp/run /tmp/run/user 2>/dev/null
+chgrp users /tmp/run /tmp/run/user 2>/dev/null
+
+
+################################## PATH setup ###################################
+
+PATH=""
+
+[ -f "$ETC_SITE/zshrc-path-pre" ] && source "$ETC_SITE/zshrc-path-pre"
+
+# user-specific bin folders
+PATH+=":$HOME/bin"
+# PATH+=":/home/$USER/.local/bin"
+
+[ -f "$ETC_SITE/zshrc-path-mid" ] && source "$ETC_SITE/zshrc-path-mid"
+
+# standard Unix bin folders
+PATH+=':/usr/local/sbin'
+PATH+=':/usr/local/bin'
+PATH+=':/usr/sbin'
+PATH+=':/usr/bin'
+PATH+=':/sbin'
+PATH+=':/bin'
+
+[ -f "$ETC_SITE/zshrc-path-post" ] && source "$ETC_SITE/zshrc-path-post"
+
+export PATH
+
+
+########################### Aliases and functions ###############################
+
+source "$ETC_SETUP_ZSH/functions.zshrc"
+source "$ETC_SETUP_ZSH/aliases.zshrc"
+[ -f "$HOME/.cargo/env" ] && source "$HOME/.cargo/env"
+
+
+################################# Prompt setup ##################################
+
+WHOAMI=$(whoami)
+HOSTNAME=$(hostname)
+DOMAINNAME=$(hostname -y)
+
+export PS1="%k%F{4}%B$HOSTNAME%F{8} %F{5}%1~%F{yellow}%B ➜  %f%b"
+
+precmd() {
+    # Refresh this every command because programs could have changed it
+    echo -ne "\033]0;$WHOAMI@$HOSTNAME\007"
+}
+
+
+[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
+[ -f "$ETC_SITE/zshrc-post" ] && source "$ETC_SITE/zshrc-post"

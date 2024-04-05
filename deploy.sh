@@ -3,6 +3,17 @@
 
 REPO_ROOT="$(dirname "$(readlink -f "$0")")"
 
+ETC="$HOME/etc"
+ETC_SETUP="$ETC/setup"
+
+mkdir -p "$ETC_SETUP"
+if [[ "$REPO_ROOT" != "$ETC_SETUP" ]]; then
+    ln -s "$REPO_ROOT" "$ETC_SETUP"
+fi
+
+[ -f "$HOME/.zshrc" ] && mv "$HOME/.zshrc" "$HOME/.zshrc.bak.$(date +%s)"
+ln -s "$ETC_SETUP/config/zsh/zshrc" "$HOME/.zshrc"
+
 PYTHON3_EXE="python3"
 
 mkdir "$HOME/venvs"
@@ -24,7 +35,7 @@ mkdir ~/.config
 # Configure neovim
 #mkdir -p "$HOME/.config/nvim"
 #ln -s "$REPO_ROOT/config/nvim/init.lua" "$HOME/.config/nvim/init.lua"
-ln -s "$REPO_ROOT/config/nvim" "$HOME/.config/nvim"
+ln -s "$ETC_SETUP/config/nvim" "$HOME/.config/nvim"
 
 
 # :TSUpdate
@@ -38,5 +49,8 @@ ln -s "$REPO_ROOT/config/nvim" "$HOME/.config/nvim"
 # Configure zellij
 mkdir -p "$HOME/.config/zellij"
 #ln -s "$REPO_ROOT/config/zellij/config.kdl" "$HOME/.config/zellij/config.kdl"
-ln -s "$REPO_ROOT/config/zellij" "$HOME/.config/zellij"
+ln -s "$ETC_SETUP/config/zellij" "$HOME/.config/zellij"
 
+
+# Configure psqlrc
+ln -s "$ETC_SETUP/config/psql/.psqlrc" "$HOME/.psqlrc"
