@@ -1,0 +1,7 @@
+.header on
+.mode column
+
+.print
+.print *** SCHEMA ***
+.schema
+.print

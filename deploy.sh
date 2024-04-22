@@ -65,4 +65,7 @@ ln -s "$ETC_SETUP/config/zellij" "$HOME/.config/zellij"
 
 echo "-- Installing psql config..."
 # Configure psqlrc
-ln -s "$ETC_SETUP/config/psql/.psqlrc" "$HOME/.psqlrc"
+ln -s "$ETC_SETUP/config/psql/psqlrc" "$HOME/.psqlrc"
+
+echo "-- Installing sqlite config..."
+ln -s "$ETC_SETUP/config/sqlite/sqliterc" "$HOME/.sqliterc"
