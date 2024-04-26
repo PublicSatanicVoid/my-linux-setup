@@ -10,6 +10,10 @@ if [[ "$REPO_ROOT" != "$ETC_SETUP" ]]; then
     ln -s "$REPO_ROOT" "$ETC_SETUP"
 fi
 
+echo "-- Installing scripts..."
+mkdir -p ~/bin
+ln -s "$ETC_SETUP/tools/psall.sh" ~/bin/psall
+
 echo "-- Installing zsh config..."
 [ -f "$HOME/.zshrc" ] && mv "$HOME/.zshrc" "$HOME/.zshrc.bak.$(date +%s)"
 ln -s "$ETC_SETUP/config/zsh/zshrc" "$HOME/.zshrc"

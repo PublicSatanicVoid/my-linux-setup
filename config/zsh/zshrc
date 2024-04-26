@@ -101,7 +101,7 @@ export PATH
 
 source "$ETC_SETUP_ZSH/functions.zshrc"
 source "$ETC_SETUP_ZSH/aliases.zshrc"
-[ -f "$HOME/.cargo/env" ] && source "$HOME/.cargo/env"
+#[ -f "$HOME/.cargo/env" ] && source "$HOME/.cargo/env"
 
 
 ################################# Prompt setup ##################################
@@ -110,7 +110,9 @@ WHOAMI=$(whoami)
 HOSTNAME=$(hostname)
 DOMAINNAME=$(hostname -y)
 
-export PS1="%k%F{4}%B$HOSTNAME%F{8} %F{5}%1~%F{yellow}%B ➜  %f%b"
+#export PS1="%k%F{4}%B$HOSTNAME%F{8} %F{5}%1~ %F{yellow}%B➜  %f%b"
+#export PS1="%k%F{4}%B$HOSTNAME%F{8} %F{5}%1~ %F{yellow}%B» %f%b"
+export PS1="%k%F{4}%B$HOSTNAME%F{8} %F{5}%1~ %F{yellow}%B %f%b"
 
 precmd() {
     # Refresh this every command because programs could have changed it

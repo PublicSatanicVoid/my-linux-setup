@@ -209,6 +209,9 @@ require("lazy").setup({
                     pylsp = {
                         plugins = {
                             pylsp_mypy = { enabled = true },
+                            pycodestyle = {
+                                maxLineLength = 88
+                            },
                             jedi_completion = { fuzzy = true },
                             jedi = {
                                 -- I HATE that I have to do this.
@@ -253,13 +256,13 @@ require("lazy").setup({
 
             require("lspconfig").clangd.setup({
                 handlers = handlers,
-                --cmd = {
-                --    "clangd",
-                --    "--background-index",
-                --    "--suggest-missing-includes",
+                cmd = {
+                    "clangd",
+                    "--background-index",
+                    "--suggest-missing-includes",
                 --    "--clang-tidy",
-                --    "--completion-style=detailed"
-                --}
+                    "--completion-style=detailed"
+                }
             })
 
             require("lspconfig").rust_analyzer.setup({

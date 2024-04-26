@@ -19,8 +19,10 @@ function vmap(shortcut, command)
 end
 
 -- Scrolling half-page down/up keeps cursor centered vertically
-nmap("<C-d>", "L<C-d>zz")
-nmap("<C-u>", "H<C-u>zz")
+--nmap("<C-d>", "L<C-d>zz")
+--nmap("<C-u>", "H<C-u>zz")
+nmap("<C-d>", "25jzz")
+nmap("<C-u>", "25kzz")
 
 -- File search / replace
 nmap("<leader>sf", "<cmd>Telescope find_files<CR>")
