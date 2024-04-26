@@ -34,6 +34,10 @@ declare -A SYSTEM_USERS=(
     [rtkit]=1
     [chrony]=1
     [libstoragemgmt]=1
+    [systemd-network]=1
+    [systemd-resolve]=1
+    [_chrony]=1
+    [statd]=1
 )
 
 
@@ -50,7 +54,7 @@ US="\x1f"
 PS_FIELDS="pid,user:32,pcpu,nlwp,state,wchan:32,rss,etime,args"
 
 # Sed expression to delimit ps output fields with unit separator
-SED_COLS_TO_US_STRING="s/(\S+)[ ]+(\S+)[ ]+(\S+)[ ]+(\S+)[ ]+(\S+)[ ]+(\S+)[ ]+(\S+)[ ]+(\S+) (.*)/\1$US\2$US\3$US\4$US\5$US\6$US\7$US\8$US\9/g"
+SED_COLS_TO_US_STRING="s/^[ ]*(\S+)[ ]+(\S+)[ ]+(\S+)[ ]+(\S+)[ ]+(\S+)[ ]+(\S+)[ ]+(\S+)[ ]+(\S+) (.*)/\1$US\2$US\3$US\4$US\5$US\6$US\7$US\8$US\9/g"
 
 exit_help() {
     echo "usage: $(basename $0) [-wkrtPEUS] [-u USER] [-s SORT_SPEC]"
