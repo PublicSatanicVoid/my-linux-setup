@@ -59,7 +59,11 @@ ln -s "$ETC_SETUP/config/nvim" "$HOME/.config/nvim"
 # :MasonInstall ruff-lsp
 # :MasonInstall bash-language-server
 
+# TODO download and install rust
+# https://static.rust-lang.org/dist/rust-1.77.2-x86_64-unknown-linux-gnu.tar.xz
+
 # TODO download and install zellij
+# https://github.com/zellij-org/zellij/releases/download/v0.40.0/zellij-x86_64-unknown-linux-musl.tar.gz
 
 echo "-- Installing zellij config..."
 # Configure zellij
