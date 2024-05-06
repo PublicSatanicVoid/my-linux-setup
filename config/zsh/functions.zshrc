@@ -1,3 +1,7 @@
+function whichcmd {
+    which --skip-alias "$1"
+}
+
 function loggedcmd {
     # Only log if stdout is a terminal
     if [ -t 1 ]; then
@@ -67,6 +71,10 @@ function xz_and_remove {
     XZ_OPT="-T0 -9" \
     loggedcmd \
         tar -cJf $1.tar.xz $1 --remove-files
+}
+function bsc_and_remove {
+    loggedcmd \
+        tar-bsc -r $1.tar.bsc $1
 }
 
 function replace_all {
