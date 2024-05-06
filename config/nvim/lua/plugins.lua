@@ -210,7 +210,8 @@ require("lazy").setup({
                         plugins = {
                             pylsp_mypy = { enabled = true },
                             pycodestyle = {
-                                maxLineLength = 88
+                                maxLineLength = 88,
+                                ignore = {'E701', 'W503'},
                             },
                             jedi_completion = { fuzzy = true },
                             mccabe = { threshold = 20 },

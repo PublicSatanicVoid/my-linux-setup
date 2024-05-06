@@ -57,7 +57,7 @@ PS_FIELDS="pid,user:32,pcpu,nlwp,state,wchan:32,rss,etime,args"
 SED_COLS_TO_US_STRING="s/^[ ]*(\S+)[ ]+(\S+)[ ]+(\S+)[ ]+(\S+)[ ]+(\S+)[ ]+(\S+)[ ]+(\S+)[ ]+(\S+) (.*)/\1$US\2$US\3$US\4$US\5$US\6$US\7$US\8$US\9/g"
 
 exit_help() {
-    echo "usage: $(basename $0) [-wkrtPEUS] [-u USER] [-s SORT_SPEC]"
+    echo "usage: $(basename $0) [-wkrtPEUS] [-u USER] [-s SORT_SPEC] [-p PARENT_PID]"
     echo
     echo "  Display ps output in a more readable, compact format."
     echo
@@ -77,6 +77,7 @@ exit_help() {
     echo "                can specify multiple users by separating them with commas"
     echo "  -s [+-]FIELD: sort by FIELD(s) (pid,user,state,pcpu,nlwp,rss,wchan,args)"
     echo "                can specify multiple fields by separating them with commas"
+    echo "  -p PID:       filter to process descending from PID"
     exit 1
 }
 
@@ -119,6 +120,59 @@ filter_system_trees() {
     done
 }
 
+# When argument is nonzero, filters stdin to remove process not equal to or descending 
+# from the specified PID.
+# Expects stdin to be the output of ps with the first column being pid.
+filter_pid_tree() {
+    if [ $1 -eq 0 ]; then
+        cat
+        return
+    fi
+
+    child_procs=,`pstree -p $1 | grep -Eo '\([0-9]+\)' | grep -Eo '[0-9]+' | paste -sd, -`,
+
+    read -r header
+    echo "$header"
+    while read -r pid line; do
+        if [[ $pid -eq $1 || "$child_procs" == *",$pid,"* ]]; then
+            echo "$pid $line"
+        fi
+    done
+}
+
+filter_self_procs() {
+    main_pid=$1
+    # Remove (most) subprocesses of psall since they're just noise
+
+    self_procs=,`pstree -p $main_pid | grep -Eo '\([0-9]+\)' | grep -Eo '[0-9]+' | paste -sd, -`,
+
+    # Faster but less portable; if this fails, fall back to plain bash
+    awk -v hide_pids="$self_procs" '
+        @load "filefuncs"
+
+        NR==1{ print substr($0, 3, length($0)) }
+        NR>1{
+            pid = $2
+            if (!index(hide_pids, $2) && !stat("/proc/"pid, fstat)) {
+                print substr($0, 3, length($0))
+            }
+        }
+    ' 2>/dev/null
+    if [ $? -eq 0 ]; then
+        return
+    fi
+
+    read -r header
+    echo "${header:2:999999999999}"
+    while read -r line; do
+        read -r x pid x <<< "$line"
+        if [[ "$self_procs" != *",$pid,"* && -d "/proc/$pid" ]]; then
+            # Each line was prefixed with 'X ' to avoid leading space being stripped
+            echo "${line:2:999999999999}"
+        fi
+    done
+}
+
 show_wide=0
 wideflag=""
 awk_maxlen="cols"
@@ -129,8 +183,9 @@ show_pcpu=1
 show_threads=0
 show_etime=1
 omit_system=0
+filter_ppid=0
 
-while getopts "u:s:hwkrtPEUS" o; do
+while getopts "u:s:p:hwkrtPEUS" o; do
     case "$o" in
         u)
             filter_user="$OPTARG"
@@ -138,38 +193,21 @@ while getopts "u:s:hwkrtPEUS" o; do
                 show_user=0  # if it's just one user, no need to show them
             fi
             ;;
-        U)
-            show_user=0
-            ;;
-        k)
-            show_kfunc=1
-            ;;
-        r)
-            show_rss=1
-            ;;
+        U)  show_user=0;;
+        k)  show_kfunc=1;;
+        r)  show_rss=1;;
         w)
             show_wide=1
             wideflag="www"
             awk_maxlen='length($0)'
             ;;
-        t)
-            show_threads=1
-            ;;
-        P)
-            show_pcpu=0
-            ;;
-        E)
-            show_etime=0
-            ;;
-        S)
-            omit_system=1
-            ;;
-        s)
-            sort_field="$OPTARG"
-            ;;
-        *)
-            exit_help
-            ;;
+        t)  show_threads=1;;
+        P)  show_pcpu=0;;
+        E)  show_etime=0;;
+        S)  omit_system=1;;
+        s)  sort_field="$OPTARG";;
+        p)  filter_ppid="$OPTARG";;
+        *)  exit_help;;
     esac
 done
 
@@ -185,8 +223,11 @@ else
     bsd="f"
 fi
 
+main_pid=$$
+
 ps $bsd $wideflag $filter -o "$PS_FIELDS" \
 | filter_system_trees $omit_system \
+| filter_pid_tree $filter_ppid \
 | sed -r "$SED_COLS_TO_US_STRING" \
 | awk \
     -v show_kfunc=$show_kfunc \
@@ -337,6 +378,7 @@ END {
     #fmt = "%"maxlen_pid"s %-"maxlen_user"s %"maxlen_pcpu"s %-"maxlen_state"s %"maxlen_etime"s %s\n"
 
     for (i = 1; i <= rowcount; i++) {
+        printf "X "  # Prefix so that subsequent steps do not strip the leading space
         printf fmt1, pids[i]
         if (show_user) {
             printf fmt2, users[i]
@@ -362,4 +404,5 @@ END {
     }
 }
 ' \
-| awk "BEGIN { cols=$(tput cols) }   { print substr(\$0, 1, $awk_maxlen) }"
+| awk "BEGIN { cols=$(tput cols) }   { print substr(\$0, 1, $awk_maxlen+2) }" \
+| filter_self_procs $main_pid
