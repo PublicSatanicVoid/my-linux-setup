@@ -1,5 +1,5 @@
 #!/bin/sh
 
-~/etc/setup/tools/newconda.sh seccomp
-./seccomp/bin/conda install -y 'conda-forge::seccomp'
+~/etc/setup/tools/newconda.sh ptrace
+./ptrace/bin/conda install -y 'conda-forge::seccomp'
 
