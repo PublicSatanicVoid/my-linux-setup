@@ -1,6 +1,6 @@
-#!/bin/sh
+#!/bin/bash
 
-source ./seccomp/bin/activate
+source ./ptrace/bin/activate
 
 EXTRA_CFLAGS="-fno-stack-protector -fno-function-sections -fomit-frame-pointer "
 EXTRA_CFLAGS+="-finline-functions -Ofast -march=native"
