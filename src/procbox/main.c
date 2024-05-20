@@ -19,6 +19,7 @@
 
 #define DEBUG_LINKED_LIST 0
 #define PRINT_CHILD_PIDS 0
+#define PRINT_OPENS 0
 #define SANDBOX_ENABLED 1
 
 // Some syscalls aren't defined in all library versions we want to support
@@ -272,6 +273,9 @@ int trace_syscall(pid_t pid) {
     else if (syscall == SYS_write || syscall == SYS_pwrite64 || syscall == SYS_writev
             || syscall == SYS_pwritev || syscall == SYS_pwritev2
             || syscall == SYS_tee) {
+
+        return TRACE_OK;  // Try catching at the open() level instead
+
         int fd = (syscall == SYS_tee ? regs.rsi : regs.rdi);
         long count = regs.rdx;
 
@@ -295,6 +299,7 @@ int trace_syscall(pid_t pid) {
 
     else if (syscall == SYS_open || syscall == SYS_openat || syscall == SYS_openat2
             || syscall == SYS_creat) {
+        // return TRACE_OK;
         
         int path_register;
         int flags;
@@ -325,9 +330,111 @@ int trace_syscall(pid_t pid) {
             return TRACE_ERROR_FATAL;
         }
 
+        // Get the path they want to open. Some like /dev/ptsNNN are allowed.
+        char desired_path[PATH_MAX];
+        char *path_addr = (char*) ptrace(PTRACE_PEEKUSER, pid, sizeof(long) * path_register, 0);
+        //printf("path addr = %p\n", path_addr);
+        int done = 0;
+        int i = 0;
+        long word;
+        //char buf[8];
+        while (!done) {
+            word = ptrace(PTRACE_PEEKTEXT, pid, path_addr + i, 0);
+            desired_path[i] = (char) (word);
+            if (!desired_path[i] || i == PATH_MAX) break;
+            desired_path[i+1] = (char) (word >> 8);
+            if (!desired_path[i+1] || i+1 == PATH_MAX) break;
+            desired_path[i+2] = (char) (word >> 16);
+            if (!desired_path[i+2] || i+2 == PATH_MAX) break;
+            desired_path[i+3] = (char) (word >> 24);
+            if (!desired_path[i+3] || i+3 == PATH_MAX) break;
+            desired_path[i+4] = (char) (word >> 32);
+            if (!desired_path[i+4] || i+4 == PATH_MAX) break;
+            desired_path[i+5] = (char) (word >> 40);
+            if (!desired_path[i+5] || i+5 == PATH_MAX) break;
+            desired_path[i+6] = (char) (word >> 48);
+            if (!desired_path[i+6] || i+6 == PATH_MAX) break;
+            desired_path[i+7] = (char) (word >> 56);
+            if (!desired_path[i+7] || i+7 == PATH_MAX) break;
+
+            i += 8;
+            //printf("%s\n", buf);
+            //char buf[sizeof(long) / sizeof(char)];
+            //memcpy(buf, word, sizeof(long));
+            //printf(" <%s>\n", buf);
+            // done = 1;
+            //printf("+\n");
+
+        }
+        if (PRINT_OPENS) {
+            int f_rdonly = flags & O_RDONLY;
+            int f_wronly = flags & O_WRONLY;
+            int f_rdwr = flags & O_RDWR;
+            int f_append = flags & O_APPEND;
+            int f_async = flags & O_ASYNC;
+            int f_cloexec = flags & O_CLOEXEC;
+            int f_creat = flags & O_CREAT;
+            int f_direct = flags & O_DIRECT;
+            int f_directory = flags & O_DIRECTORY;
+            int f_dsync = flags & O_DSYNC;
+            int f_excl = flags & O_EXCL;
+            int f_largefile = flags & O_LARGEFILE;
+            int f_noatime = flags & O_NOATIME;
+            int f_noctty = flags & O_NOCTTY;
+            int f_nofollow = flags & O_NOFOLLOW;
+            int f_nonblock = flags & O_NONBLOCK;
+            int f_ndelay = flags & O_NDELAY;
+            int f_path = flags & O_PATH;
+            int f_sync = flags & O_SYNC;
+            int f_tmpfile = flags & O_TMPFILE;
+            int f_trunc = flags & O_TRUNC;
+            printf("open(%s,", desired_path);
+            if (f_rdonly) printf(" +ro");
+            if (f_wronly) printf(" +wo");
+            if (f_rdwr) printf(" +rw");
+            if (f_append) printf(" +append");
+            if (f_async) printf(" +async");
+            if (f_cloexec) printf(" +cloexec");
+            if (f_creat) printf(" +creat");
+            if (f_direct) printf(" +direct");
+            if (f_directory) printf(" +directory");
+            if (f_dsync) printf(" +dsync");
+            if (f_excl) printf(" +excl");
+            if (f_largefile) printf(" +largefile");
+            if (f_noatime) printf(" +noatime");
+            if (f_noctty) printf(" +noctty");
+            if (f_nofollow) printf(" +nofollow");
+            if (f_nonblock) printf(" +nonblock");
+            if (f_ndelay) printf(" +ndelay");
+            if (f_path) printf(" +path");
+            if (f_sync) printf(" +sync");
+            if (f_tmpfile) printf(" +tmpfile");
+            if (f_trunc) printf(" +trunc");
+            printf(")\n");
+        }
+        // printf("open(%s, %x (%x) (%x))\n", desired_path, flags, flags & (O_APPEND | O_RDWR | O_WRONLY | O_CREAT | O_TRUNC), flags & (O_RDONLY));
+
+        if (!strcmp(desired_path, "/dev/tty")) {
+            // printf(" -> allowing (tty)\n");
+            return TRACE_OK;
+        }
+        if (strstr(desired_path, "/dev/pts")) {
+            // printf(" -> allowing (pts)\n");
+            return TRACE_OK;
+        }
+        // if (strstr(desired_path, "/tmp")) {
+        //     printf(" -> allowing (tmp)\n");
+        //     return TRACE_OK;
+        // }
+        // if (strstr(desired_path, "/home")) {
+        //     printf(" -> allowing (home)\n");  // TODO refine this
+        //     return TRACE_OK;
+        // }
+
 
         // Sorry O_RDWR, you're gonna read back null bytes forEVER!
         if (flags & (O_APPEND | O_RDWR | O_WRONLY)) {
+            // printf(" -> SPOOF\n");
             // Replace pathname with /dev/null
             // https://www.alfonsobeato.net/c/modifying-system-call-arguments-with-ptrace/
             
@@ -379,8 +486,10 @@ int trace_syscall(pid_t pid) {
         case SYS_fchmodat2:
         case SYS_sync:
         case SYS_process_vm_writev:
-            if (SANDBOX_ENABLED)
+            if (SANDBOX_ENABLED) {
+                // printf(" -> DENY %ld\n", syscall);
                 return spoof_syscall(pid, 0, &regs);
+            }
             break;
     }
 
@@ -389,7 +498,8 @@ int trace_syscall(pid_t pid) {
 
 int main(int argc, char** argv) {
     if (argc == 1) {
-        fprintf(stderr, "usage: %s cmd [args...]\n", argv[0]);
+        fprintf(stderr, "usage: %s cmd [args...]      (run command in sandboxed environment)\n", argv[0]);
+        fprintf(stderr, "usage: %s -s                 (open bash shell in sandboxed environment)\n", argv[0]);
         return EXIT_FAILURE;
     }
 
@@ -398,7 +508,15 @@ int main(int argc, char** argv) {
         ptrace(PTRACE_TRACEME, 0, 0, 0);
         raise(SIGSTOP);
 
-        execvp(argv[1], argv + 1);
+        if (!strcmp(argv[1], "-s")) {
+            //setenv("PS1", "S[\\u@\\h \\W]\\$ ", 1);
+            setenv("PS1", "(procbox) \\h \\W\\$ ", 1);
+            char* args[] = {"/bin/bash", "--norc", NULL};
+            execvp("/bin/bash", args);
+        }
+        else {
+            execvp(argv[1], argv + 1);
+        }
         perror("execvp");
         return EXIT_FAILURE;
     }
