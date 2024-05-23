@@ -6,21 +6,38 @@
 #include <sys/ptrace.h>
 #include <sys/user.h>
 #include <sys/syscall.h>
+#include <sys/stat.h>
 #include <sys/reg.h>
 #include <errno.h>
 #include <stdint.h>
 #include <string.h>
 #include <fcntl.h>
 #include <limits.h>
+#include <pwd.h>
+#include <libgen.h>
 
 #define TRACE_OK 0
 #define TRACE_ERROR_NONFATAL 1
 #define TRACE_ERROR_FATAL 2
 
-#define DEBUG_LINKED_LIST 0
-#define PRINT_CHILD_PIDS 0
-#define PRINT_OPENS 0
+#define TRACE_LINKED_LIST 0
+#define TRACE_ALLOWED_PATHS 1
+#define TRACE_CHILD_PIDS 0
+#define TRACE_OPENS 0
 #define SANDBOX_ENABLED 1
+#define ALLOW_TMP 1
+#define ALLOW_TMP_OTHER_USER 0
+#define ALLOW_HOME 1
+#define ALLOW_HOME_OTHER_USER 1
+
+/************
+ * TODOs
+ *  - Get or save (and update on set*uid) real UID of process, and use that when
+ *  evaluating file ownership in context of given process
+ *
+ ************/
+
+// #define MIN(x,y) ((x)<(y)?(x):(y))
 
 // Some syscalls aren't defined in all library versions we want to support
 
@@ -60,6 +77,59 @@ struct process_state {
 };
 
 static struct process_state *process_state_start = NULL;
+
+inline void get_user_homedir(uid_t uid, char* homedir, size_t maxsize) {
+    struct passwd *pwd = getpwuid(uid);
+    strncpy(homedir, pwd->pw_dir, maxsize - 1);
+    homedir[PATH_MAX-1] = '\0';
+}
+
+inline uid_t path_owner(char* path) {
+    struct stat buf;
+    stat(path, &buf);
+    return buf.st_uid;
+}
+
+int is_allowed_path(char* path) {
+    char real_desired_path[PATH_MAX];
+    realpath(path, real_desired_path);
+
+    if (!strcmp(real_desired_path, "/dev/tty")) {
+        if (TRACE_ALLOWED_PATHS) printf("trace: allowing (tty): %s\n", path);
+        return 1;
+    }
+    if (strstr(real_desired_path, "/dev/pts")) {
+        if (TRACE_ALLOWED_PATHS) printf("trace: allowing (pts): %s\n", path);
+        return 1;
+    }
+    if (ALLOW_TMP && (
+            strstr(real_desired_path, "/tmp/")
+            || strstr(real_desired_path, "/var/tmp/")
+    )) {
+        if (!ALLOW_TMP_OTHER_USER && path_owner(real_desired_path) != getuid()) {
+            return 0;
+        }
+        if (TRACE_ALLOWED_PATHS) printf("trace: allowing (tmp): %s\n", path);
+        return 1;
+    }
+    if (ALLOW_HOME) {
+        char homedir[PATH_MAX];
+        get_user_homedir(getuid(), homedir, PATH_MAX);
+        char real_homedir[PATH_MAX];
+        realpath(homedir, real_homedir);  // home dir could be a symlink
+        char real_homedir_suffix[PATH_MAX+1];
+        snprintf(real_homedir_suffix, PATH_MAX+1, "%s/", real_homedir);
+        if (strstr(real_desired_path, real_homedir)) {
+            if (!ALLOW_HOME_OTHER_USER && path_owner(real_desired_path) != getuid()) {
+                return 0;
+            }
+            if (TRACE_ALLOWED_PATHS) printf("trace: allowing (home): %s\n", path);
+            return 1;
+        }
+    }
+
+    return 0;
+}
 
 void init_process_state(struct process_state *state, pid_t pid) {
     state->pid = pid;
@@ -264,7 +334,7 @@ int trace_syscall(pid_t pid) {
             return TRACE_OK;
         }
         
-        if (PRINT_CHILD_PIDS)
+        if (TRACE_CHILD_PIDS)
             printf("<NEW: %d>\n", fork_child);
         ptrace(PTRACE_ATTACH, fork_child, 0, 0);
 
@@ -366,7 +436,7 @@ int trace_syscall(pid_t pid) {
             //printf("+\n");
 
         }
-        if (PRINT_OPENS) {
+        if (TRACE_OPENS) {
             int f_rdonly = flags & O_RDONLY;
             int f_wronly = flags & O_WRONLY;
             int f_rdwr = flags & O_RDWR;
@@ -414,22 +484,18 @@ int trace_syscall(pid_t pid) {
         }
         // printf("open(%s, %x (%x) (%x))\n", desired_path, flags, flags & (O_APPEND | O_RDWR | O_WRONLY | O_CREAT | O_TRUNC), flags & (O_RDONLY));
 
-        if (!strcmp(desired_path, "/dev/tty")) {
-            // printf(" -> allowing (tty)\n");
+        // Fully resolve the path to eliminate tomfoolery
+        // e.g.
+        //  $ mkdir /path/that/should/be/sandboxed
+        //  $ ./procbox ln -s /path/that/should/be/sandboxed /tmp/exploit
+        //  $ ./procbox touch /tmp/exploit/this_shouldnt_be_allowed
+        //  $ stat /tmp/exploit/this_shouldnt_be_allowed  # whoops, it exists!
+        // char real_desired_path[PATH_MAX];
+        // realpath(desired_path, real_desired_path);
+
+        if (is_allowed_path(desired_path)) {
             return TRACE_OK;
         }
-        if (strstr(desired_path, "/dev/pts")) {
-            // printf(" -> allowing (pts)\n");
-            return TRACE_OK;
-        }
-        // if (strstr(desired_path, "/tmp")) {
-        //     printf(" -> allowing (tmp)\n");
-        //     return TRACE_OK;
-        // }
-        // if (strstr(desired_path, "/home")) {
-        //     printf(" -> allowing (home)\n");  // TODO refine this
-        //     return TRACE_OK;
-        // }
 
 
         // Sorry O_RDWR, you're gonna read back null bytes forEVER!
@@ -510,7 +576,7 @@ int main(int argc, char** argv) {
 
         if (!strcmp(argv[1], "-s")) {
             //setenv("PS1", "S[\\u@\\h \\W]\\$ ", 1);
-            setenv("PS1", "(procbox) \\h \\W\\$ ", 1);
+            setenv("PS1", "\\033[0;33m(procbox) \\033[0m\\h \\W\\$ ", 1);
             char* args[] = {"/bin/bash", "--norc", NULL};
             execvp("/bin/bash", args);
         }
@@ -532,7 +598,7 @@ int main(int argc, char** argv) {
             break;
         }
         if (WIFEXITED(status)) {
-            if (PRINT_CHILD_PIDS)
+            if (TRACE_CHILD_PIDS)
                 printf("<DIE: %d>\n", next_child);
             
             // TODO (optimization): only do this if the pid has a process_state entry
