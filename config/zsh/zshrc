@@ -110,9 +110,15 @@ WHOAMI=$(whoami)
 HOSTNAME=$(hostname)
 DOMAINNAME=$(hostname -y)
 
+dir_tag() {
+    if [[ "$(pwd)" == *"dup."* && "$(basename $(pwd))" != *"dup."* ]]; then
+        echo "%b%F{green}(dup)%B"
+    fi
+}
+
 #export PS1="%k%F{4}%B$HOSTNAME%F{8} %F{5}%1~ %F{yellow}%B➜  %f%b"
 #export PS1="%k%F{4}%B$HOSTNAME%F{8} %F{5}%1~ %F{yellow}%B» %f%b"
-export PS1="%k%F{4}%B$HOSTNAME%F{8} %F{5}%1~ %F{yellow}%B %f%b"
+export PS1="%k%F{4}%B$HOSTNAME%F{8} \$(dir_tag)%F{5}%1~ %F{yellow}%B %f%b"
 
 precmd() {
     # Refresh this every command because programs could have changed it
