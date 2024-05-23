@@ -1,5 +1,10 @@
 function whichcmd {
-    which --skip-alias "$1"
+    x=$(which --skip-alias "$1" 2>/dev/null)
+    if [ -z "$x" ]; then
+        echo "$1"
+    else
+        echo "$x"
+    fi
 }
 
 function loggedcmd {
