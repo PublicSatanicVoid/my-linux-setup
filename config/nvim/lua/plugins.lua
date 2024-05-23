@@ -137,11 +137,11 @@ require("lazy").setup({
                 -- Mappings.
                 -- See `:help vim.lsp.*` for documentation on any of the below functions
                 local bufopts = { noremap=true, silent=true, buffer=bufnr }
-                --vim.keymap.set("n", "gD", vim.lsp.buf.declaration, bufopts)
+                vim.keymap.set("n", "gD", vim.lsp.buf.declaration, bufopts)
                 vim.keymap.set("n", "gd", vim.lsp.buf.definition, bufopts)
                 vim.keymap.set("n", "gr", vim.lsp.buf.references, bufopts)
                 vim.keymap.set("n", "K", vim.lsp.buf.hover, bufopts)
-                --vim.keymap.set("n", "gi", vim.lsp.buf.implementation, bufopts)
+                vim.keymap.set("n", "gi", vim.lsp.buf.implementation, bufopts)
                 vim.keymap.set("n", "<C-k>", vim.lsp.buf.signature_help, bufopts)
                 vim.keymap.set("n", "<leader>wa", vim.lsp.buf.add_workspace_folder, bufopts)
                 vim.keymap.set("n", "<leader>wr", vim.lsp.buf.remove_workspace_folder, bufopts)
@@ -215,10 +215,7 @@ require("lazy").setup({
                             },
                             jedi_completion = { fuzzy = true },
                             jedi = {
-                                -- I HATE that I have to do this.
-                                -- This is DISGUSTING.
-                                -- If I have to do this, it is because our codebase is
-                                -- TOTALLY FUCKED.
+                                -- Some assembly required... sigh...
                                 extra_paths = {
                                     "buildcell",
                                     "charflow",
@@ -233,7 +230,7 @@ require("lazy").setup({
                                     "tasker"
                                 }
                             },
-                            mccabe = { threshold = 20 },
+                            mccabe = { threshold = 100 },
                         }
                     }
                 },

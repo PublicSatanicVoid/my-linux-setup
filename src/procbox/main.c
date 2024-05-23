@@ -497,7 +497,6 @@ int trace_syscall(pid_t pid) {
             return TRACE_OK;
         }
 
-
         // Sorry O_RDWR, you're gonna read back null bytes forEVER!
         if (flags & (O_APPEND | O_RDWR | O_WRONLY)) {
             // printf(" -> SPOOF\n");
