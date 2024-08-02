@@ -1,5 +1,12 @@
 # Test file to quickly test LSP functionality in NeoVim
 
+import os
+import sys
+
+sys.path.append("/tmp")
+
+import functools
+
 
 def foo(x, y):
     """return x + y"""
