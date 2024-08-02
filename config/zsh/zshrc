@@ -79,6 +79,10 @@ if [ -d "$HOME/opt" ]; then
     done
 fi
 
+if [ -d "$HOME/go/bin" ]; then
+    PATH+=":$HOME/go/bin"
+fi
+
 [ -f "$ETC_SITE/zshrc-path-mid" ] && source "$ETC_SITE/zshrc-path-mid"
 if [[ "$PATH" != *":" ]]; then
     PATH+=":"
@@ -119,6 +123,7 @@ dir_tag() {
 #export PS1="%k%F{4}%B$HOSTNAME%F{8} %F{5}%1~ %F{yellow}%B➜  %f%b"
 #export PS1="%k%F{4}%B$HOSTNAME%F{8} %F{5}%1~ %F{yellow}%B» %f%b"
 export PS1="%k%F{4}%B$HOSTNAME%F{8} \$(dir_tag)%F{5}%1~ %F{yellow}%B %f%b"
+#export PS1="%K{white}%F{black}(%B%m %b%K{white}%F{black}%1~)%f%b%k "
 
 precmd() {
     # Refresh this every command because programs could have changed it

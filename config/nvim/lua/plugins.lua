@@ -208,12 +208,24 @@ require("lazy").setup({
                 settings = {
                     pylsp = {
                         plugins = {
+                            -- sorts imports on format, boo hiss
+                            autopep8 = { enabled = false },
+
+                            -- redundant with ruff
+                            pycodestyle = { enabled = false },
+                            pyflakes = { enabled = false },
+                            yapf = { enabled = false },
+                            black = { enabled = false },
+
                             pylsp_mypy = { enabled = true },
-                            pycodestyle = {
-                                maxLineLength = 88,
-                                ignore = {'E701', 'W503'},
-                            },
+                            --pycodestyle = {
+                            --    maxLineLength = 88,
+                            --    ignore = {'E701', 'W503'},
+                            --},
                             jedi_completion = { fuzzy = true },
+                            jedi_symbols = {
+                                include_import_symbols = false
+                            },
                             mccabe = { threshold = 100 },
                         }
                     }
@@ -229,7 +241,7 @@ require("lazy").setup({
                 on_attach = on_attach,
                 init_options = {
                     settings = {
-                        args = {},
+                        organizeImports = false,
                     }
                 }
             })
