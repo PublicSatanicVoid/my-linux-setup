@@ -4,6 +4,7 @@
 #include <limits.h>
 #include <unistd.h>
 #include <sys/stat.h>
+#include <sys/types.h>
 
 int main() {
     char cwd[PATH_MAX];
@@ -13,8 +14,18 @@ int main() {
 
     struct stat statbuf;
 
+    dev_t dev = 0;
+
     while (cwd[1] != '\0') {  // ie cwd == "/"
         strcpy(git, cwd);
+
+	if (!stat(cwd, &statbuf)) {
+	    if (dev && dev != statbuf.st_dev) {
+	        break;
+	    }
+	    dev = statbuf.st_dev;
+	}
+
         strcat(git, "/.git/HEAD");
 
         if (!stat(git, &statbuf)) {

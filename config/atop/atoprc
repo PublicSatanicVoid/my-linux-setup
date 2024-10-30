@@ -1,0 +1,8 @@
+flags AWafo
+interval 10
+maxlinecpu 5
+maxlinegpu 0
+maxlinedisk 3
+maxlineintf 2
+maxlinenfsm 2
+ownprocline PID:10 PPID:5 RUID:9 SYSCPU:9 USRCPU:9 RDELAY:5 BDELAY:5 CPUNR:4 MAJFLT:5 RSIZE:7 VSIZE:6 S:10 WCHAN:2 THR:9 SORTITEM:10 CMD:10
