@@ -1,27 +1,5 @@
 local neovim_venv = os.getenv("NEOVIM_VENV") or os.getenv("HOME") .. "/venvs/neovim_venv"
-local lazypath = vim.fn.stdpath("data") .. "/lazy/lazy.nvim"
-if not vim.loop.fs_stat(lazypath) then
-    vim.fn.system({
-        "git",
-        "clone",
-        "--filter=blob:none",
-        "https://github.com/folke/lazy.nvim.git",
-        "--branch=stable", -- latest stable release
-        lazypath,
-    })
-end
-vim.opt.rtp:prepend(lazypath)
-
-vim.cmd [[
-augroup qs_colors
-    autocmd!
-    autocmd ColorScheme * highlight QuickScopePrimary guifg='#afff5f' gui=underline ctermfg=155 cterm=underline
-    autocmd ColorScheme * highlight QuickScopeSecondary guifg='#5fffff' gui=underline ctermfg=81 cterm=underline
-augroup END
-]]
-
-require("lazy").setup({
-
+local T = {
 --Lualine causes the cursor to disappear occasionally.
 --[===[
     {"nvim-lualine/lualine.nvim", event = "VeryLazy",
@@ -53,13 +31,14 @@ require("lazy").setup({
         end
     },
 
-    {"lewis6991/gitsigns.nvim",
-        config = function()
-            require("gitsigns").setup({
-                signcolumn = false
-            })
-        end
-    },
+    -- -- disabled 20240926 due to slow autofs
+    -- {"lewis6991/gitsigns.nvim",
+    --     config = function()
+    --         require("gitsigns").setup({
+    --             signcolumn = false
+    --         })
+    --     end
+    -- },
 
     -- Okay, this also causes the cursor to disappear occasionally, but a lot less often.
     -- "famiu/feline.nvim",
@@ -68,6 +47,7 @@ require("lazy").setup({
             local feline = require("feline")
             feline.setup()
 
+            ---[===[
             local palette = require("rose-pine.palette")
             
             theme = {
@@ -82,9 +62,93 @@ require("lazy").setup({
             }
 
             feline.use_theme(theme)
+            ---]===]
+
         end
     },
 
+--[===[
+    {"rebelot/kanagawa.nvim",
+        init = function()
+            vim.cmd.colorscheme "kanagawa"
+        end,
+        config = function()
+            require("kanagawa").setup({
+                compile = true,  -- remember to rerun :KanagawaCompile to reconfig
+                undercurl = false,
+                commentStyle = { italic = false },
+                keywordStyle = { italic = false },
+                statementStyle = { bold = false },
+                transparent = true,
+                theme = "wave",
+                colors = {
+                    theme = {
+                        all = {
+                            ui = {
+                                bg_gutter = "none",
+                                --bg = "none"
+                            }
+                        }
+                    }
+                }
+            })
+        end,
+    },
+--]===]
+    
+--[===[
+    {"AlexvZyl/nordic.nvim",
+        -- lazy = false,
+        -- priority = 1000,
+        init = function()
+            vim.cmd.colorscheme "nordic"
+        end,
+        config = function()
+            require("nordic").setup({
+                italic_comments = false,
+                transparent = {
+                    bg = true,
+                    float = true,
+                },
+                bright_border = true,
+                reduced_blue = true,
+                cursorline = {
+                    bold = false,
+                    bold_number = true,
+                    theme = 'dark',
+                    blend = 0.95,
+                },
+                ts_context = {
+                    dark_background = false,
+                },
+            })
+        end
+    },
+--]===]
+
+--[===[
+    {"projekt0n/github-nvim-theme",
+        name = "github-theme",
+        lazy = false,
+        priority = 1000,
+        init = function()
+            vim.cmd.colorscheme "github_dark"
+        end,
+        config = function()
+            require("github-theme").setup({
+                options = {
+                    transparent = true,
+                    darken = {
+                        floats = false,
+                    },
+                }
+            })
+        end
+    },
+--]===]
+        
+
+---[===[
     -- "rose-pine/neovim",
     {"PublicSatanicVoid/rose-pine.nvim", 
         init = function()
@@ -105,6 +169,7 @@ require("lazy").setup({
             })
         end
     },  -- fork with softer whites
+---]===]
 
     {"nvim-lua/plenary.nvim"},
 
@@ -202,7 +267,9 @@ require("lazy").setup({
                 float = { border = border },
             })
 
-            require("lspconfig").pylsp.setup({
+	    local L = require("lspconfig")
+
+            L.pylsp.setup({
                 handlers = handlers,
                 cmd = { neovim_venv .. "/bin/pylsp" },
                 settings = {
@@ -235,20 +302,21 @@ require("lazy").setup({
                 },
             })
 
-            require("lspconfig").ruff_lsp.setup({
+            L.ruff_lsp.setup({
                 handlers = handlers,
                 cmd = { neovim_venv .. "/bin/ruff-lsp" },
                 on_attach = on_attach,
                 init_options = {
                     settings = {
+		    	args = {"--isolated"},
                         organizeImports = false,
                     }
                 }
             })
 
-            --require("lspconfig").bashls.setup({})
+            --L.bashls.setup({})
 
-            require("lspconfig").clangd.setup({
+            L.clangd.setup({
                 handlers = handlers,
                 cmd = {
                     "clangd",
@@ -259,11 +327,11 @@ require("lazy").setup({
                 }
             })
 
-            require("lspconfig").rust_analyzer.setup({
+            L.rust_analyzer.setup({
                 handlers = handlers
             })
 
-            require("lspconfig").arduino_language_server.setup({
+            L.arduino_language_server.setup({
                 handlers = handlers
             })
 
@@ -373,6 +441,8 @@ require("lazy").setup({
                 zindex = 20,
                 on_attach = nil,
             })
+
+            vim.cmd "hi TreesitterContext guibg=none"
         end
     },
 
@@ -426,4 +496,5 @@ require("lazy").setup({
     {"unblevable/quick-scope", event = "VeryLazy"},
 
     {"ThePrimeagen/vim-be-good", event = "VeryLazy"}
-})
+}
+return T

@@ -5,8 +5,10 @@ unset RCDIR
 # Add default flags to some existing commands
 alias btop="btop -lc"  # low-color
 alias strace="loggedalias strace $(whichcmd strace) -I1 -CTfttt"  # show summaries and times
-alias rg="rg --pcre2"  # more advanced regex support
-alias fd="fd -u"  # unrestricted: include hidden and ignored files/folders
+#alias rg="rg -u --pcre2"  # more advanced regex support; don't respect .ignore/.rgignore files
+alias rg="rg --pcre2"  # see above, but '-u' is now added by wrapper
+#alias fd="fd -u"  # unrestricted: include hidden and ignored files/folders
+#^see above, but '-u' is now added by wrapper
 alias mbox='loggedalias mbox $(whichcmd mbox) -s -i -I1'
 alias xterm='loggedalias xterm $(whichcmd xterm) -fa Consolas -fs 9 -bg white -fg grey10'
 alias less='less -r'  # render color codes etc.

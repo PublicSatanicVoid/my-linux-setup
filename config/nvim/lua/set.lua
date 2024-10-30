@@ -1,6 +1,7 @@
 local neovim_venv = os.getenv("NEOVIM_VENV") or os.getenv("HOME") .. "/venvs/neovim_venv"
 
-vim.g.mapleader = " "
+-- -- Now in plugins.lua due to ordering requirement by lazy.nvim
+-- vim.g.mapleader = " "
 
 local opt = vim.opt
 
@@ -30,6 +31,9 @@ opt.undofile = true
 pcall(function() opt.undofilehash = true end)  -- custom, not mainlined (yet)
 opt.scrolloff = 10
 opt.showmode = false  -- lualine does this now
+opt.termguicolors = true  -- wasn't needed before... why now?
+
+vim.g.editorconfig = false
 
 -- Setup for plugins/features that use globals
 vim.g.context_enabled = 1
