@@ -12,6 +12,7 @@ alias rg="rg --pcre2"  # see above, but '-u' is now added by wrapper
 alias mbox='loggedalias mbox $(whichcmd mbox) -s -i -I1'
 alias xterm='loggedalias xterm $(whichcmd xterm) -fa Consolas -fs 9 -bg white -fg grey10'
 alias less='less -r'  # render color codes etc.
+alias tree='tree --charset=C'  # no special characters
 
 # Command overrides
 alias vim='nvim'

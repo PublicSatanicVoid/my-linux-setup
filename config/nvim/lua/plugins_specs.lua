@@ -78,7 +78,8 @@ local T = {
                 undercurl = false,
                 commentStyle = { italic = false },
                 keywordStyle = { italic = false },
-                statementStyle = { bold = false },
+                statementStyle = { italic = false, bold = false },
+                typeStyle = { italic = false },
                 transparent = true,
                 theme = "wave",
                 colors = {
@@ -96,6 +97,41 @@ local T = {
     },
 --]===]
     
+--[===[
+    {"catppuccin/nvim", name="catppuccin", priority=1000,
+        init = function()
+            vim.cmd.colorscheme "catppuccin-mocha"
+        end,
+	config = function()
+	    require("catppuccin").setup({
+                no_italic = true,
+			transparent_background = true,
+			styles = {
+				comments = {},
+				conditionals = {},
+				loops = {},
+				functions = {},
+				keywords = {},
+				strings = {},
+				variables = {},
+				numbers = {},
+				booleans = {},
+				properties = {},
+				types = {},
+			},
+		color_overrides = {
+		    mocha = {
+		        base = "#000000",
+			mantle = "#000000",
+			crust = "#000000",
+		    }
+		},
+	    })
+	end,
+		
+    },
+--]===]
+
 --[===[
     {"AlexvZyl/nordic.nvim",
         -- lazy = false,
@@ -126,6 +162,23 @@ local T = {
     },
 --]===]
 
+---[===[
+    { 
+        "PublicSatanicVoid/nightfox.nvim",
+        -- "EdenEast/nightfox.nvim",
+        init = function()
+            vim.cmd.colorscheme "terafox"
+        end,
+        config = function()
+            require("nightfox").setup({
+                options = {
+                    transparent = true,
+                }
+            })
+        end,
+    },
+---]===]
+
 --[===[
     {"projekt0n/github-nvim-theme",
         name = "github-theme",
@@ -152,7 +205,7 @@ local T = {
     -- "rose-pine/neovim",
     {"PublicSatanicVoid/rose-pine.nvim", 
         init = function()
-            vim.cmd.colorscheme "rose-pine"
+            --vim.cmd.colorscheme "rose-pine"
         end,
         config = function()
             require("rose-pine").setup({
@@ -302,13 +355,13 @@ local T = {
                 },
             })
 
-            L.ruff_lsp.setup({
+            L.ruff.setup({
                 handlers = handlers,
-                cmd = { neovim_venv .. "/bin/ruff-lsp" },
+                cmd = { neovim_venv .. "/bin/ruff", "server" },
                 on_attach = on_attach,
                 init_options = {
                     settings = {
-		    	args = {"--isolated"},
+                        args = {"--isolated"},
                         organizeImports = false,
                     }
                 }
@@ -321,9 +374,10 @@ local T = {
                 cmd = {
                     "clangd",
                     "--background-index",
-                    "--suggest-missing-includes",
-                --    "--clang-tidy",
-                    "--completion-style=detailed"
+                    -- "--suggest-missing-includes",
+                    -- "--clang-tidy",
+                    "--completion-style=detailed",
+
                 }
             })
 
