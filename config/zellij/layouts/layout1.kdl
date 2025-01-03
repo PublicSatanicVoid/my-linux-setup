@@ -1,0 +1,40 @@
+layout {
+    default_tab_template {
+        pane size=1 borderless=true {
+            plugin location="file:~/.config/zellij/zjstatus.wasm" {
+                format_left   "#[bg=#31748F]{mode} #[fg=#999999]session:#[fg=#31748F,bold]{session}"
+                format_center "{tabs}"
+                format_right  "{command_date_uspacific} {command_date_uscentral} {command_date_india}"
+                format_space  ""
+
+                border_enabled  "false"
+                border_char     "─"
+                border_format   "#[fg=#999999]{char}"
+                border_position "bottom"
+
+                hide_frame_for_single_pane "false"
+
+                mode_normal  "#[bg=#31748F] {name} "
+                // mode_tmux    "#[bg=#ffc387] {name} "
+
+                tab_normal   "#[fg=#403d52] [{name}]"
+                tab_active   "#[fg=#31748F,bold] [{name}]"
+
+                datetime        "#[fg=#403d52,bold] {format} "
+                datetime_format "%Y-%m-%d %H:%M"
+                datetime_timezone "America/Chicago"
+
+                command_date_uscentral_command "/bin/env TZ=America/Chicago /bin/date +'%m/%d %H:%M %Z'"
+                command_date_uscentral_format "#[fg=#31748F,bold] {stdout}"
+                command_date_uscentral_interval 1
+                command_date_uspacific_command "/bin/env TZ=America/Los_Angeles /bin/date +'%H:%M %Z'"
+                command_date_uspacific_format "#[fg=#999999] {stdout}"
+                command_date_uspacific_interval 1
+                command_date_india_command "/bin/env TZ=Asia/Kolkata /bin/date +'%H:%M %Z'"
+                command_date_india_format "#[fg=#999999] {stdout}"
+                command_date_india_interval 1
+            }
+        }
+        children
+    }
+}

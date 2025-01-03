@@ -1,4 +1,5 @@
 // If you'd like to override the default keybindings completely, be sure to change "keybinds" to "keybinds clear-defaults=true"
+
 keybinds {
     normal {
         // uncomment this and adjust key if using copy_on_select=false
@@ -67,6 +68,8 @@ keybinds {
         bind "8" { GoToTab 8; SwitchToMode "Normal"; }
         bind "9" { GoToTab 9; SwitchToMode "Normal"; }
         bind "Tab" { ToggleTab; }
+        bind "Shift h" { MoveTab "Left"; }
+        bind "Shift l" { MoveTab "Right"; }
     }
     scroll {
         bind "Ctrl s" { SwitchToMode "Normal"; }
@@ -312,7 +315,10 @@ themes {
 		fg "#c7c5d9"
         //red "#eb6f92"
 		red "#b85672"
-        green "#31748f"
+        //green "#31748f"  // had this for awhile
+        green "#336D9A"
+        //green "#3465A4"
+        //green "#2E568D"
 		blue "#9ccfd8"
 		yellow "#f6c177"
 		magenta "#c4a7e7"
@@ -334,7 +340,8 @@ theme "rose-pine"
 // The name of the default layout to load on startup
 // Default: "default"
 //
-default_layout "compact"
+//default_layout "compact"
+default_layout ".config/zellij/layouts/layout1.kdl"
 
 // Choose the mode that zellij uses when starting up.
 // Default: normal
@@ -397,7 +404,7 @@ mouse_mode false
 
 // The folder in which Zellij will look for layouts
 //
-// layout_dir "/path/to/my/layout_dir"
+layout_dir "~/.config/zellij/layouts"
 
 // The folder in which Zellij will look for themes
 //
