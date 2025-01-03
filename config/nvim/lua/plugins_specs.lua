@@ -1,16 +1,16 @@
 local neovim_venv = os.getenv("NEOVIM_VENV") or os.getenv("HOME") .. "/venvs/neovim_venv"
 local T = {
 --Lualine causes the cursor to disappear occasionally.
---[===[
+---[===[
     {"nvim-lualine/lualine.nvim", event = "VeryLazy",
         config = function()
             require("lualine").setup({
                 options = {
                     icons_enabled = false,
                     theme = "auto",
-                    refresh = {
-                        statusline = 5000,
-                    }
+                    --refresh = {
+                    --    statusline = 5000,
+                    --}
                 },
                 sections = {
                     lualine_a = {"mode"},
@@ -22,7 +22,7 @@ local T = {
             })
         end
     },
---]===]
+---]===]
     {"pixelastic/vim-undodir-tree"},
 
     {"nvim-tree/nvim-web-devicons",
@@ -40,6 +40,8 @@ local T = {
     --     end
     -- },
 
+
+--[===[
     -- Okay, this also causes the cursor to disappear occasionally, but a lot less often.
     -- "famiu/feline.nvim",
     {"PublicSatanicVoid/feline.nvim",
@@ -47,25 +49,24 @@ local T = {
             local feline = require("feline")
             feline.setup()
 
-            ---[===[
-            local palette = require("rose-pine.palette")
-            
-            theme = {
-                red = palette.rose,
-                --red = palette.love,
-                oceanblue = palette.overlay,
-                --bg = palette.base,
-                bg = "NONE",
-                fg = palette.text,
-                skyblue = palette.foam,
-                green = palette.iris,
-            }
+            --local palette = require("rose-pine.palette")
+            --
+            --theme = {
+            --    red = palette.rose,
+            --    --red = palette.love,
+            --    oceanblue = palette.overlay,
+            --    --bg = palette.base,
+            --    bg = "NONE",
+            --    fg = palette.text,
+            --    skyblue = palette.foam,
+            --    green = palette.iris,
+            --}
 
-            feline.use_theme(theme)
-            ---]===]
+            --feline.use_theme(theme)
 
         end
     },
+--]===]
 
 --[===[
     {"rebelot/kanagawa.nvim",
@@ -222,7 +223,15 @@ local T = {
             })
         end
     },  -- fork with softer whites
----]===]
+--]===]
+
+--[===[
+    {"neanias/everforest-nvim",
+        init = function()
+            vim.cmd.colorscheme "everforest"
+        end
+    },
+--]===]
 
     {"nvim-lua/plenary.nvim"},
 
