@@ -13,8 +13,8 @@ opt.hlsearch = false
 opt.incsearch = true
 opt.tabstop = 4
 opt.softtabstop = 4
-opt.expandtab = true
 opt.shiftwidth = 4
+--opt.expandtab = true
 opt.autoindent = true
 opt.smartindent = true
 opt.number = true
@@ -34,7 +34,7 @@ opt.showmode = false  -- lualine does this now
 opt.termguicolors = true  -- wasn't needed before... why now?
 opt.cmdheight = 0  -- hide cmd row until needed
 
-vim.g.editorconfig = false
+--vim.g.editorconfig = false
 
 -- Setup for plugins/features that use globals
 vim.g.context_enabled = 1
@@ -53,4 +53,3 @@ vim.g.python_indent = {
     open_paren = "shiftwidth()",
     continue = "shiftwidth()"
 }
-

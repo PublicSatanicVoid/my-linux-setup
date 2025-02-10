@@ -202,7 +202,7 @@ local T = {
 --]===]
         
 
----[===[
+--[===[
     -- "rose-pine/neovim",
     {"PublicSatanicVoid/rose-pine.nvim", 
         init = function()
@@ -470,17 +470,28 @@ local T = {
                 auto_install = true,
                 highlight = {
                     enable = true,
-                    additional_vim_regex_highlighting = false,
+
+                    -- Required to get indentation working correctly for Python
+                    additional_vim_regex_highlighting = true,
                 },
                 indent = {
-                    enable = true,
+                    enable = true,  -- Experimental and totally sucks for Python
 
                     -- Treesitter indents 2x shiftwidth in certain situations; not
                     -- configurable, so drop treesitter's python indentation entirely
                     -- and fall back to defaults (which are exactly what I want)
-                    disable = { "python" },
+                    disable = { "python", "yaml" },
                 }
             })
+
+            -- Somehow these get overridden
+            opt = vim.opt
+            opt.tabstop = 4
+            opt.softtabstop = 4
+            opt.shiftwidth = 4
+            --opt.expandtab = true
+            opt.autoindent = true
+            opt.smartindent = true
         end
     },
 
