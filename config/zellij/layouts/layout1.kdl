@@ -25,7 +25,8 @@ layout {
                 tab_normal   "#[fg=#403d52] [{name}]"
                 tab_active   "#[fg=#31748F,bold] [{name}]"
 
-                datetime        "#[fg=#31758F,bold]{format}"
+                // datetime        "#[fg=#31758F,bold]{format}"
+                datetime        "#[fg=#999999]{format}"
                 datetime_format "%Y-%m-%d %H:%M %Z"
                 datetime_timezone "America/Chicago"
 
