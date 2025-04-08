@@ -20,6 +20,7 @@ ulimit -Sn unlimited  # Unlimited number of open files (up to system max)
 
 bindkey "^A" beginning-of-line
 bindkey "^E" end-of-line
+bindkey "^W" vi-backward-kill-word  # stop at '/' even when it's part of WORDCHARS
 
 #bindkey ";5D" backward-word
 bindkey "^[[1;5D" backward-word

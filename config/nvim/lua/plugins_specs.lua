@@ -1,6 +1,7 @@
 local neovim_venv = os.getenv("NEOVIM_VENV") or os.getenv("HOME") .. "/venvs/neovim_venv"
 local T = {
 --Lualine causes the cursor to disappear occasionally.
+--Note, seems fixed now?
 ---[===[
     {"nvim-lualine/lualine.nvim", event = "VeryLazy",
         config = function()
@@ -333,7 +334,7 @@ local T = {
 
             L.pylsp.setup({
                 handlers = handlers,
-                cmd = { neovim_venv .. "/bin/pylsp" },
+                cmd = { neovim_venv .. "/bin/pylsp", "-vvv" },
                 settings = {
                     pylsp = {
                         plugins = {
