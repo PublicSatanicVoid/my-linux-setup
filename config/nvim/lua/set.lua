@@ -34,7 +34,7 @@ opt.showmode = false  -- lualine does this now
 opt.termguicolors = true  -- wasn't needed before... why now?
 opt.cmdheight = 0  -- hide cmd row until needed
 
---vim.g.editorconfig = false
+vim.g.editorconfig = false
 
 -- Setup for plugins/features that use globals
 vim.g.context_enabled = 1

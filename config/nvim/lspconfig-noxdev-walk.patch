@@ -1,0 +1,20 @@
+:100644 100644 ae89101 0000000 M	lua/lspconfig/util.lua
+
+diff --git a/lua/lspconfig/util.lua b/lua/lspconfig/util.lua
+index ae89101..d8fe3a0 100644
+--- a/lua/lspconfig/util.lua
++++ b/lua/lspconfig/util.lua
+@@ -124,8 +124,13 @@ function M.root_pattern(...)
+   local patterns = M.tbl_flatten { ... }
+   return function(startpath)
+     startpath = M.strip_archive_subpath(startpath)
++    start_dev = vim.loop.fs_stat(startpath).dev
+     for _, pattern in ipairs(patterns) do
+       local match = M.search_ancestors(startpath, function(path)
++        curr_dev = vim.loop.fs_stat(path).dev
++        if start_dev ~= curr_dev then
++            return
++        end
+         for _, p in ipairs(vim.fn.glob(table.concat({ escape_wildcards(path), pattern }, '/'), true, true)) do
+           if vim.loop.fs_stat(p) then
+             return path
