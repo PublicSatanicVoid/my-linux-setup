@@ -1,0 +1,110 @@
+    1  PREFIX=$(pwd)/../../build
+    2  ls $PREFIX
+    3  export CPPFLAGS="-I$PREFIX/include -I$PREFIX/tirpc"
+    4  export CFLAGS="-pipe $CPPFLAGS"
+    5  export CXXFLAGS="$CFLAGS"
+    6  export LDFLAGS="-L$PREFIX/lib -Wl,-rpath,$PREFIX/lib"
+    7  export PKG_CONFIG_PATH="$PREFIX/lib/pkgconfig"
+    8  cmake -DCMAKE_BUILD_TYPE=RelWithDebInfo -DCMAKE_INSTALL_PREFIX=$PREFIX -DCMAKE_FIND_ROOT_PATH="$PREFIX" -S . -B build3
+    9  (cd build3; make)
+   10  du -sbh /usr/include
+   11  (cd build3; make VERBOSE=1)
+   12  git submodules --init
+   13  git submodule --init
+   14  cd ..
+   15  git submodule update --init
+   16  ls 
+   17  ls src
+   18  ls src/libntirpc
+   19  cd src/libntirpc
+   20  git submodule update --init
+   21  ls
+   22  git submodule update --checkout
+   23  ls
+   24  ls -a
+   25  ls ../..
+   26  ls ../../..
+   27  ls ../../../..
+   28  ls ../../..
+   29  mv ../../../.git{,.git-BAK}
+   30  git submodule update --init
+   31  cd ../..
+   32  ls
+   33  git init
+   34  git submodule update --init
+   35  git submodule update --checkout
+   36  ls src/libntirpc
+   37  ls src/libntirpc -a
+   38  cd src/libntirpc
+   39  git submodule update --init
+   40  ls
+   41  ls -a
+   42  git submodule update --checkout
+   43  ls
+   44  ls -a
+   45  cat ../../.gitmodules
+   46  cd ..
+   47  git clone https://github.com/nfs-ganesha/libntirpc.git
+   48  git clone github.com/nfs-ganesha/libntirpc.git
+   49  git clone https://git@github.com/nfs-ganesha/libntirpc.git
+   50  git clone ssh://git@github.com/nfs-ganesha/libntirpc.git
+   51  man git
+   52  cd ../..
+   53  ls
+   54  mkdir try1-fail
+   55  mv build libtirpc-1.3.6 try1-fail
+   56  mv nfs-ganesha-6.5 try1-fail
+   57  git clone --recursive https://github.com/nfs-ganesha/nfs-ganesha.git
+   58  cd nfs-ganesha
+   59  git tag -l
+   60  git tag -l
+   61  git checkout V6.5
+   62  cd src/libntirpc
+   63  git tag -l
+   64  git checkout v6.3
+   65  cd ../monitoring/prometheus-cpp-lite
+   66  git tag -l
+   67  git status
+   68  git remote -v
+   69  cd ..
+   70  cd ..
+   71  ls
+   72  git status
+   73  mkdir ../../build
+   74  export CPPFLAGS="-I$PREFIX/include"
+   75  export CFLAGS="-pipe $CPPFLAGS"
+   76  export CXXFLAGS="$CFLAGS"
+   77  export LDFLAGS="-L$PREFIX/lib -Wl,-rpath,$PREFIX/lib"
+   78  export PKG_CONFIG_PATH="$PREFIX/lib/pkgconfig"
+   79  cmake -DCMAKE_BUILD_TYPE=RelWithDebInfo -DCMAKE_INSTALL_PREFIX=$PREFIX -DCMAKE_FIND_ROOT_PATH="$PREFIX" -S . -B build4
+   80  echo $CFLAGS
+   81  (cd build4; make)
+   82  echo $LDFLAGS
+   83  pwd
+   84  ls ../../build/lib
+   85  (cd build4; make VERBOSE=1)
+   86  PREFIX=$(realpath $(pwd)/../../build)
+   87  echo $PREFIX
+   88  export CPPFLAGS="-I$PREFIX/include"
+   89  export CFLAGS="-pipe $CPPFLAGS"
+   90  export CXXFLAGS="$CFLAGS"
+   91  export LDFLAGS="-L$PREFIX/lib -Wl,-rpath,$PREFIX/lib"
+   92  export PKG_CONFIG_PATH="$PREFIX/lib/pkgconfig"
+   93  cmake -DCMAKE_BUILD_TYPE=RelWithDebInfo -DCMAKE_INSTALL_PREFIX=$PREFIX -S . -B build5
+   94  (cd build5; make VERBOSE=1)
+   95  (cd build5; make install VERBOSE=1)
+   96  (cd build5; make install VERBOSE=1)
+   97  pwd
+   98  cd ../..
+   99  ls
+  100  ls nfs-ganesha
+  101  ls nfs-ganesha/src/include
+  102  cp -a nfs-ganesha/src/include build/include/nfs-ganesha
+  103  ls nfs-ganesha/src/build5/include/config.h
+  104  cp nfs-ganesha/src/build5/include/config.h build/include/nfs-ganesha
+  105  echo $PREFIX
+  106  df .
+  107  ping nvlpnas15
+  108  ls $prj_dev
+  109  touch $prj_dev/test-ok-to-delete-on-sight
+  110  history 1
