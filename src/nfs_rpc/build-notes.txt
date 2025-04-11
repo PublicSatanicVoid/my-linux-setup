@@ -1,0 +1,4 @@
+- Need to build libtirpc and liburcu
+- Need to grab mount.x and nfs23.x from nfs-ganesha
+    - Shouldn't need to actually build nfs-ganesha or its bundled libntirpc
+- Need to run rpcgen on mount.x and nfs23.x to generate headers
