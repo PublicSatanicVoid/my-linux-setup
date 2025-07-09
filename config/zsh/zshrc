@@ -123,7 +123,7 @@ dir_tag() {
 
 #export PS1="%k%F{4}%B$HOSTNAME%F{8} %F{5}%1~ %F{yellow}%B➜  %f%b"
 #export PS1="%k%F{4}%B$HOSTNAME%F{8} %F{5}%1~ %F{yellow}%B» %f%b"
-export PS1="%k%F{4}%B$HOSTNAME%F{8} \$(dir_tag)%F{5}%1~ %F{yellow}%B %f%b"
+export PS1="%k%F{4}%B$HOSTNAME%F{8} \$(dir_tag)%F{5}%1~ %(!.%F{red}#.%F{yellow}%B) %f%b"
 #export PS1=$'%k\e[38;2;49;116;143m%B$HOSTNAME%F{8} \$(dir_tag)%F{5}%1~ %F{yellow}%B %f%b'
 #export PS1=$'%k%F{4}%B$HOSTNAME%F{8} \$(dir_tag)\e[38;2;173;92;124m%1~ %F{yellow}%B %f%b'
 #export PS1=$'%k\e[38;2;70;116;136m%B$HOSTNAME%F{8} \$(dir_tag)\e[38;2;158;81;113m%1~ %F{yellow}%B %f%b'
