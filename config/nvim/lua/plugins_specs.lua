@@ -21,8 +21,6 @@ local T = {
         end
     },
 
-    {"pixelastic/vim-undodir-tree"},
-
     {"nvim-tree/nvim-web-devicons",
         config = function()
             require("nvim-web-devicons").setup()
@@ -69,47 +67,11 @@ local T = {
         end,
     },
 --]===]
-    
---[===[
-    {"catppuccin/nvim", name="catppuccin", priority=1000,
-        init = function()
-            vim.cmd.colorscheme "catppuccin-mocha"
-        end,
-	config = function()
-	    require("catppuccin").setup({
-                no_italic = true,
-			transparent_background = true,
-			styles = {
-				comments = {},
-				conditionals = {},
-				loops = {},
-				functions = {},
-				keywords = {},
-				strings = {},
-				variables = {},
-				numbers = {},
-				booleans = {},
-				properties = {},
-				types = {},
-			},
-		color_overrides = {
-		    mocha = {
-		        base = "#000000",
-			mantle = "#000000",
-			crust = "#000000",
-		    }
-		},
-	    })
-	end,
-		
-    },
---]===]
-
 
 ---[===[
     { 
         "PublicSatanicVoid/nightfox.nvim",
-        -- "EdenEast/nightfox.nvim",
+        -- fork of: "EdenEast/nightfox.nvim",
         init = function()
             vim.cmd.colorscheme "terafox"
         end,
@@ -122,7 +84,6 @@ local T = {
         end,
     },
 ---]===]
-
 
 --[===[
     -- "rose-pine/neovim",
@@ -258,13 +219,7 @@ local T = {
         end
     },
 
-    -- Load immediately or else it breaks
-    -- NOTE: Both of these were causing terrible slowness when scrolling,
-    -- 	so I replaced them with nvim-treesitter-context
-    -- "wellle/context.vim",
-    --{"Hippo0o/context.vim"},  -- fork that fixes issues with the original
-    
-    {"nvim-treesitter/nvim-treesitter-context",
+    {"nvim-treesitter/nvim-treesitter-context", event = "VeryLazy",
         config = function()
             require("treesitter-context").setup({
                 enable = true,
