@@ -38,8 +38,7 @@ nmap("<leader>sp", '<cmd>lua require("spectre").open_file_search({select_word = 
 nmap("/", ":%s%%%gn<Left><Left><Left><Left>")
 
 -- Yank visual selection to system clipboard
-vmap("<leader>y", "<Plug>OSCYankVisual")
-nmap("<leader>y", "<Plug>OSCYankVisual")
+vmap("<leader>y", '"+y')
 
 -- Buffer switching
 nmap("<leader>b", "<cmd>BufstopFast<CR>")

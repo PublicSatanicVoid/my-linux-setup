@@ -1,3 +1,4 @@
+
 local neovim_venv = os.getenv("NEOVIM_VENV") or os.getenv("HOME") .. "/venvs/neovim_venv"
 
 -- -- Now in plugins.lua due to ordering requirement by lazy.nvim
@@ -28,13 +29,14 @@ opt.backup = false
 --opt.undodir = os.getenv("HOME") .. "/.vim/undodir"
 opt.undodir = os.getenv("HOME") .. "/.vim/undo"
 opt.undofile = true
-pcall(function() opt.undofilehash = true end)  -- custom, not mainlined (yet)
+pcall(function() opt.undofilehash = true end)  -- custom nvim patch, not mainlined (yet)
 opt.scrolloff = 10
 opt.showmode = false  -- lualine does this now
 opt.termguicolors = true  -- wasn't needed before... why now?
 opt.cmdheight = 0  -- hide cmd row until needed
 
 vim.g.editorconfig = false
+vim.g.clipboard = 'osc52'
 
 -- Setup for plugins/features that use globals
 vim.g.context_enabled = 1
