@@ -1,167 +1,91 @@
 local neovim_venv = os.getenv("NEOVIM_VENV") or os.getenv("HOME") .. "/venvs/neovim_venv"
+
 local T = {
-    {"nvim-lualine/lualine.nvim", event = "VeryLazy",
-        config = function()
-            require("lualine").setup({
-                options = {
-                    icons_enabled = false,
-                    theme = "auto",
-                    --refresh = {
-                    --    statusline = 5000,
-                    --}
-                },
-                sections = {
-                    lualine_a = {"mode"},
-                    lualine_b = {"branch", "diagnostics"},
-                    lualine_c = {"filename"},
-                    lualine_y = {"progress"},
-                    lualine_z = {"location"}
-                },
-            })
-        end
+    {
+        "nvim-lualine/lualine.nvim",
+        event = "VeryLazy",
+        opts = {
+            options = {
+                icons_enabled = false,
+                theme = "auto",
+            },
+            sections = {
+                lualine_a = {"mode"},
+                lualine_b = {"branch", "diagnostics"},
+                lualine_c = {"filename"},
+                lualine_y = {"progress"},
+                lualine_z = {"location"}
+            },
+        }
     },
 
-    {"nvim-tree/nvim-web-devicons",
-        config = function()
-            require("nvim-web-devicons").setup()
-        end
+    {
+        "nvim-tree/nvim-web-devicons",
+        lazy = true,
+        opts = {}
     },
 
-    -- -- disabled 20240926 due to slow autofs
-    -- {"lewis6991/gitsigns.nvim",
-    --     config = function()
-    --         require("gitsigns").setup({
-    --             signcolumn = false
-    --         })
-    --     end
-    -- },
-
-
-
---[===[
-    {"rebelot/kanagawa.nvim",
-        init = function()
-            vim.cmd.colorscheme "kanagawa"
-        end,
-        config = function()
-            require("kanagawa").setup({
-                compile = true,  -- remember to rerun :KanagawaCompile to reconfig
-                undercurl = false,
-                commentStyle = { italic = false },
-                keywordStyle = { italic = false },
-                statementStyle = { italic = false, bold = false },
-                typeStyle = { italic = false },
-                transparent = true,
-                theme = "wave",
-                colors = {
-                    theme = {
-                        all = {
-                            ui = {
-                                bg_gutter = "none",
-                                --bg = "none"
-                            }
-                        }
-                    }
-                }
-            })
-        end,
-    },
---]===]
-
----[===[
-    { 
+    {
         "PublicSatanicVoid/nightfox.nvim",
-        -- fork of: "EdenEast/nightfox.nvim",
-        init = function()
-            vim.cmd.colorscheme "terafox"
-        end,
+        lazy = false,  -- Load immediately for colors
+        priority = 1000,  -- High priority for color scheme
         config = function()
             require("nightfox").setup({
-                options = {
-                    transparent = true,
-                }
+                options = { transparent = true }
             })
+            vim.cmd.colorscheme("terafox")
         end,
     },
----]===]
 
---[===[
-    -- "rose-pine/neovim",
-    {"PublicSatanicVoid/rose-pine.nvim", 
-        init = function()
-            --vim.cmd.colorscheme "rose-pine"
-        end,
-        config = function()
-            require("rose-pine").setup({
-                variant = "auto",
-                dark_variant = "main",
-                enable = {
-                    terminal = true,
-                },
-                styles = {
-                    bold = false,
-                    italic = false,
-                    transparency = true,
-                },
-            })
-        end
-    },  -- fork with softer whites
---]===]
+    {"nvim-lua/plenary.nvim", lazy = true},
 
---[===[
-    {"neanias/everforest-nvim",
-        init = function()
-            vim.cmd.colorscheme "everforest"
-        end
+    {
+        "nvim-telescope/telescope.nvim",
+        event = "VeryLazy"
     },
---]===]
 
-    {"nvim-lua/plenary.nvim"},
-
-    {"nvim-telescope/telescope.nvim", event = "VeryLazy"},
-    
     {"mihaifm/bufstop", event = "VeryLazy"},
     
-    {"nvim-tree/nvim-tree.lua", event = "VeryLazy",
+    {
+        "nvim-tree/nvim-tree.lua",
+        cmd = "NvimTreeToggle",
+        keys = {
+            {"<leader>t", "<cmd>NvimTreeToggle<CR>", desc = "Toggle file tree"}
+        },
         config = function()
-            -- nvim-tree: Disable netrw, show icons, sync tab presence
             vim.g.loaded_netrw = 1
             vim.g.loaded_netrwPlugin = 1
             require("nvim-tree").setup()
         end
     },
 
-    {"hrsh7th/nvim-cmp", event = "VeryLazy",
+    -- Completion engine
+    {
+        "hrsh7th/nvim-cmp",
+        event = "InsertEnter",
+        dependencies = {
+            "hrsh7th/cmp-nvim-lsp",
+            "hrsh7th/cmp-buffer",
+            "hrsh7th/cmp-nvim-lsp-signature-help",
+        },
         config = function()
             local cmp = require("cmp")
             cmp.setup({
-                completion = cmp.config.window.bordered(),
-
                 window = {
                     completion = cmp.config.window.bordered(),
                     documentation = cmp.config.window.bordered(),
                 },
-
                 mapping = cmp.mapping.preset.insert({
                     ["<Tab>"] = cmp.mapping(function(fallback)
-                        if cmp.visible() then
-                            cmp.select_next_item()
-                        else
-                            fallback()
-                        end
+                        if cmp.visible() then cmp.select_next_item()
+                        else fallback() end
                     end, { "i", "s" }),
-
                     ["<S-Tab>"] = cmp.mapping(function(fallback)
-                        if cmp.visible() then
-                            cmp.select_prev_item()
-                        else
-                            fallback()
-                        end
+                        if cmp.visible() then cmp.select_prev_item()
+                        else fallback() end
                     end, { "i", "s" }),
-
                     ["<C-y>"] = cmp.mapping.confirm({ select = true }),
                     ["<C-Space>"] = cmp.mapping.confirm({ select = true }),
-
                     ["<C-b>"] = cmp.mapping.scroll_docs(-4),
                     ["<C-f>"] = cmp.mapping.scroll_docs(4),
                     ["<C-e>"] = cmp.mapping.abort(),
@@ -176,83 +100,66 @@ local T = {
         end
     },
 
-    {"hrsh7th/cmp-nvim-lsp", event = "VeryLazy"},
-    
-    {"hrsh7th/cmp-buffer", event = "VeryLazy"},
-    -- "hrsh7th/cmp-path",
-    -- "hrsh7th/cmp-cmdline",
-    -- "hrsh7th/vim-vsnip",
-    -- "hrsh7th/cmp-vsnip",
-    -- "hrsh7th/vim-vsnip-integ",
-    {"hrsh7th/cmp-nvim-lsp-signature-help", event = "VeryLazy"},
-
-    -- Load immediately so the colors don't flash
-    {"nvim-treesitter/nvim-treesitter", event = "VimEnter",
+    {
+        "nvim-treesitter/nvim-treesitter",
+        event = "BufRead",
+        build = ":TSUpdate",
         config = function()
             require('nvim-treesitter.configs').setup({
                 ensure_installed = { "c", "lua", "vim", "bash", "python", "rust" },
                 auto_install = true,
                 highlight = {
                     enable = true,
-
-                    -- Required to get indentation working correctly for Python
-                    additional_vim_regex_highlighting = true,
+                    additional_vim_regex_highlighting = false,
                 },
                 indent = {
-                    enable = true,  -- Experimental and totally sucks for Python
-
-                    -- Treesitter indents 2x shiftwidth in certain situations; not
-                    -- configurable, so drop treesitter's python indentation entirely
-                    -- and fall back to defaults (which are exactly what I want)
+                    enable = true,
                     disable = { "python", "yaml" },
                 }
             })
 
-            -- Somehow these get overridden
-            opt = vim.opt
-            opt.tabstop = 4
-            opt.softtabstop = 4
-            opt.shiftwidth = 4
-            --opt.expandtab = true
-            opt.autoindent = true
-            opt.smartindent = true
+            vim.g._ts_force_sync_parsing = true
         end
     },
 
-    {"nvim-treesitter/nvim-treesitter-context", event = "VeryLazy",
-        config = function()
-            require("treesitter-context").setup({
-                enable = true,
-                max_lines = 0,
-                min_window_height = 0,
-                line_numbers = true,
-                multiline_threshold = 2,
-                trim_scope = 'outer',
-                mode = 'cursor',
-                separator = '—',
-                zindex = 20,
-                on_attach = nil,
-            })
-
-            vim.cmd "hi TreesitterContext guibg=none"
+    {
+        "nvim-treesitter/nvim-treesitter-context",
+        event = "BufRead",
+        opts = {
+            enable = true,
+            max_lines = 0,
+            min_window_height = 0,
+            line_numbers = true,
+            multiline_threshold = 2,
+            trim_scope = 'outer',
+            mode = 'cursor',
+            separator = '—',
+            zindex = 20,
+        },
+        config = function(_, opts)
+            require("treesitter-context").setup(opts)
+            vim.cmd("hi TreesitterContext guibg=none")
         end
     },
 
-    {"f-person/git-blame.nvim", event = "VeryLazy",
+    {
+        "f-person/git-blame.nvim",
+        cmd = {"BlameOn", "BlameOff", "Blame", "GitBlameToggle"},
         config = function()
             vim.api.nvim_create_user_command("BlameOn", "GitBlameEnable", {})
             vim.api.nvim_create_user_command("BlameOff", "GitBlameDisable", {})
             vim.api.nvim_create_user_command("Blame", "GitBlameToggle", {})
-            require("gitblame").setup({
-                enabled = false,
-            })
+            require("gitblame").setup({ enabled = false })
             vim.g.gitblame_display_virtual_text = 1
             vim.g.gitblame_date_format = "%r"
             vim.g.gitblame_message_template = "    <author>, <date> • [<sha>] <summary>"
         end
     },
     
-    {"ThePrimeagen/harpoon", branch = "harpoon2", event = "VeryLazy",
+    {
+        "ThePrimeagen/harpoon",
+        branch = "harpoon2",
+        event = "VeryLazy",
         config = function()
             local harpoon = require("harpoon")
             harpoon:setup()
@@ -264,27 +171,36 @@ local T = {
         end
     },
 
-    {"mbbill/undotree", event = "VeryLazy"},
-
-    {"folke/zen-mode.nvim", event = "VeryLazy",
-        --config = function()
-        --    require("zen-mode").setup({
-        --        window = {
-        --            width = 120
-        --        }
-        --    })
-        --end
+    {
+        "mbbill/undotree",
+        cmd = "UndotreeToggle",
+        keys = {
+            {"<leader>u", "<cmd>UndotreeToggle<CR>", desc = "Toggle undo tree"}
+        }
     },
 
-    {"nvim-pack/nvim-spectre", event = "VeryLazy"},
+    {
+        "nvim-pack/nvim-spectre",
+        cmd = {"Spectre"},
+        keys = {
+            {"<leader>S", "<cmd>lua require('spectre').toggle()<CR>", desc = "Toggle Spectre"},
+            {"<leader>sp", "<cmd>lua require('spectre').open_file_search({select_word = true})<CR>", desc = "Search in file"},
+            {"<leader>sw", "<cmd>lua require('spectre').open_visual({select_word = true})<CR>", desc = "Search word", mode = {"n", "v"}},
+        }
+    },
 
-    -- :Subvert/search/replace/g  to replace search, Search, SEARCH with case-matched
-    -- replace
-    -- And also supports variants, like :Subvert/ba{r,z}/car{,s}/g
-    {"tpope/vim-abolish", event = "VeryLazy"},
+    {
+        "tpope/vim-abolish",
+        event = "VeryLazy"
+    },
 
-    {"unblevable/quick-scope", event = "VeryLazy"},
+    {
+        "unblevable/quick-scope",
+        event = "VeryLazy"
+    },
 
-    {"ThePrimeagen/vim-be-good", event = "VeryLazy"}
+    -- Vim practice game
+    -- {"ThePrimeagen/vim-be-good", event = "VeryLazy"},
 }
+
 return T

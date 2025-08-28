@@ -1,54 +1,52 @@
-
 local neovim_venv = os.getenv("NEOVIM_VENV") or os.getenv("HOME") .. "/venvs/neovim_venv"
 
--- -- Now in plugins.lua due to ordering requirement by lazy.nvim
--- vim.g.mapleader = " "
+-- Note: vim.g.mapleader is set in remap.lua due to lazy.nvim ordering requirements
 
 local opt = vim.opt
 
-opt.compatible = false
-opt.encoding = "utf-8"
-opt.cursorline = false
+-- Editor behavior
 opt.ignorecase = true
 opt.hlsearch = false
 opt.incsearch = true
+opt.scrolloff = 10
+opt.showmode = false  -- lualine shows mode instead
+
+-- Indentation and formatting
 opt.tabstop = 4
 opt.softtabstop = 4
 opt.shiftwidth = 4
 opt.expandtab = true
 opt.autoindent = true
 opt.smartindent = true
-opt.number = true
-opt.relativenumber = true
-opt.wildmode = "longest,list"
 opt.colorcolumn = "88"
 opt.textwidth = 88
-opt.ttyfast = true
+
+-- Line numbers
+opt.number = true
+opt.relativenumber = true
+
+-- File handling
 opt.swapfile = false
 opt.backup = false
---opt.undodir = os.getenv("HOME") .. "/.vim/undodir"
 opt.undodir = os.getenv("HOME") .. "/.vim/undo"
 opt.undofile = true
-pcall(function() opt.undofilehash = true end)  -- custom nvim patch, not mainlined (yet)
-opt.scrolloff = 10
-opt.showmode = false  -- lualine does this now
-opt.termguicolors = true  -- wasn't needed before... why now?
-opt.cmdheight = 0  -- hide cmd row until needed
 
+-- Custom nvim patch to save undo files by the hash of the full path, rather
+-- than the '%'-delimited full path
+pcall(function() opt.undofilehash = true end)
+
+-- Completion
+opt.wildmode = "longest,list"
+
+-- UI
+opt.cmdheight = 0  -- hide command line until needed
+opt.cursorline = false
+
+-- Global settings
 vim.g.editorconfig = false
 vim.g.clipboard = 'osc52'
 
--- Setup for plugins/features that use globals
-vim.g.context_enabled = 1
-vim.g.context_add_mappings = 1
-vim.g.context_add_autocmds = 1
-vim.g.context_max_height = 21
-vim.g.context_max_per_indent = 11
-vim.g.context_skip_regex = "^\\s*($|#|//|/\\*)"
-
--- Highlight the first character in each word that can be jumped to with f/t.
-vim.g.qs_highlight_on_keys = {"f", "F", "t", "T"}
-
+-- Python provider
 vim.g.python3_host_prog = neovim_venv .. "/bin/python3"
 vim.g.python_indent = {
     closed_paren_align_last_line = false,
@@ -56,7 +54,25 @@ vim.g.python_indent = {
     continue = "shiftwidth()"
 }
 
-vim.cmd([[
-    autocmd BufNewFile,BufRead *.cir,*.cir.gz,*.spf,*.spf.gz,*.sp,*.sim :set filetype=spice
-    autocmd BufNewFile,BufRead *.cfg,*.cfg.tempy,*.cfg.inc,*.yml,*.yaml :set filetype=yaml
-]])
+-- Plugin-specific globals
+-- Treesitter context
+vim.g.context_enabled = 1
+vim.g.context_add_mappings = 1
+vim.g.context_add_autocmds = 1
+vim.g.context_max_height = 21
+vim.g.context_max_per_indent = 11
+vim.g.context_skip_regex = "^\\s*($|#|//|/\\*)"
+
+-- Quick-scope
+vim.g.qs_highlight_on_keys = {"f", "F", "t", "T"}
+
+-- File type detection
+vim.api.nvim_create_autocmd({"BufNewFile", "BufRead"}, {
+    pattern = {"*.cir", "*.cir.gz", "*.spf", "*.spf.gz", "*.sp", "*.sim"},
+    command = "set filetype=spice"
+})
+
+vim.api.nvim_create_autocmd({"BufNewFile", "BufRead"}, {
+    pattern = {"*.cfg", "*.cfg.tempy", "*.cfg.inc", "*.yml", "*.yaml"},
+    command = "set filetype=yaml"
+})
