@@ -1,8 +1,5 @@
 local neovim_venv = os.getenv("NEOVIM_VENV") or os.getenv("HOME") .. "/venvs/neovim_venv"
 local T = {
---Lualine causes the cursor to disappear occasionally.
---Note, seems fixed now?
----[===[
     {"nvim-lualine/lualine.nvim", event = "VeryLazy",
         config = function()
             require("lualine").setup({
@@ -23,7 +20,7 @@ local T = {
             })
         end
     },
----]===]
+
     {"pixelastic/vim-undodir-tree"},
 
     {"nvim-tree/nvim-web-devicons",
@@ -42,32 +39,6 @@ local T = {
     -- },
 
 
---[===[
-    -- Okay, this also causes the cursor to disappear occasionally, but a lot less often.
-    -- "famiu/feline.nvim",
-    {"PublicSatanicVoid/feline.nvim",
-        config = function()
-            local feline = require("feline")
-            feline.setup()
-
-            --local palette = require("rose-pine.palette")
-            --
-            --theme = {
-            --    red = palette.rose,
-            --    --red = palette.love,
-            --    oceanblue = palette.overlay,
-            --    --bg = palette.base,
-            --    bg = "NONE",
-            --    fg = palette.text,
-            --    skyblue = palette.foam,
-            --    green = palette.iris,
-            --}
-
-            --feline.use_theme(theme)
-
-        end
-    },
---]===]
 
 --[===[
     {"rebelot/kanagawa.nvim",
@@ -134,35 +105,6 @@ local T = {
     },
 --]===]
 
---[===[
-    {"AlexvZyl/nordic.nvim",
-        -- lazy = false,
-        -- priority = 1000,
-        init = function()
-            vim.cmd.colorscheme "nordic"
-        end,
-        config = function()
-            require("nordic").setup({
-                italic_comments = false,
-                transparent = {
-                    bg = true,
-                    float = true,
-                },
-                bright_border = true,
-                reduced_blue = true,
-                cursorline = {
-                    bold = false,
-                    bold_number = true,
-                    theme = 'dark',
-                    blend = 0.95,
-                },
-                ts_context = {
-                    dark_background = false,
-                },
-            })
-        end
-    },
---]===]
 
 ---[===[
     { 
@@ -181,27 +123,6 @@ local T = {
     },
 ---]===]
 
---[===[
-    {"projekt0n/github-nvim-theme",
-        name = "github-theme",
-        lazy = false,
-        priority = 1000,
-        init = function()
-            vim.cmd.colorscheme "github_dark"
-        end,
-        config = function()
-            require("github-theme").setup({
-                options = {
-                    transparent = true,
-                    darken = {
-                        floats = false,
-                    },
-                }
-            })
-        end
-    },
---]===]
-        
 
 --[===[
     -- "rose-pine/neovim",
@@ -248,165 +169,6 @@ local T = {
             require("nvim-tree").setup()
         end
     },
-
-    -- Load immediately or else LSP breaks
-    {"neovim/nvim-lspconfig",
-        config = function()
-            local opts = { noremap=true, silent=true }
-            vim.keymap.set("n", "<leader>e", vim.diagnostic.open_float, opts)
-            vim.keymap.set("n", "[d", vim.diagnostic.goto_prev, opts)
-            vim.keymap.set("n", "]d", vim.diagnostic.goto_next, opts)
-            vim.keymap.set("n", "<leader>q", vim.diagnostic.setloclist, opts)
-
-            local on_attach = function(client, bufnr)
-                -- Enable completion triggered by <c-x><c-o>
-                vim.api.nvim_buf_set_option(bufnr, "omnifunc", "v:lua.vim.lsp.omnifunc")
-
-                -- Mappings.
-                -- See `:help vim.lsp.*` for documentation on any of the below functions
-                local bufopts = { noremap=true, silent=true, buffer=bufnr }
-                vim.keymap.set("n", "gD", vim.lsp.buf.declaration, bufopts)
-                vim.keymap.set("n", "gd", vim.lsp.buf.definition, bufopts)
-                vim.keymap.set("n", "gr", vim.lsp.buf.references, bufopts)
-                vim.keymap.set("n", "K", vim.lsp.buf.hover, bufopts)
-                vim.keymap.set("n", "gi", vim.lsp.buf.implementation, bufopts)
-                vim.keymap.set("n", "<C-k>", vim.lsp.buf.signature_help, bufopts)
-                vim.keymap.set("n", "<leader>wa", vim.lsp.buf.add_workspace_folder, bufopts)
-                vim.keymap.set("n", "<leader>wr", vim.lsp.buf.remove_workspace_folder, bufopts)
-                vim.keymap.set("n", "<leader>wl", function()
-                    print(vim.inspect(vim.lsp.buf.list_workspace_folders()))
-                end, bufopts)
-                --vim.keymap.set("n", "<leader>D", vim.lsp.buf.type_definition, bufopts)
-                vim.keymap.set("n", "<leader>rn", vim.lsp.buf.rename, bufopts)
-                vim.keymap.set("n", "<leader>ca", vim.lsp.buf.code_action, bufopts)
-                vim.keymap.set("n", "<leader>f",
-                    function() vim.lsp.buf.format { async = true }
-                end, bufopts)
-            end
-
-            -- Linter: Show floating window with linter error on current line
-            vim.api.nvim_create_autocmd({"CursorHold"}, {
-                callback = function()
-                    local opts = {
-                        focusable = false,
-                        close_events = {
-                            "BufLeave", "CursorMoved", "InsertEnter", "FocusLost"
-                        },
-                        border = "rounded",
-                        source = "always",
-                        prefix = " ",
-                        scope = "cursor",
-                    }
-                    vim.diagnostic.open_float(nil, opts)
-                end
-            })
-
-            -- Show the floating window faster when trigger condition is met
-            vim.o.updatetime = 1000
-
-            -- Specify how the border looks like
-            local border = "rounded"
-
-            -- Add the border on hover and on signature help popup window
-            local handlers = {
-                ['textDocument/hover'] = vim.lsp.with(
-                    vim.lsp.handlers.hover,
-                    { border = border }
-                ),
-                ['textDocument/signatureHelp'] = vim.lsp.with(
-                    vim.lsp.handlers.signature_help,
-                    { border = border }
-                ),
-            }
-
-            -- Linter: Configure display of linting messages in-line
-            vim.diagnostic.config({
-                virtual_text = true,
-                signs = true,
-                underline = true,
-                update_in_insert = false,
-                severity_sort = true,
-
-                float = { border = border },
-            })
-
-	    local L = require("lspconfig")
-
-            L.pylsp.setup({
-                handlers = handlers,
-                cmd = { neovim_venv .. "/bin/pylsp", "-vvv" },
-                settings = {
-                    pylsp = {
-                        plugins = {
-                            -- sorts imports on format, boo hiss
-                            autopep8 = { enabled = false },
-
-                            -- redundant with ruff
-                            pycodestyle = { enabled = false },
-                            pyflakes = { enabled = false },
-                            yapf = { enabled = false },
-                            black = { enabled = false },
-
-                            pylsp_mypy = { enabled = true },
-                            --pycodestyle = {
-                            --    maxLineLength = 88,
-                            --    ignore = {'E701', 'W503'},
-                            --},
-                            jedi_completion = { fuzzy = true },
-                            jedi_symbols = {
-                                include_import_symbols = false
-                            },
-                            mccabe = { threshold = 100 },
-                        }
-                    }
-                },
-                flags = {
-                    debounce_text_changes = 200,
-                },
-            })
-
-            L.ruff.setup({
-                handlers = handlers,
-                cmd = { neovim_venv .. "/bin/ruff", "server" },
-                on_attach = on_attach,
-                init_options = {
-                    settings = {
-                        args = {"--isolated"},
-                        organizeImports = false,
-                    }
-                }
-            })
-
-            --L.bashls.setup({})
-
-            L.clangd.setup({
-                handlers = handlers,
-                cmd = {
-                    "clangd",
-                    "--background-index",
-                    -- "--suggest-missing-includes",
-                    -- "--clang-tidy",
-                    "--completion-style=detailed",
-
-                }
-            })
-
-            L.rust_analyzer.setup({
-                handlers = handlers
-            })
-
-            L.arduino_language_server.setup({
-                handlers = handlers
-            })
-
-        end
-    },
-
-    --{"williamboman/mason.nvim",
-    --    config = function()
-    --        require("mason").setup()
-    --    end
-    --},
 
     {"hrsh7th/nvim-cmp", event = "VeryLazy",
         config = function()
