@@ -58,6 +58,8 @@ chmod u=rwx,go= "$XDG_RUNTIME_DIR" 2>/dev/null
 chmod a+rwx,g+s,+t /tmp/run /tmp/run/user 2>/dev/null
 chgrp users /tmp/run /tmp/run/user 2>/dev/null
 
+export PYTHONBREAKPOINT="ipdb.set_trace"
+
 
 ################################## PATH setup ###################################
 
@@ -116,19 +118,12 @@ HOSTNAME=$(hostname)
 DOMAINNAME=$(hostname -y)
 
 dir_tag() {
-    if [[ "$(pwd)" == *"dup."* && "$(basename $(pwd))" != *"dup."* ]]; then
+    if [[ "$(/bin/pwd)" == *"dup."* && "$(/bin/basename $(/bin/pwd))" != *"dup."* ]]; then
         echo "%b%F{green}(dup)%B"
     fi
 }
 
-#export PS1="%k%F{4}%B$HOSTNAME%F{8} %F{5}%1~ %F{yellow}%B➜  %f%b"
-#export PS1="%k%F{4}%B$HOSTNAME%F{8} %F{5}%1~ %F{yellow}%B» %f%b"
 export PS1="%k%F{4}%B$HOSTNAME%F{8} \$(dir_tag)%F{5}%1~ %(!.%F{red}#.%F{yellow}%B) %f%b"
-#export PS1=$'%k\e[38;2;49;116;143m%B$HOSTNAME%F{8} \$(dir_tag)%F{5}%1~ %F{yellow}%B %f%b'
-#export PS1=$'%k%F{4}%B$HOSTNAME%F{8} \$(dir_tag)\e[38;2;173;92;124m%1~ %F{yellow}%B %f%b'
-#export PS1=$'%k\e[38;2;70;116;136m%B$HOSTNAME%F{8} \$(dir_tag)\e[38;2;158;81;113m%1~ %F{yellow}%B %f%b'
-#export PS1=$'%k\e[38;2;70;116;136m%B$HOSTNAME%F{8} \$(dir_tag)\e[38;2;146;75;105m%1~ %F{yellow}%B %f%b'
-#export PS1="%K{white}%F{black}(%B%m %b%K{white}%F{black}%1~)%f%b%k "
 
 precmd() {
     # Refresh this every command because programs could have changed it

@@ -53,3 +53,8 @@ vim.g.python_indent = {
     open_paren = "shiftwidth()",
     continue = "shiftwidth()"
 }
+
+vim.cmd([[
+    autocmd BufNewFile,BufRead *.cir,*.cir.gz,*.spf,*.spf.gz,*.sp,*.sim :set filetype=spice
+    autocmd BufNewFile,BufRead *.cfg,*.cfg.tempy,*.cfg.inc,*.yml,*.yaml :set filetype=yaml
+]])
