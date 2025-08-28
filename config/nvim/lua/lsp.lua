@@ -7,7 +7,7 @@ vim.keymap.set("n", "<leader>q", vim.diagnostic.setloclist, opts)
 
 local on_attach = function(client, bufnr)
     -- Enable completion triggered by <c-x><c-o>
-    vim.api.nvim_buf_set_option(bufnr, "omnifunc", "v:lua.vim.lsp.omnifunc")
+    vim.bo[bufnr].omnifunc = "v:lua.vim.lsp.omnifunc"
 
     -- Mappings.
     -- See `:help vim.lsp.*` for documentation on any of the below functions
@@ -18,12 +18,6 @@ local on_attach = function(client, bufnr)
     vim.keymap.set("n", "K", vim.lsp.buf.hover, bufopts)
     vim.keymap.set("n", "gi", vim.lsp.buf.implementation, bufopts)
     vim.keymap.set("n", "<C-k>", vim.lsp.buf.signature_help, bufopts)
-    vim.keymap.set("n", "<leader>wa", vim.lsp.buf.add_workspace_folder, bufopts)
-    vim.keymap.set("n", "<leader>wr", vim.lsp.buf.remove_workspace_folder, bufopts)
-    vim.keymap.set("n", "<leader>wl", function()
-        print(vim.inspect(vim.lsp.buf.list_workspace_folders()))
-    end, bufopts)
-    --vim.keymap.set("n", "<leader>D", vim.lsp.buf.type_definition, bufopts)
     vim.keymap.set("n", "<leader>rn", vim.lsp.buf.rename, bufopts)
     vim.keymap.set("n", "<leader>ca", vim.lsp.buf.code_action, bufopts)
     vim.keymap.set("n", "<leader>f",
@@ -36,9 +30,7 @@ vim.api.nvim_create_autocmd({"CursorHold"}, {
     callback = function()
         local opts = {
             focusable = false,
-            close_events = {
-                "BufLeave", "CursorMoved", "InsertEnter", "FocusLost"
-            },
+            close_events = {"BufLeave", "CursorMoved", "InsertEnter", "FocusLost"},
             border = "rounded",
             source = "always",
             prefix = " ",
@@ -51,21 +43,6 @@ vim.api.nvim_create_autocmd({"CursorHold"}, {
 -- Show the floating window faster when trigger condition is met
 vim.o.updatetime = 1000
 
--- Specify how the border looks like
-local border = "rounded"
-
--- Add the border on hover and on signature help popup window
-local handlers = {
-    ['textDocument/hover'] = vim.lsp.with(
-        vim.lsp.handlers.hover,
-        { border = border }
-    ),
-    ['textDocument/signatureHelp'] = vim.lsp.with(
-        vim.lsp.handlers.signature_help,
-        { border = border }
-    ),
-}
-
 -- Linter: Configure display of linting messages in-line
 vim.diagnostic.config({
     virtual_text = true,
@@ -74,34 +51,27 @@ vim.diagnostic.config({
     update_in_insert = false,
     severity_sort = true,
 
-    float = { border = border },
+    float = { border = "rounded" },
 })
 
 vim.lsp.config['pylsp'] = {
     filetypes = { 'python' },
-    handlers = handlers,
+    on_attach = on_attach,
     cmd = { neovim_venv .. "/bin/pylsp", "-vvv" },
     settings = {
         pylsp = {
             plugins = {
-                -- sorts imports on format, boo hiss
+                -- Disable formatters that conflict with Ruff
                 autopep8 = { enabled = false },
-
-                -- redundant with ruff
                 pycodestyle = { enabled = false },
                 pyflakes = { enabled = false },
                 yapf = { enabled = false },
                 black = { enabled = false },
 
+                -- Enable type checking and completion
                 pylsp_mypy = { enabled = true },
-                --pycodestyle = {
-                --    maxLineLength = 88,
-                --    ignore = {'E701', 'W503'},
-                --},
                 jedi_completion = { fuzzy = true },
-                jedi_symbols = {
-                    include_import_symbols = false
-                },
+                jedi_symbols = { include_import_symbols = false },
                 mccabe = { threshold = 100 },
             }
         }
@@ -110,13 +80,11 @@ vim.lsp.config['pylsp'] = {
         debounce_text_changes = 200,
     },
 }
-vim.lsp.enable('pylsp')
 
 vim.lsp.config['ruff'] = {
     filetypes = { 'python' },
-    handlers = handlers,
-    cmd = { neovim_venv .. "/bin/ruff", "server" },
     on_attach = on_attach,
+    cmd = { neovim_venv .. "/bin/ruff", "server" },
     init_options = {
         settings = {
             args = {"--isolated"},
@@ -124,20 +92,17 @@ vim.lsp.config['ruff'] = {
         }
     }
 }
-vim.lsp.enable('ruff')
-
---L.bashls.setup({})
 
 vim.lsp.config['clangd'] = {
     filetypes = { 'c', 'c++' },
-    handlers = handlers,
+    on_attach = on_attach,
     cmd = {
         "clangd",
         "--background-index",
-        -- "--suggest-missing-includes",
-        -- "--clang-tidy",
         "--completion-style=detailed",
 
+        -- "--suggest-missing-includes",
+        -- "--clang-tidy",
         -- '--fallback-style="{BasedOnStyle: llvm, IndentWidth: 4}"',
     },
     capabilities = {
@@ -148,11 +113,69 @@ vim.lsp.config['clangd'] = {
         }
     }
 }
-vim.lsp.enable('clangd')
-
 
 vim.lsp.config['rust_analyzer'] = {
     filetypes = { 'rust' },
-    handlers = handlers
+    on_attach = on_attach
 }
+
+vim.lsp.enable('pylsp')
+vim.lsp.enable('ruff')
+vim.lsp.enable('clangd')
 vim.lsp.enable('rust_analyzer')
+
+
+-- Override vim.lsp.buf.hover with border support and multi-client handling
+vim.lsp.buf.hover = function()
+    local clients = vim.lsp.get_clients({ bufnr = 0 })
+    if #clients == 0 then
+        vim.notify("No LSP clients attached", vim.log.levels.WARN)
+        return
+    end
+
+    -- Filter clients that support hover
+    local hover_clients = vim.tbl_filter(function(client)
+        return client.supports_method('textDocument/hover')
+    end, clients)
+
+    if #hover_clients == 0 then
+        vim.notify("No LSP clients support hover", vim.log.levels.INFO)
+        return
+    end
+
+    -- Track responses from all clients
+    local responses = {}
+    local completed = 0
+    local has_result = false
+
+    -- Make requests to all hover-capable clients
+    for _, client in ipairs(hover_clients) do
+        local params = vim.lsp.util.make_position_params(0, client.offset_encoding)
+
+        client.request('textDocument/hover', params, function(err, result, ctx)
+            completed = completed + 1
+
+            -- Store the first successful result
+            if not has_result and result and result.contents then
+                has_result = true
+
+                -- Force border configuration
+                local hover_config = {
+                    border = 'single',
+                    max_width = 80,
+                    max_height = 20,
+                    focusable = false,
+                    close_events = { "CursorMoved", "BufHidden", "InsertCharPre" },
+                }
+
+                -- Use the built-in hover handler with our config
+                vim.lsp.handlers['textDocument/hover'](err, result, ctx, hover_config)
+            end
+
+            -- If all clients have responded and none had results, show warning
+            if completed == #hover_clients and not has_result then
+                vim.notify("No hover information available", vim.log.levels.INFO)
+            end
+        end, 0)
+    end
+end
