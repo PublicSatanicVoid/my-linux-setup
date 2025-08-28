@@ -283,8 +283,6 @@ local T = {
         end
     },
 
-    {"ojroques/vim-oscyank", event = "VeryLazy"},
-    
     {"f-person/git-blame.nvim", event = "VeryLazy",
         config = function()
             vim.api.nvim_create_user_command("BlameOn", "GitBlameEnable", {})
