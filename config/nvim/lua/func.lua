@@ -5,15 +5,14 @@ local function where()
     print(result)
 end
 
--- Print absolute path to current file and copy to system clipboard using OSC52
--- (requires vim-oscyank plugin)
+-- Print absolute path to current file and copy to system clipboard
 local function whereCopy()
     local filePath = vim.api.nvim_buf_get_name(0)
     local result = vim.fn.system("readlink -f " .. filePath)
     print(result)
 
     result = result:gsub("\n", "")
-    vim.fn.OSCYank(result)
+    vim.fn.setreg("+", result)
 end
 
 -- Quickly open NeoVim configs
