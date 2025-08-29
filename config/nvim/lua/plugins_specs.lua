@@ -27,8 +27,8 @@ local T = {
 
     {
         "PublicSatanicVoid/nightfox.nvim",
-        lazy = false,  -- Load immediately for colors
-        priority = 1000,  -- High priority for color scheme
+        lazy = false,
+        priority = 1000,
         config = function()
             require("nightfox").setup({
                 options = { transparent = true }
@@ -41,7 +41,17 @@ local T = {
 
     {
         "nvim-telescope/telescope.nvim",
-        event = "VeryLazy"
+        event = "VeryLazy",
+        opts = {
+            defaults = {
+                file_ignore_patterns = {
+                    ".git/.*",
+                    "venv",
+                    "build",
+                    "__pycache__"
+                }
+            }
+        }
     },
 
     {"mihaifm/bufstop", event = "VeryLazy"},
@@ -59,7 +69,6 @@ local T = {
         end
     },
 
-    -- Completion engine
     {
         "hrsh7th/nvim-cmp",
         event = "InsertEnter",
@@ -102,22 +111,41 @@ local T = {
 
     {
         "nvim-treesitter/nvim-treesitter",
-        event = "BufRead",
+        event = { "BufReadPost", "BufNewFile" },
         build = ":TSUpdate",
-        config = function()
-            require('nvim-treesitter.configs').setup({
-                ensure_installed = { "c", "lua", "vim", "bash", "python", "rust" },
-                auto_install = true,
-                highlight = {
-                    enable = true,
-                    additional_vim_regex_highlighting = false,
+        opts = {
+            ensure_installed = { "c", "lua", "vim", "bash", "python", "rust" },
+            auto_install = true,
+            highlight = {
+                enable = true,
+                additional_vim_regex_highlighting = false,
+            },
+            indent = {
+                enable = true,
+                disable = { "python", "yaml" },
+            },
+            move = {
+                enable = true,
+                goto_next_start = {
+                  ["]m"] = "@function.outer",
+                  ["]]"] = "@class.outer",
                 },
-                indent = {
-                    enable = true,
-                    disable = { "python", "yaml" },
+                goto_next_end = {
+                  ["]M"] = "@function.outer",
+                  ["]["] = "@class.outer",
+                },
+                goto_previous_start = {
+                  ["[m"] = "@function.outer",
+                  ["[["] = "@class.outer",
+                },
+                goto_previous_end = {
+                  ["[M"] = "@function.outer",
+                  ["[]"] = "@class.outer",
                 }
-            })
-
+            }
+        },
+        config = function(_, opts)
+            require("nvim-treesitter.configs").setup(opts)
             vim.g._ts_force_sync_parsing = true
         end
     },
@@ -130,10 +158,10 @@ local T = {
             max_lines = 0,
             min_window_height = 0,
             line_numbers = true,
-            multiline_threshold = 2,
+            multiline_threshold = 5,
             trim_scope = 'outer',
             mode = 'cursor',
-            separator = '—',
+            separator = '-',
             zindex = 20,
         },
         config = function(_, opts)
