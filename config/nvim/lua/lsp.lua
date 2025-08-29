@@ -135,7 +135,7 @@ vim.lsp.buf.hover = function()
 
     -- Filter clients that support hover
     local hover_clients = vim.tbl_filter(function(client)
-        return client.supports_method('textDocument/hover')
+        return client:supports_method('textDocument/hover')
     end, clients)
 
     if #hover_clients == 0 then
@@ -152,7 +152,7 @@ vim.lsp.buf.hover = function()
     for _, client in ipairs(hover_clients) do
         local params = vim.lsp.util.make_position_params(0, client.offset_encoding)
 
-        client.request('textDocument/hover', params, function(err, result, ctx)
+        client:request('textDocument/hover', params, function(err, result, ctx)
             completed = completed + 1
 
             -- Store the first successful result
