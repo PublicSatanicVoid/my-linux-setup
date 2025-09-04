@@ -114,8 +114,8 @@ source "$ETC_SETUP_ZSH/aliases.zshrc"
 ################################# Prompt setup ##################################
 
 WHOAMI=$(whoami)
-HOSTNAME=$(hostname)
-DOMAINNAME=$(hostname -y)
+HOSTNAME=$(hostname -s)
+DOMAINNAME=$(hostname -y 2>/dev/null)
 
 dir_tag() {
     if [[ "$(/bin/pwd)" == *"dup."* && "$(/bin/basename $(/bin/pwd))" != *"dup."* ]]; then
