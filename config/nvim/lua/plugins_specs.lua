@@ -46,12 +46,27 @@ local T = {
         "nvim-telescope/telescope.nvim",
         event = "VeryLazy",
         opts = {
-            defaults = {
+            -- Show telescope along the bottom rather than over the top of the existing
+            -- buffers
+            defaults = require("telescope.themes").get_ivy({
+                border = {
+                    prompt = { 1, 1, 1, 1 },
+                    results = { 1, 1, 1, 1 },
+                    preview = { 0, 0, 0, 1 },
+                },
+
                 file_ignore_patterns = {
                     ".git/.*",
                     "venv",
                     "build",
                     "__pycache__"
+                }
+            }),
+
+            pickers = {
+                current_buffer_fuzzy_find = {
+                    previewer = false,
+                    sorting_strategy = "ascending",
                 }
             }
         },
