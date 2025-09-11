@@ -34,7 +34,7 @@ vim.api.nvim_create_autocmd({"CursorHold"}, {
             border = "rounded",
             source = "always",
             prefix = " ",
-            scope = "cursor",
+            scope = "cursor"
         }
         vim.diagnostic.open_float(nil, opts)
     end
@@ -50,8 +50,7 @@ vim.diagnostic.config({
     underline = true,
     update_in_insert = false,
     severity_sort = true,
-
-    float = { border = "rounded" },
+    float = { border = "rounded" }
 })
 
 vim.lsp.config['pylsp'] = {
@@ -72,12 +71,12 @@ vim.lsp.config['pylsp'] = {
                 pylsp_mypy = { enabled = true },
                 jedi_completion = { fuzzy = true },
                 jedi_symbols = { include_import_symbols = false },
-                mccabe = { threshold = 100 },
+                mccabe = { threshold = 100 }
             }
         }
     },
     flags = {
-        debounce_text_changes = 200,
+        debounce_text_changes = 200
     },
 }
 
@@ -88,7 +87,7 @@ vim.lsp.config['ruff'] = {
     init_options = {
         settings = {
             args = {"--isolated"},
-            organizeImports = false,
+            organizeImports = false
         }
     }
 }
@@ -165,7 +164,7 @@ vim.lsp.buf.hover = function()
                     max_width = 80,
                     max_height = 20,
                     focusable = false,
-                    close_events = { "CursorMoved", "BufHidden", "InsertCharPre" },
+                    close_events = { "CursorMoved", "BufHidden", "InsertCharPre" }
                 }
 
                 -- Use the built-in hover handler with our config
