@@ -1,4 +1,4 @@
-local neovim_venv = os.getenv("NEOVIM_VENV") or os.getenv("HOME") .. "/venvs/neovim_venv"
+--local neovim_venv = os.getenv("NEOVIM_VENV") or os.getenv("HOME") .. "/venvs/neovim_venv"
 
 vim.g.mapleader = " "
 
@@ -15,7 +15,7 @@ map("n", "<C-u>", "25kzz", "Scroll up and center")
 map("n", "/", ":%s%%%gn<Left><Left><Left><Left>", "Search")
 
 -- Yank visual selection to system clipboard
-map("v", "<leader>y", '"+y', "Yank to system clipboard")
+map({"v", "x"}, "<leader>y", '"+y', "Yank to system clipboard")
 
 -- Buffer switching
 map("n", "<leader>n", "<cmd>bprev<CR>", "Previous buffer")
