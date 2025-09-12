@@ -17,11 +17,11 @@ local T = {
         }
     },
 
-    {
-        "nvim-tree/nvim-web-devicons",
-        lazy = true,
-        opts = {}
-    },
+    -- {
+    --     "nvim-tree/nvim-web-devicons",
+    --     lazy = true,
+    --     opts = {}
+    -- },
 
     {
         "PublicSatanicVoid/nightfox.nvim",
