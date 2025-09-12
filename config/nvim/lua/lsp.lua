@@ -1,4 +1,5 @@
 local neovim_venv = os.getenv("NEOVIM_VENV") or os.getenv("HOME") .. "/venvs/neovim_venv"
+
 local opts = { noremap=true, silent=true }
 vim.keymap.set("n", "<leader>e", vim.diagnostic.open_float, opts)
 vim.keymap.set("n", "[d", vim.diagnostic.goto_prev, opts)
@@ -12,17 +13,20 @@ local on_attach = function(client, bufnr)
     -- Mappings.
     -- See `:help vim.lsp.*` for documentation on any of the below functions
     local bufopts = { noremap=true, silent=true, buffer=bufnr }
-    vim.keymap.set("n", "gD", vim.lsp.buf.declaration, bufopts)
+    --vim.keymap.set("n", "gD", vim.lsp.buf.declaration, bufopts)
     vim.keymap.set("n", "gd", vim.lsp.buf.definition, bufopts)
     vim.keymap.set("n", "gr", vim.lsp.buf.references, bufopts)
     vim.keymap.set("n", "K", vim.lsp.buf.hover, bufopts)
-    vim.keymap.set("n", "gi", vim.lsp.buf.implementation, bufopts)
+    --vim.keymap.set("n", "gi", vim.lsp.buf.implementation, bufopts)
     vim.keymap.set("n", "<C-k>", vim.lsp.buf.signature_help, bufopts)
     vim.keymap.set("n", "<leader>rn", vim.lsp.buf.rename, bufopts)
     vim.keymap.set("n", "<leader>ca", vim.lsp.buf.code_action, bufopts)
-    vim.keymap.set("n", "<leader>f",
-        function() vim.lsp.buf.format { async = true }
-    end, bufopts)
+    vim.keymap.set(
+        "n",
+        "<leader>f",
+        function() vim.lsp.buf.format { async = true } end,
+        bufopts
+    )
 end
 
 -- Linter: Show floating window with linter error on current line
@@ -41,7 +45,7 @@ vim.api.nvim_create_autocmd({"CursorHold"}, {
 })
 
 -- Show the floating window faster when trigger condition is met
-vim.o.updatetime = 1000
+vim.o.updatetime = 500  --1000
 
 -- Linter: Configure display of linting messages in-line
 vim.diagnostic.config({
@@ -52,6 +56,14 @@ vim.diagnostic.config({
     severity_sort = true,
     float = { border = "rounded" }
 })
+
+
+-- Allow site- or company-specific Python extra include paths
+local extra_py_paths_file = os.getenv("HOME") .. "/etc/site/nvim-jedi-extrapaths.lua"
+local have_extra_py_paths, extra_py_paths = pcall(dofile, extra_py_paths_file)
+if not have_extra_py_paths then
+    extra_py_paths = {}
+end
 
 vim.lsp.config['pylsp'] = {
     filetypes = { 'python' },
@@ -71,6 +83,7 @@ vim.lsp.config['pylsp'] = {
                 pylsp_mypy = { enabled = true },
                 jedi_completion = { fuzzy = true },
                 jedi_symbols = { include_import_symbols = false },
+                jedi = { extra_paths = extra_py_paths },
                 mccabe = { threshold = 100 }
             }
         }
