@@ -1,5 +1,3 @@
---local neovim_venv = os.getenv("NEOVIM_VENV") or os.getenv("HOME") .. "/venvs/neovim_venv"
-
 vim.g.mapleader = " "
 
 -- Modern keymap helper with descriptions
