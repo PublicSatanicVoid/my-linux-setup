@@ -1,5 +1,3 @@
-local neovim_venv = os.getenv("NEOVIM_VENV") or os.getenv("HOME") .. "/venvs/neovim_venv"
-
 local T = {
     {
         "nvim-lualine/lualine.nvim",
