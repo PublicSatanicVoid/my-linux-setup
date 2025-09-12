@@ -41,6 +41,7 @@ opt.wildmode = "longest,list"
 -- UI
 opt.cmdheight = 0  -- hide command line until needed
 opt.cursorline = false
+opt.winborder = "rounded"
 
 -- Global settings
 vim.g.editorconfig = false
