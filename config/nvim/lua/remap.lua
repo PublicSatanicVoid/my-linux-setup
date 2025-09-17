@@ -6,11 +6,11 @@ local function map(mode, lhs, rhs, desc)
 end
 
 -- Scrolling half-page down/up keeps cursor centered vertically
-map("n", "<C-d>", "25jzz", "Scroll down and center")
-map("n", "<C-u>", "25kzz", "Scroll up and center")
+map("n", "<C-d>", "<C-d>zz", "Scroll down and center")
+map("n", "<C-u>", "<C-u>zz", "Scroll up and center")
 
 -- Search that doesn't require escaping regexes
-map("n", "/", ":%s%%%gn<Left><Left><Left><Left>", "Search")
+map("n", "S", ":%s%%%gn<Left><Left><Left><Left>", "Search")
 
 -- Yank visual selection to system clipboard
 map({"v", "x"}, "<leader>y", '"+y', "Yank to system clipboard")
