@@ -18,12 +18,6 @@ local T = {
         }
     },
 
-    -- {
-    --     "nvim-tree/nvim-web-devicons",
-    --     lazy = true,
-    --     opts = {}
-    -- },
-
     {
         "PublicSatanicVoid/nightfox.nvim",
         lazy = false,
@@ -37,13 +31,8 @@ local T = {
     },
 
     {
-        "nvim-lua/plenary.nvim",
-        lazy = true
-    },
-
-    {
         "nvim-telescope/telescope.nvim",
-        event = "VeryLazy",
+        dependencies = { "nvim-lua/plenary.nvim" },
         opts = {
             -- Show telescope along the bottom rather than over the top of the existing
             -- buffers
@@ -100,46 +89,36 @@ local T = {
     },
 
     {
-        "hrsh7th/nvim-cmp",
-        event = {"InsertEnter", "VeryLazy"},
-        dependencies = {
-            "hrsh7th/cmp-nvim-lsp",
-            "hrsh7th/cmp-buffer",
-            "hrsh7th/cmp-nvim-lsp-signature-help"
-        },
-        config = function()
-            local cmp = require("cmp")
-            cmp.setup({
+        "saghen/blink.cmp",
+        event = { "InsertEnter", "VeryLazy" },
+        version = "*",  -- Use a tagged release so we get the precompiled fuzzy finder
+        opts = {
+            keymap = {
+                preset = "none",
+                ["<Tab>"] = { "select_next", "fallback" },
+                ["<S-Tab>"] = { "select_prev", "fallback" }
+            },
+            sources = {
+                default = { "lsp", "path", "buffer" },
+
+                -- https://cmp.saghen.dev/configuration/sources#show-buffer-completions-with-lsp
+                -- > By default, the buffer source will only show when the LSP source is
+                -- > disabled or returns no items. You may always show the buffer source
+                -- > via:
+                providers = {
+                    lsp = { fallbacks = {} }
+                }
+            },
+            appearance = {
+                nerd_font_variant = "mono",
+            },
+            signature = {
+                enabled = true,
                 window = {
-                    completion = cmp.config.window.bordered(),
-                    documentation = cmp.config.window.bordered(),
-                },
-                mapping = cmp.mapping.preset.insert({
-                    ["<Tab>"] = cmp.mapping(function(fallback)
-                        if cmp.visible() then cmp.select_next_item()
-                        else fallback() end
-                    end, { "i", "s" }),
-                    ["<S-Tab>"] = cmp.mapping(function(fallback)
-                        if cmp.visible() then cmp.select_prev_item()
-                        else fallback() end
-                    end, { "i", "s" }),
-                    ["<C-y>"] = cmp.mapping.confirm({ select = true }),
-                    ["<C-Space>"] = cmp.mapping.confirm({ select = true }),
-                    ["<C-b>"] = cmp.mapping.scroll_docs(-4),
-                    ["<C-f>"] = cmp.mapping.scroll_docs(4),
-                    ["<C-e>"] = cmp.mapping.abort()
-                }),
-                sources = cmp.config.sources(
-                    {
-                        { name = "nvim_lsp" },
-                        { name = "nvim_lsp_signature_help" }
-                    },
-                    {
-                        { name = "buffer" }
-                    }
-                )
-            })
-        end
+                    show_documentation = true
+                }
+            }
+        }
     },
 
     {
@@ -251,17 +230,18 @@ local T = {
         }
     },
 
-    -- {
-    --     "tpope/vim-abolish",
-    --     event = "VeryLazy"
-    -- },
-
     {
         "unblevable/quick-scope",
         event = "VeryLazy"
     },
 
-    -- Vim practice game
+    -- -- Case-matched search and replace
+    -- {
+    --     "tpope/vim-abolish",
+    --     event = "VeryLazy"
+    -- },
+
+    -- -- Vim practice game
     -- {
     --     "ThePrimeagen/vim-be-good",
     --     event = "VeryLazy"

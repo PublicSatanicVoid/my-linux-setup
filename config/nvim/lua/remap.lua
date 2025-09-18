@@ -10,7 +10,7 @@ map("n", "<C-d>", "<C-d>zz", "Scroll down and center")
 map("n", "<C-u>", "<C-u>zz", "Scroll up and center")
 
 -- Search that doesn't require escaping regexes
-map("n", "S", ":%s%%%gn<Left><Left><Left><Left>", "Search")
+map("n", "S", "<cmd>%s%%%gn<Left><Left><Left><Left>", "Search")
 
 -- Yank visual selection to system clipboard
 map({"v", "x"}, "<leader>y", '"+y', "Yank to system clipboard")
