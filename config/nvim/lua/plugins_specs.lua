@@ -99,7 +99,7 @@ local T = {
                 ["<S-Tab>"] = { "select_prev", "fallback" }
             },
             sources = {
-                default = { "lsp", "path", "buffer" },
+                default = { "lsp", "buffer" },
 
                 -- https://cmp.saghen.dev/configuration/sources#show-buffer-completions-with-lsp
                 -- > By default, the buffer source will only show when the LSP source is
@@ -108,6 +108,9 @@ local T = {
                 providers = {
                     lsp = { fallbacks = {} }
                 }
+            },
+            cmdline = {
+                enabled = false
             },
             appearance = {
                 nerd_font_variant = "mono",
