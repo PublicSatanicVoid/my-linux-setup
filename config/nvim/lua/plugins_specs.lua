@@ -117,12 +117,15 @@ local T = {
             sources = {
                 default = { "lsp", "buffer" },
 
-                -- https://cmp.saghen.dev/configuration/sources#show-buffer-completions-with-lsp
-                -- > By default, the buffer source will only show when the LSP source is
-                -- > disabled or returns no items. You may always show the buffer source
-                -- > via:
                 providers = {
-                    lsp = { fallbacks = {} }
+                    -- https://cmp.saghen.dev/configuration/sources#show-buffer-completions-with-lsp
+                    -- > By default, the buffer source will only show when the LSP
+                    -- > source is disabled or returns no items. You may always show the
+                    -- > buffer source via:
+                    lsp = { fallbacks = {} },
+
+                    -- Deprioritize buffer completions, in favor of LSP completions
+                    buffer = { score_offset = -5 }
                 }
             },
             cmdline = {
