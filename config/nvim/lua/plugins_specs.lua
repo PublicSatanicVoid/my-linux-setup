@@ -96,7 +96,22 @@ local T = {
             keymap = {
                 preset = "none",
                 ["<Tab>"] = { "select_next", "fallback" },
-                ["<S-Tab>"] = { "select_prev", "fallback" }
+                ["<S-Tab>"] = { "select_prev", "fallback" },
+                ["<C-b>"] = { "scroll_documentation_up", "fallback" },
+                ["<C-f>"] = { "scroll_documentation_down", "fallback" }
+            },
+            completion = {
+                list = {
+                    -- Don't select first item automatically. This makes tabbing work
+                    -- correctly (first tab selects first item, etc)
+                    selection = {
+                        preselect = false,
+                        auto_insert = true
+                    }
+                },
+                documentation = {
+                    auto_show = true,
+                }
             },
             sources = {
                 default = { "lsp", "buffer" },
