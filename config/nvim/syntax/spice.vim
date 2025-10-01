@@ -84,9 +84,9 @@ syn match spiceMremainder /.*\(\n\++\s*\)\?/ contained nextgroup=spiceMremainder
 
 " Measure
 " =======
-syn region spiceDotMeas start=/^\s*\.meas/ end=/\(\n\++.*\)\@!$/ contains=spiceDotMeasKw
+syn region spiceDotMeas start=/^\s*\.meas\(ure\)\?/ end=/\(\n\++.*\)\@!$/ contains=spiceDotMeasKw
 
-syn match spiceDotMeasKw /^\s*\.meas\s*\(\n\++\s*\)\?/ contained nextgroup=spiceDotMeasTypeKw
+syn match spiceDotMeasKw /^\s*\.meas\(ure\)\?\s*\(\n\++\s*\)\?/ contained nextgroup=spiceDotMeasTypeKw
 hi def link spiceDotMeasKw Keyword
 
 syn match spiceDotMeasTypeKw /\(tran\)\s*\(\n\++\s*\)\?/ contained nextgroup=spiceDotMeasName
@@ -146,9 +146,9 @@ hi def link spiceXclass Type
 
 " Voltage Source
 " ==============
-syn region spiceV start=/^\s*[VB]\S\+/ end=/\(\n\++.*\)\@!$/ contains=spiceVname
+syn region spiceV start=/^\s*[VBG]\S\+/ end=/\(\n\++.*\)\@!$/ contains=spiceVname
 
-syn match spiceVname /^\s*[VB]\S\+\s*\(\n\++\s*\)\?/ contained nextgroup=spiceVnode1
+syn match spiceVname /^\s*[VBG]\S\+\s*\(\n\++\s*\)\?/ contained nextgroup=spiceVnode1
 hi def link spiceVname Identifier
 
 syn match spiceVnode1 /\S\+\s*\(\n\++\s*\)\?/ contained nextgroup=spiceVnode2
@@ -182,7 +182,7 @@ syn match spiceEremainder /.*\(\n\++\s*\)\?/ contained nextgroup=spiceEremainder
 
 " Misc Keywords
 " =============
-syn keyword spiceSourceKeywordsSimple PWL PWLZ DC Z contained containedin=spiceVremainder,spiceEremainder
+syn keyword spiceSourceKeywordsSimple DELAY VCR PWL PWLZ DC Z contained containedin=spiceVremainder,spiceEremainder
 "hi def link spiceKeywordVsource Type
 hi def link spiceSourceKeywordsSimple Keyword
 
