@@ -35,8 +35,8 @@ local T = {
         dependencies = { "nvim-lua/plenary.nvim" },
         config = function()
             require("telescope").setup({
-                -- Show telescope along the bottom rather than over the top of the existing
-                -- buffers
+                -- Ivy theme: show telescope along the bottom rather than over the top
+                -- of the existing buffers
                 defaults = require("telescope.themes").get_ivy({
                     border = {
                         prompt = { 1, 1, 1, 1 },
