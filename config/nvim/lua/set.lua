@@ -42,6 +42,7 @@ opt.wildmode = "longest,list"
 opt.cmdheight = 0  -- hide command line until needed
 opt.cursorline = false
 opt.winborder = "rounded"
+opt.synmaxcol = 20000  -- support syntax highlighting on longer lines
 
 -- Global settings
 vim.g.editorconfig = false
