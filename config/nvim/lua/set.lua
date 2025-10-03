@@ -76,5 +76,5 @@ vim.api.nvim_create_autocmd({"BufNewFile", "BufRead"}, {
 
 vim.api.nvim_create_autocmd({"BufNewFile", "BufRead"}, {
     pattern = {"*.cfg", "*.cfg.inc", "*.yml", "*.yaml"},
-    command = "set filetype=yaml"
+    command = "set filetype=yaml | set shiftwidth=4"
 })

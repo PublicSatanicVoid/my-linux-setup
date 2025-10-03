@@ -34,7 +34,7 @@ C-r                     redo
 I                       insert at beginning of line
 A                       insert at end of line
 
-gq                      reflow paragraph
+gwip                    reflow paragraph
 
 g;                      go back to last cursor pos
 
@@ -45,13 +45,29 @@ t/T<char>               forward/backward to next occurrence of <char> (prev char
 S-p                     paste over selection without copying the selection
 
 
+:bp|bd#                 close buffer without closing split/window
+:close                  close split/window without closing buffer
+
+
 CUSTOM
 ======
 
-<C-b>                   enter visual BLOCK mode
-                            - select multiple lines, do thing, Esc Esc, 
-                              it is applied to all selected lines
+<space>y                copy selected text to system clipboard (OSC52)
 
 <space>b                select buffer in current window
 <space>n                next buffer
 <space>p                prev buffer
+
+<space><space>          alternate buffer
+
+<space>sf               fuzzy find files
+<space>sg               fuzzy find grep
+<space>ss               fuzzy find LSP symbols
+<space>sn               fuzzy find files under directory of current file
+
+<space>f                format buffer with LSP
+
+<space>x                make current file executable
+
+S-s                     like /, but doesn't require escaping the '/' character in search
+                            strings
