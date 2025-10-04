@@ -1,5 +1,18 @@
 #!/bin/bash
 
+# Prerequisites:
+# - Python 3 installed and supports venvs
+# - Login shell is zsh
+# On Ubuntu:
+# $ sudo apt update
+# $ sudo apt dist-upgrade
+# $ sudo apt autoremove
+# $ sudo apt install zsh python3.12 python3.12-venv gcc-14 g++-14
+# $ mkdir ~/bin
+# $ ln -s /usr/bin/gcc-14 ~/bin/gcc
+# $ ln -s /usr/bin/g++-14 ~/bin/g++
+# $ chsh -s /bin/zsh
+
 REPO_ROOT="$(dirname "$(readlink -f "$0")")"
 
 ETC="$HOME/etc"
@@ -19,11 +32,11 @@ echo "-- Installing zsh config..."
 ln -s "$ETC_SETUP/config/zsh/zshrc" "$HOME/.zshrc"
 
 echo "-- Installing gdb and gdb config..."
-mkdir "$HOME/conda"
-pushd "$HOME/conda"
-"$ETC_SETUP/tools/newconda.sh" gdb
-./gdb/bin/conda install -y python==3.11.5 gdb debugpy
-popd
+#mkdir "$HOME/conda"
+#pushd "$HOME/conda"
+#"$ETC_SETUP/tools/newconda.sh" gdb
+#./gdb/bin/conda install -y python==3.11.5 gdb debugpy
+#popd
 ln -s "$ETC_SETUP/config/gdb/gdbinit" "$HOME/.gdbinit"
 
 
@@ -32,14 +45,14 @@ PYTHON3_EXE="python3"
 
 mkdir "$HOME/venvs"
 pushd "$HOME/venvs"
-"$PYTHON3_EXE" -m venv neovim_venv
-./venv/bin/pip install --upgrade pip
-./venv/bin/pip install neovim pynvim 'python-lsp-server[all]' ruff-lsp ruff
+"$PYTHON3_EXE" -m venv neovim-venv
+./neovim-venv/bin/pip install --upgrade pip
+./neovim-venv/bin/pip install neovim pynvim 'python-lsp-server[all]' ruff-lsp ruff
 popd
 echo "!! Add the following to your zshrc:"
-echo "      export NEOVIM_VENV="$HOME/venvs/neovim_venv""
+echo "      export NEOVIM_VENV="$HOME/venvs/neovim-venv""
 
-mkdir ~/.config
+mkdir -p ~/.config
 
 # TODO install npm and cargo
 
@@ -77,3 +90,6 @@ ln -s "$ETC_SETUP/config/psql/psqlrc" "$HOME/.psqlrc"
 
 echo "-- Installing sqlite config..."
 ln -s "$ETC_SETUP/config/sqlite/sqliterc" "$HOME/.sqliterc"
+
+echo "-- Installing atop config..."
+ln -s "$ETC_SETUP/config/atop/atoprc" "$HOME/.atoprc"
