@@ -123,7 +123,8 @@ dir_tag() {
     fi
 }
 
-export PS1="%k%F{4}%B$HOSTNAME%F{8} \$(dir_tag)%F{5}%1~ %(!.%F{red}#.%F{yellow}%B) %f%b"
+#export PS1="%k%F{4}%B$HOSTNAME%F{8} \$(dir_tag)%F{5}%1~ %(!.%F{red}#.%F{yellow}%B) %f%b"
+export PS1="%k%F{4}%B$HOSTNAME%F{8} \$(dir_tag)%F{5}%1~ %(!.%F{red}#.%F{yellow}%B❭) %f%b"
 
 precmd() {
     # Refresh this every command because programs could have changed it
