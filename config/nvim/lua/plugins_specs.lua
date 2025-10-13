@@ -18,14 +18,16 @@ local T = {
         }
     },
 
-    --{
-    --    "tomasiser/vim-code-dark",
-    --    lazy = false,
-    --    priority = 1000,
-    --    config = function()
-    --        vim.cmd.colorscheme("codedark")
-    --    end
-    --},
+    -- {
+    --     "tomasiser/vim-code-dark",
+    --     lazy = false,
+    --     priority = 1000,
+    --     config = function()
+    --         vim.g.codedark_transparent = 1
+    --         vim.cmd.colorscheme("codedark")
+    --     end
+    -- },
+
     {
         "PublicSatanicVoid/nightfox.nvim",
         lazy = false,
