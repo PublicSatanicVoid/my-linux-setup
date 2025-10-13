@@ -115,7 +115,7 @@ vim.lsp.config['clangd'] = {
 
         -- "--suggest-missing-includes",
         -- "--clang-tidy",
-        -- '--fallback-style="{BasedOnStyle: llvm, IndentWidth: 4}"',
+        "--fallback-style=WebKit"
     },
     capabilities = {
         textDocument = {
