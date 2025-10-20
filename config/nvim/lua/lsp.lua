@@ -145,7 +145,7 @@ local default_pyright_lsp_settings = {
             autoSearchPaths = true,
             diagnosticMode = "openFilesOnly",
             useLibraryCodeForTypes = true,
-            typeCheckingMode = "basic",
+            typeCheckingMode = "off",  -- too much noise for now, should reevaluate
             extraPaths = extra_py_paths,
             exclude = excluded_py_paths
         }
