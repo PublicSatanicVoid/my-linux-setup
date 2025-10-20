@@ -47,7 +47,7 @@ mkdir "$HOME/venvs"
 pushd "$HOME/venvs"
 "$PYTHON3_EXE" -m venv neovim-venv
 ./neovim-venv/bin/pip install --upgrade pip
-./neovim-venv/bin/pip install neovim pynvim 'python-lsp-server[all]' ruff-lsp ruff
+./neovim-venv/bin/pip install neovim pynvim basedpyright ruff-lsp ruff
 popd
 echo "!! Add the following to your zshrc:"
 echo "      export NEOVIM_VENV="$HOME/venvs/neovim-venv""
