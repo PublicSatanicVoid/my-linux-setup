@@ -47,7 +47,7 @@ mkdir "$HOME/venvs"
 pushd "$HOME/venvs"
 "$PYTHON3_EXE" -m venv neovim-venv
 ./neovim-venv/bin/pip install --upgrade pip
-./neovim-venv/bin/pip install neovim pynvim basedpyright ruff-lsp ruff
+./neovim-venv/bin/pip install pynvim basedpyright ruff
 popd
 echo "!! Add the following to your zshrc:"
 echo "      export NEOVIM_VENV="$HOME/venvs/neovim-venv""
@@ -67,10 +67,6 @@ ln -s "$ETC_SETUP/config/nvim" "$HOME/.config/nvim"
 
 
 # :TSUpdate
-# :MasonInstall rust-analyzer
-# :MasonInstall clangd
-# :MasonInstall ruff-lsp
-# :MasonInstall bash-language-server
 
 # TODO download and install rust
 # https://static.rust-lang.org/dist/rust-1.77.2-x86_64-unknown-linux-gnu.tar.xz
