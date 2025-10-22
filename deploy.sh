@@ -69,7 +69,8 @@ ln -s "$ETC_SETUP/config/nvim" "$HOME/.config/nvim"
 # :TSUpdate
 
 # TODO download and install rust
-# https://static.rust-lang.org/dist/rust-1.77.2-x86_64-unknown-linux-gnu.tar.xz
+# $ curl --proto '=https' --tlsv1.2 https://sh.rustup.rs -sSf | sh
+# $ rustup component add rust-analyzer-x86_64-unknown-linux-gnu
 
 # TODO download and install zellij
 # https://github.com/zellij-org/zellij/releases/download/v0.40.0/zellij-x86_64-unknown-linux-musl.tar.gz

@@ -78,7 +78,8 @@ vim.lsp.config['ruff'] = {
 
 -- C/C++ language server
 vim.lsp.config['clangd'] = {
-    filetypes = { 'c', 'c++' },
+    filetypes = { "c", "cpp", "objc", "objcpp", "cuda" },
+    root_markers = { ".clangd", ".clang-tidy", ".clang-format", "compile_commands.json", "compile_flags.txt", "configure.ac", ".git" },
     on_attach = on_attach,
     cmd = {
         "clangd",
@@ -100,8 +101,9 @@ vim.lsp.config['clangd'] = {
 
 -- Rust language server
 vim.lsp.config['rust_analyzer'] = {
-    filetypes = { 'rust' },
-    on_attach = on_attach
+    filetypes = { "rust" },
+    on_attach = on_attach,
+    cmd = { "rust-analyzer" }
 }
 
 
