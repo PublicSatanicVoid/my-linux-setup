@@ -266,7 +266,10 @@ local T = {
 
     {
         "unblevable/quick-scope",
-        event = "VeryLazy"
+        event = "VeryLazy",
+        init = function()
+            vim.g.qs_highlight_on_keys = {"f", "F", "t", "T"}
+        end
     },
 
     -- -- Case-matched search and replace

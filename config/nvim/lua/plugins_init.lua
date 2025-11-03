@@ -19,8 +19,6 @@ augroup qs_colors
 augroup END
 ]]
 
-vim.g.mapleader = " "
-
 require("lazy").setup({
     local_spec = false,
 

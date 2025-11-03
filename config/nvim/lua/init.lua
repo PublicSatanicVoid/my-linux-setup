@@ -1,5 +1,5 @@
-require("plugins_init")
 require("set")
+require("plugins_init")
 require("remap")
 require("func")
 require("lsp")

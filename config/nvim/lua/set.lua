@@ -10,6 +10,7 @@ opt.hlsearch = false
 opt.incsearch = true
 opt.scrolloff = 10
 opt.showmode = false  -- lualine shows mode instead
+vim.g.mapleader = " "
 
 -- Indentation and formatting
 opt.tabstop = 4
@@ -55,18 +56,6 @@ vim.g.python_indent = {
     open_paren = "shiftwidth()",
     continue = "shiftwidth()"
 }
-
--- Plugin-specific globals
--- Treesitter context
-vim.g.context_enabled = 1
-vim.g.context_add_mappings = 1
-vim.g.context_add_autocmds = 1
-vim.g.context_max_height = 21
-vim.g.context_max_per_indent = 11
-vim.g.context_skip_regex = "^\\s*($|#|//|/\\*)"
-
--- Quick-scope
-vim.g.qs_highlight_on_keys = {"f", "F", "t", "T"}
 
 -- File type detection
 vim.api.nvim_create_autocmd({"BufNewFile", "BufRead"}, {
