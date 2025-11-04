@@ -158,7 +158,7 @@ local default_pyright_lsp_settings = {
 -- Helper to find a parent directory containing an item matching the provided pattern
 -- (From nvim-lspconfig)
 local function root_pattern(...)
-    local patterns = vim.tbl_flatten({ ... })
+    local patterns = vim.iter({ ... }):flatten():totable()
 
     ---@param fname string
     return function(fname)
