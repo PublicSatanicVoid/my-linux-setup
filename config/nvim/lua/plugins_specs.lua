@@ -75,6 +75,8 @@ local T = {
             {"<leader>sn", "<cmd>lua require('telescope.builtin').find_files({cwd=require('telescope.utils').buffer_dir()})<CR>", desc = "Find files in current dir"},
             {"<leader>sg", "<cmd>Telescope live_grep<CR>", desc = "Live grep"},
             {"<leader>ss", "<cmd>Telescope lsp_document_symbols<CR>", desc = "Document symbols"},
+            {"<leader>sc", "<cmd>lua require('custom.telescope').lsp_classes()<CR>", desc = "Find classes in file"},
+            {"<leader>sm", "<cmd>lua require('custom.telescope').lsp_context_symbols()<CR>", desc = "Find symbols in current class"},
             {"<leader>sb", "<cmd>Telescope current_buffer_fuzzy_find<CR>", desc = "Search in buffer"}
         }
     },
