@@ -1,7 +1,5 @@
 local neovim_venv = os.getenv("NEOVIM_VENV") or os.getenv("HOME") .. "/venvs/neovim_venv"
 
--- Note: vim.g.mapleader is set in remap.lua due to lazy.nvim ordering requirements
-
 local opt = vim.opt
 
 -- Editor behavior
