@@ -202,8 +202,31 @@ M.setup_basedpyright = function(neovim_venv, lsp_on_attach_cb)
                 end
             end
 
-            -- Use the neovim_venv and on_attach variables
-            local lsp_cmd = { neovim_venv .. '/bin/basedpyright-langserver', '--stdio' }
+            -- Define the command line for the language server
+            --
+            -- Prefer to invoke via 'node' exe instead of bundled node, to allow using
+            -- an optimized or newer NodeJS build, if we have 'node' on the PATH
+            --
+            -- Note, this won't actually get invoked if a suitable instance is already
+            -- running that we can attach to
+            local lsp_cmd = {}
+            if vim.fn.executable("node") == 1 then
+                local basedpyright_index_js = vim.fn.glob(
+                    neovim_venv .. '/lib/python*/site-packages/basedpyright/langserver.index.js',
+                    true,
+                    true
+                )[1]
+                lsp_cmd = {
+                    vim.fn.exepath("node"),
+                    basedpyright_index_js,
+                    '--stdio'
+                }
+            else
+                lsp_cmd = {
+                    neovim_venv .. '/bin/basedpyright-langserver',
+                    '--stdio'
+                }
+            end
 
             -- Start the LSP client
             vim.lsp.start({
