@@ -22,6 +22,7 @@ end
 
 local extra_py_paths = get_site_config("nvim-python-extrapaths.lua", {})
 local excluded_py_paths = get_site_config("nvim-python-excludepaths.lua", {})
+local override_rules = get_site_config("nvim-python-ty-overriderules.lua", {})
 local default_py_exe = get_site_config("nvim-python-default-exe.lua", nil)
 if not default_py_exe then
     default_py_exe = vim.fn.exepath("python3")
@@ -37,13 +38,7 @@ local default_pyright_lsp_settings = {
                 python = default_py_exe,
                 ["extra-paths"] = extra_py_paths
             },
-            overrides = {
-                {
-                    rules = {
-                        ["possibly-missing-attribute"] = "ignore"
-                    }
-                }
-            },
+            overrides = override_rules,
             src = {
                 exclude = excluded_py_paths
             }
