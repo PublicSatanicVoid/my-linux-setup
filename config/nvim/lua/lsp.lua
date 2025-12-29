@@ -109,4 +109,5 @@ vim.lsp.config['rust_analyzer'] = {
 
 vim.lsp.enable({'ruff', 'clangd', 'rust_analyzer'})
 
-require("custom.basedpyright").setup_basedpyright(neovim_venv, on_attach)
+--require("custom.basedpyright").setup_basedpyright(neovim_venv, on_attach)
+require("custom.ty").setup_ty(neovim_venv, on_attach)
