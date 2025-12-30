@@ -226,6 +226,7 @@ M.lsp_context_symbols = function(opts)
       local method_kinds = {
         [lsp_protocol.SymbolKind.Method] = true,
         [lsp_protocol.SymbolKind.Function] = true,
+        [lsp_protocol.SymbolKind.Constructor] = true,
       }
 
       for _, symbol in ipairs(scope_node.children) do
