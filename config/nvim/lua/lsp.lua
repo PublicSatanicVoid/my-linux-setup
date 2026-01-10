@@ -107,7 +107,23 @@ vim.lsp.config['rust_analyzer'] = {
 }
 
 
-vim.lsp.enable({'ruff', 'clangd', 'rust_analyzer'})
+---- TypeScript language server
+vim.lsp.config['tsserver'] = {
+    init_options = { hostInfo = 'neovim' },
+    filetypes = {
+        "javascript",
+        "javascriptreact",
+        "javascript.jsx",
+        "typescript",
+        "typescriptreact",
+        "typescript.tsx"
+    },
+    on_attach = on_attach,
+    cmd = { "typescript-language-server", "--stdio" }
+}
+
+
+vim.lsp.enable({'ruff', 'clangd', 'rust_analyzer', 'tsserver'})
 
 --require("custom.basedpyright").setup_basedpyright(neovim_venv, on_attach)
 require("custom.ty").setup_ty(neovim_venv, on_attach)

@@ -19,26 +19,32 @@ local T = {
     },
 
     -- {
-    --     "tomasiser/vim-code-dark",
-    --     lazy = false,
-    --     priority = 1000,
-    --     config = function()
-    --         vim.g.codedark_transparent = 1
-    --         vim.cmd.colorscheme("codedark")
-    --     end
+    --     "pmizio/typescript-tools.nvim",
+    --     dependencies = { "nvim-lua/plenary.nvim" },
+    --     opts = {},
     -- },
 
     {
-        "PublicSatanicVoid/nightfox.nvim",
+        "tomasiser/vim-code-dark",
         lazy = false,
         priority = 1000,
         config = function()
-            require("nightfox").setup({
-                options = { transparent = true }
-            })
-            vim.cmd.colorscheme("terafox")
+            vim.g.codedark_transparent = 1
+            vim.cmd.colorscheme("codedark")
         end
     },
+
+    -- {
+    --     "PublicSatanicVoid/nightfox.nvim",
+    --     lazy = false,
+    --     priority = 1000,
+    --     config = function()
+    --         require("nightfox").setup({
+    --             options = { transparent = true }
+    --         })
+    --         vim.cmd.colorscheme("terafox")
+    --     end
+    -- },
 
     {
         "nvim-telescope/telescope.nvim",
