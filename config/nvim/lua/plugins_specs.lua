@@ -159,41 +159,37 @@ local T = {
 
     {
         "nvim-treesitter/nvim-treesitter",
-        event = { "BufReadPost", "BufNewFile" },
+        lazy = false,
         build = ":TSUpdate",
-        opts = {
-            ensure_installed = { "c", "lua", "vim", "bash", "python", "rust" },
-            auto_install = true,
-            highlight = {
-                enable = true,
-                additional_vim_regex_highlighting = false
-            },
-            indent = {
-                enable = true,
-                disable = { "python", "yaml" }
-            },
-            move = {
-                enable = true,
-                goto_next_start = {
-                  ["]m"] = "@function.outer",
-                  ["]]"] = "@class.outer"
-                },
-                goto_next_end = {
-                  ["]M"] = "@function.outer",
-                  ["]["] = "@class.outer"
-                },
-                goto_previous_start = {
-                  ["[m"] = "@function.outer",
-                  ["[["] = "@class.outer"
-                },
-                goto_previous_end = {
-                  ["[M"] = "@function.outer",
-                  ["[]"] = "@class.outer"
-                }
-            }
-        },
-        config = function(_, opts)
-            require("nvim-treesitter.configs").setup(opts)
+        config = function()
+            require("nvim-treesitter").setup()
+
+            langs = { "lua", "yaml", "vim", "bash", "python", "rust", "c", "javascript", "markdown", "rst" }
+
+            local spice_tree_sitter_src = "~/opt/tree-sitter-spice"
+            if vim.fn.isdirectory(spice_tree_sitter_src) then
+                vim.api.nvim_create_autocmd("User", {
+                    pattern = "TSUpdate",
+                    callback = function()
+                        require("nvim-treesitter.parsers").spice = {
+                            install_info = {
+                                path = spice_tree_sitter_src,
+                                queries = "queries",
+                            }
+                        }
+                    end
+                })
+
+                table.insert(langs, "spice")
+            end
+
+            require("nvim-treesitter").install(langs, {summary = true})
+
+            vim.api.nvim_create_autocmd("FileType", {
+                pattern = langs,
+                callback = function() vim.treesitter.start() end,
+            })
+
             vim.g._ts_force_sync_parsing = true
         end
     },
