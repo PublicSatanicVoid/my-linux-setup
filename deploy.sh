@@ -30,6 +30,7 @@ ln -s "$ETC_SETUP/tools/psall.sh" ~/bin/psall
 echo "-- Installing zsh config..."
 [ -f "$HOME/.zshrc" ] && mv "$HOME/.zshrc" "$HOME/.zshrc.bak.$(date +%s)"
 ln -s "$ETC_SETUP/config/zsh/zshrc" "$HOME/.zshrc"
+source "$HOME/.zshrc"
 
 echo "-- Installing gdb and gdb config..."
 #mkdir "$HOME/conda"
@@ -47,7 +48,7 @@ mkdir "$HOME/venvs"
 pushd "$HOME/venvs"
 "$PYTHON3_EXE" -m venv neovim-venv
 ./neovim-venv/bin/pip install --upgrade pip
-./neovim-venv/bin/pip install pynvim basedpyright ruff
+./neovim-venv/bin/pip install pynvim ty ruff
 popd
 echo "!! Add the following to your zshrc:"
 echo "      export NEOVIM_VENV="$HOME/venvs/neovim-venv""
@@ -55,6 +56,9 @@ echo "      export NEOVIM_VENV="$HOME/venvs/neovim-venv""
 mkdir -p ~/.config
 
 # TODO install npm and cargo
+echo "--- Installing javascript and tree-sitter support..."
+npm config set prefix "$NPM_PACKAGES"  # env var set in zshrc
+npm install -g typescript-language-server typescript tree-sitter-cli
 
 
 # TODO download and install neovim

@@ -60,6 +60,10 @@ chgrp users /tmp/run /tmp/run/user 2>/dev/null
 
 export PYTHONBREAKPOINT="ipdb.set_trace"
 
+# This will install global packages to here rather than the default location
+# Not recognized by npm; need to reference this in ~/.npmrc
+export NPM_PACKAGES="$HOME/opt/npm-packages"
+
 
 ################################## PATH setup ###################################
 
