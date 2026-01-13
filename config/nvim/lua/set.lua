@@ -65,3 +65,7 @@ vim.api.nvim_create_autocmd({"BufNewFile", "BufRead"}, {
     pattern = {"*.cfg", "*.cfg.inc", "*.yml", "*.yaml"},
     command = "set filetype=yaml | set shiftwidth=4"
 })
+
+-- Highlighting override for color scheme (see highlights.scm in after/ directory)
+vim.api.nvim_set_hl(0, "@custom.number.dimmed", { fg = "#A1A9AE" })
+vim.api.nvim_set_hl(0, "@custom.parameter.dimmed", { fg = "#A1A9AE" })
