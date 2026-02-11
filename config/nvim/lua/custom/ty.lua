@@ -44,8 +44,8 @@ local default_pyright_lsp_settings = {
 
 
 -- Helper to find a parent directory containing an item matching the provided pattern
--- (From nvim-lspconfig)
-local function root_pattern(...)
+-- (From nvim-lspconfig with modification)
+local function root_pattern(return_with_suffix, ...)
     local patterns = vim.iter({ ... }):flatten():totable()
 
     ---@param fname string
@@ -56,24 +56,33 @@ local function root_pattern(...)
         if not path then return nil end
 
         local stop = vim.fs.dirname(vim.env.HOME)
-        while path and path ~= stop and path ~= '/' do
+        local start_dev = vim.loop.fs_stat(path).dev
+        local curr_dev = start_dev
+        while path and path ~= stop and curr_dev == start_dev and path ~= '/' do
             for _, pattern in ipairs(patterns) do
                 local mark = path .. '/' .. pattern
                 if vim.fn.filereadable(mark) == 1 or vim.fn.isdirectory(mark) == 1 then
-                    return vim.fs.normalize(path)
+                    if return_with_suffix then
+                        return vim.fs.normalize(mark)
+                    else
+                        return vim.fs.normalize(path)
+                    end
                 end
             end
             path = vim.fs.dirname(path)
+            curr_dev = vim.loop.fs_stat(path).dev
         end
         return nil
     end
 end
 
 -- Helper to find the .git root
-local find_git_root = root_pattern('.git')
+local find_project_root = root_pattern(false, '.git', "pyproject.toml", "ty.toml")
 
--- Helper to find an environment root by looking for bin/python3
-local find_env_root = root_pattern('bin/python3')
+-- Helper to find an environment root by looking for .venv/bin/python3
+local find_env_root = root_pattern(true, '.venv/bin/python3', 'venv/bin/python3', 'bin/python3')
+
+local find_ty_toml = root_pattern(true, "ty.toml")
 
 -- Helper to parse the shebang line and return a canonical path
 local function get_interpreter_from_shebang(bufnr)
@@ -89,10 +98,7 @@ local function get_interpreter_from_shebang(bufnr)
     if env_cmd then
         path = vim.fn.exepath(env_cmd)
     else
-        local direct_path = line:match("^#!%s*([%/][^%s]+)")
-        if direct_path then
-            path = vim.fn.resolve(direct_path)
-        end
+        path = line:match("^#!%s*([%/][^%s]+)")
     end
 
     if path and path ~= "" and vim.fn.executable(path) == 1 then
@@ -101,15 +107,25 @@ local function get_interpreter_from_shebang(bufnr)
     return nil
 end
 
--- Helper to find an active client by its *resolved* pythonPath
-local function find_client_by_interpreter(resolved_path)
-    if not resolved_path or resolved_path == "" then return nil end
+
+local function py_exe_to_prefix(python3_exe_path)
+    if not python3_exe_path then return nil end
+    return string.gsub(python3_exe_path, "/bin/python[3]?$", "", 1)
+end
+
+
+-- Helper to find an active client by its associated Python interpreter
+local function find_client_by_interpreter(interpreter_root)
+    if not interpreter_root or interpreter_root == "" then return nil end
 
     local clients = vim.lsp.get_clients()
     for _, client in ipairs(clients) do
         if client.config and client.config.settings and client.config.settings.python then
             local client_path = client.config.settings.python.pythonPath
-            if client_path and vim.fn.resolve(client_path) == resolved_path then
+            if (
+                client_path
+                and py_exe_to_prefix(vim.fn.resolve(client_path)) == py_exe_to_prefix(resolved_path)
+            ) then
                 return client
             end
         end
@@ -117,8 +133,7 @@ local function find_client_by_interpreter(resolved_path)
     return nil
 end
 
-
--- basedpyright custom startup logic
+-- ty custom startup logic
 
 M.setup_ty = function(neovim_venv, lsp_on_attach_cb)
     local python_lsp_group = vim.api.nvim_create_augroup('MyPythonLspStart', { clear = true })
@@ -131,40 +146,62 @@ M.setup_ty = function(neovim_venv, lsp_on_attach_cb)
             local bufnr = args.buf
             local bufname = vim.api.nvim_buf_get_name(bufnr)
 
-            -- Determine logic, root, and interpreter
-            local project_root = find_git_root(bufname)
-            local env_root = find_env_root(bufname)
+            -- Determine root and interpreter
+            local project_root = find_project_root(bufname)
+            local env_root = os.getenv("VIRTUAL_ENV") or find_env_root(bufname)
+            if env_root ~= nil then
+                env_root = py_exe_to_prefix(env_root)
+            end
             local shebang_path = get_interpreter_from_shebang(bufnr)
+            local have_ty_toml = find_ty_toml(bufname) ~= nil
 
             local canonical_path = nil
             local root_dir = nil
             local client_name = nil
             local dynamic_settings = {}
 
+            local have_ty_toml = false
+
             -- 1. Project Root: Highest priority.
             if project_root then
                 root_dir = project_root
-                dynamic_settings = {} -- Let pyrightconfig.json or default settings work
+                dynamic_settings = {} -- Let ty.toml or default settings work
+            end
 
             -- 2. Environment Root: (venv, conda, etc.).
+            if have_ty_toml then
+
             elseif env_root then
                 local interpreter_path = vim.fn.resolve(env_root .. '/bin/python3')
 
                 if interpreter_path and interpreter_path ~= "" then
                     canonical_path = interpreter_path
-                    root_dir = env_root
-                    dynamic_settings = { python = { pythonPath = canonical_path } }
+                    if root_dir == nil then
+                        root_dir = env_root
+                    end
+                    dynamic_settings = {
+                        python = { pythonPath = canonical_path },
+                        ty = { configuration = { environment = {python = env_root} } }
+                    }
                 end
 
             -- 3. Shebang: (single-file script).
             elseif shebang_path then
                 canonical_path = shebang_path -- Already canonical from helper
-                root_dir = vim.fn.fnamemodify(bufname, ":h")
-                dynamic_settings = { python = { pythonPath = canonical_path } }
+                local interpreter_root = py_exe_to_prefix(shebang_path)
+                if root_dir == nil then
+                    root_dir = vim.fn.fnamemodify(bufname, ":h")
+                end
+                dynamic_settings = {
+                    python = { pythonPath = canonical_path },
+                    ty = { configuration = { environment = {python = interpreter_root} } }
+                }
 
             -- 4. Fallback
-            else
+            elseif root_dir == nil then
                 root_dir = vim.fn.fnamemodify(bufname, ":h")
+                dynamic_settings = {}
+            else
                 dynamic_settings = {}
             end
 
@@ -177,8 +214,10 @@ M.setup_ty = function(neovim_venv, lsp_on_attach_cb)
 
             -- Now, check for deduplication based on the *final* interpreter path
             local final_interpreter_path = nil
-            if final_lsp_settings.python and final_lsp_settings.python.pythonPath then
-                final_interpreter_path = vim.fn.resolve(final_lsp_settings.python.pythonPath)
+            if final_lsp_settings.ty.configuration.environment.python then
+                final_interpreter_path = vim.fn.resolve(final_lsp_settings.ty.configuration.environment.python)
+            elseif final_lsp_settings.python.pythonPath then
+                final_interpreter_path = py_exe_to_prefix(vim.fn.resolve(final_lsp_settings.python.pythonPath))
             end
 
             if final_interpreter_path then
