@@ -130,7 +130,6 @@ local T = {
             },
             sources = {
                 default = { "lsp", "buffer" },
-                priority = { "lsp", "buffer" },
 
                 providers = {
                     -- https://cmp.saghen.dev/configuration/sources#show-buffer-completions-with-lsp
@@ -169,7 +168,7 @@ local T = {
                     return true
                 end
 
-                for id in vim.iter(opts.sources.priority) do
+                for id in vim.iter(opts.sources.default) do
                     items_by_source[id] = items_by_source[id] and vim.iter(items_by_source[id]):filter(filter):totable()
                 end
                 return original(ctx, items_by_source)
