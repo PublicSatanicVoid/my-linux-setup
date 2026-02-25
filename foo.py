@@ -26,9 +26,27 @@ except:
     pass
 
 
-x = 1
-y = 2
-z = foo(x, y)
+### Test cases for string reflow macro
+
+s1 = "another very long string foo bar baz qux quux the quick brown fox jumps over the lazy dog sally sells seashells by the seashore"
+
+s2 = "another very long string foo bar baz qux quux the quick brown fox jumps over the lazy dog sally sells seashells by the seashore do it just do it dont let your dreams be dreams yesterday you said tomorrow so just do it"
+
+s3 = "abc"
+
+s4aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa = "abcdefghi"
+
+s5 = f"another very long string foo bar baz qux quux the quick {12345678901234567} brown fox jumps over the lazy dog sally sells seashells by the seashore"
+
+s6 = f"another very long string foo bar baz qux quux the quick {123456789012345678901234567890} brown fox jumps over the lazy dog sally sells seashells by the seashore"
+
+
+### Test case for auto indent
+
+p = "("
+
+
+### Test case for pinned context lines while scrolling
 
 def bigfunction():
     x = 1

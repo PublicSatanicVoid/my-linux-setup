@@ -27,7 +27,7 @@ layout {
 
                 // datetime        "#[fg=#31758F,bold]{format}"
                 datetime        "#[fg=#999999]{format}"
-                datetime_format "%Y-%m-%d %H:%M %Z"
+                datetime_format "%m/%d %H:%M %Z"
                 datetime_timezone "America/Chicago"
 
                 //command_date_uscentral_command "/bin/env TZ=America/Chicago /bin/date +'%m/%d %H:%M %Z'"

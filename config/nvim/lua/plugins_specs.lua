@@ -56,7 +56,7 @@ local T = {
 
                     file_ignore_patterns = {
                         ".git/.*",
-                        "venv",
+                        "*venv",
                         "build",
                         "__pycache__"
                     }
@@ -156,8 +156,12 @@ local T = {
             }
         },
 
+        opts_extend = { "sources.default" },
+
         -- https://github.com/saghen/blink.cmp/issues/1222#issuecomment-2891921393
         config = function(_, opts)
+            require("blink.cmp").setup(opts)
+
             local original = require("blink.cmp.completion.list").show
             ---@diagnostic disable-next-line: duplicate-set-field
             require("blink.cmp.completion.list").show = function(ctx, items_by_source)
@@ -173,8 +177,6 @@ local T = {
                 end
                 return original(ctx, items_by_source)
             end
-
-            require("blink.cmp").setup(opts)
         end
     },
 
@@ -208,7 +210,19 @@ local T = {
 
             vim.api.nvim_create_autocmd("FileType", {
                 pattern = langs,
-                callback = function() vim.treesitter.start() end,
+                callback = function()
+                    vim.treesitter.start()
+
+                    if vim.bo.filetype == "python" then
+                        -- equivalent to enabling additional_regex_syntax_highlighting
+                        -- in legacy nvim-treesitter
+                        -- without this, python indents are majorly screwed up
+                        vim.bo.syntax = "ON"
+                    end
+
+                    -- treesitter based indents are still supper buggy
+                    -- -- vim.bo.indentexpr = "v:lua.require'nvim-treesitter'.indentexpr()"
+                end,
             })
 
             vim.g._ts_force_sync_parsing = true

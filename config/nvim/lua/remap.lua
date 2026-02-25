@@ -32,3 +32,13 @@ for _, key in ipairs(arrow_keys) do
     map("n", key, "<nop>", "Disabled arrow key")
     map("v", key, "<nop>", "Disabled arrow key")
 end
+
+
+map(
+    "n",
+    "<leader>psr",
+    function()
+        require("custom.py-string-reflow").reflow_python_string_on_current_line()
+    end,
+    "Reflow single-line Python string"
+)
