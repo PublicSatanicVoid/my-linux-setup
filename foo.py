@@ -17,6 +17,9 @@ def foobar(x, y):
     """don't return x + y"""
     return None
 
+def baz(x, y, z):
+    return None
+
 
 try:
     x = 5
@@ -29,6 +32,16 @@ except:
 ### Test cases for string reflow macro
 
 s1 = "another very long string foo bar baz qux quux the quick brown fox jumps over the lazy dog sally sells seashells by the seashore"
+
+baz(
+    "a",
+    "another very long string foo bar baz qux quux the quick brown fox jumps over the lazy dog sally sells seashells by the seashore",
+    "b"
+)
+
+print(
+    "another very long string foo bar baz qux quux the quick brown fox jumps over the lazy dog sally sells seashells by the seashore"
+)
 
 s2 = "another very long string foo bar baz qux quux the quick brown fox jumps over the lazy dog sally sells seashells by the seashore do it just do it dont let your dreams be dreams yesterday you said tomorrow so just do it"
 

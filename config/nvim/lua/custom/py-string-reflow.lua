@@ -106,33 +106,76 @@ M.reflow_python_string_on_current_line = function()
 
     local _1, _2, pystrexp_start, pystrexp, _3 = line:find("=%s*()(.-)()%s*$")
 
-    vim.cmd('normal! _')
-    local indent_spaces = vim.fn.col(".") - 1
-    vim.cmd('normal! ' .. pystrexp_start .. '|')
+    if pystrexp_start == nil then
+        --print("not an assignment statement --> NOT wrapping in parentheses")
 
-    local pystr_mod = get_py_str_mod(pystrexp)
-    local pystr_quo = get_py_str_quo(pystrexp)
+        local _1, _2, pystrexp_start, pystrexp, _3 = line:find("^%s*()(.-)()%s*(,?)$")
+        local have_comma = (line:sub(#line, #line) == ",")
 
-    -- move the entire string to its own line
-    vim.cmd('normal! i(' .. ENTER)
-    vim.cmd('undojoin')
-    vim.cmd('normal! o' .. BACKSPACE .. ')')
+        if pystrexp_start == nil then
+            print("unexpected form, try applying ruff format first")
+            return
+        end
 
-    if indent_spaces + 4 + #pystrexp <= tw then
-        return
-    end
+        vim.cmd('normal! _')
+        local indent_spaces = vim.fn.col(".") - 1
+        vim.cmd('normal! ' .. pystrexp_start .. '|')
 
-    -- if it's still too long, delete it, and write each line individually below
-    vim.cmd('normal! kddk')
+        local pystr_mod = get_py_str_mod(pystrexp)
+        local pystr_quo = get_py_str_quo(pystrexp)
 
-    local rem = pystrexp
-    while rem ~= nil do
-        part, rem = next_part(rem, indent_spaces + 4, tw, pystr_mod, pystr_quo)
+        if indent_spaces + 4 + #pystrexp <= tw then
+            return
+        end
 
+        vim.cmd('normal! ddk')
+
+        local rem = pystrexp
+        while rem ~= nil do
+            part, rem = next_part(rem, indent_spaces, tw, pystr_mod, pystr_quo)
+
+            vim.cmd('undojoin')
+            vim.cmd('normal! o' .. part)
+        end
         vim.cmd('undojoin')
-        vim.cmd('normal! o' .. part)
+
+        if have_comma then
+            vim.cmd('normal! A,')
+            vim.cmd('undojoin')
+        end
+
+    else
+        --print("an assignment statement --> wrapping in parentheses")
+
+        vim.cmd('normal! _')
+        local indent_spaces = vim.fn.col(".") - 1
+        vim.cmd('normal! ' .. pystrexp_start .. '|')
+
+        local pystr_mod = get_py_str_mod(pystrexp)
+        local pystr_quo = get_py_str_quo(pystrexp)
+
+        -- move the entire string to its own line
+        vim.cmd('normal! i(' .. ENTER)
+        vim.cmd('undojoin')
+        vim.cmd('normal! o' .. BACKSPACE .. ')')
+
+        if indent_spaces + 4 + #pystrexp <= tw then
+            return
+        end
+
+        -- if it's still too long, delete it, and write each line individually below
+        vim.cmd('normal! kddk')
+
+        local rem = pystrexp
+        while rem ~= nil do
+            part, rem = next_part(rem, indent_spaces + 4, tw, pystr_mod, pystr_quo)
+
+            vim.cmd('undojoin')
+            vim.cmd('normal! o' .. part)
+        end
+        vim.cmd('undojoin')
     end
-    vim.cmd('undojoin')
+
 end
 
 return M
