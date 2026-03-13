@@ -85,7 +85,10 @@ local T = {
         "mihaifm/bufstop",
         event = "VeryLazy",
         keys = {
-            {"<leader>b", "<cmd>BufstopFast<CR>", desc = "Buffer picker"}
+            {"<leader>b", function()
+                vim.cmd("BufstopFast")
+                _G.bufstop_shorten_paths()
+            end, desc = "Buffer picker"}
         }
     },
     

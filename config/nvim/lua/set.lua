@@ -66,23 +66,44 @@ vim.api.nvim_create_autocmd({"BufNewFile", "BufRead"}, {
     command = "set filetype=yaml | set shiftwidth=4"
 })
 
--- When a buffer is opened with an absolute path under the cwd, shorten it to
--- a relative path so the buffer list stays readable.
-vim.api.nvim_create_autocmd("BufAdd", {
-    callback = function(args)
-        local bufname = args.match
-        if not bufname or bufname == "" then return end
-        if not vim.startswith(bufname, "/") then return end
+-- Shorten an absolute path to a relative one if it falls under cwd.
+local function shorten_path(path)
+    local cwd = vim.fn.getcwd() .. "/"
+    if vim.startswith(path, cwd) then
+        local rel = path:sub(#cwd + 1)
+        if rel ~= "" then return rel end
+    end
+    return path
+end
 
-        local cwd = vim.fn.getcwd() .. "/"
-        if vim.startswith(bufname, cwd) then
-            local rel = bufname:sub(#cwd + 1)
-            if rel ~= "" then
-                vim.api.nvim_buf_set_name(args.buf, rel)
-            end
+-- After bufstop renders its window, rewrite absolute paths that fall under the
+-- cwd as relative paths.  This is display-only: buffer names are not changed,
+-- so :w, LSP, undo, etc. are completely unaffected.
+function _G.bufstop_shorten_paths()
+    local data = vim.g.BufstopData
+    if not data or #data == 0 then return end
+
+    local win = vim.fn.bufwinnr("--Bufstop--")
+    if win == -1 then return end
+
+    local bufnr = vim.fn.winbufnr(win)
+    local lines = vim.api.nvim_buf_get_lines(bufnr, 0, -1, false)
+    local changed = false
+
+    for i, entry in ipairs(data) do
+        local short_path = shorten_path(entry.path)
+        if short_path ~= entry.path and lines[i] then
+            lines[i] = lines[i]:gsub(vim.pesc(entry.path), short_path, 1)
+            changed = true
         end
-    end,
-})
+    end
+
+    if changed then
+        vim.bo[bufnr].modifiable = true
+        vim.api.nvim_buf_set_lines(bufnr, 0, -1, false, lines)
+        vim.bo[bufnr].modifiable = false
+    end
+end
 
 -- Highlighting override for color scheme (see highlights.scm in after/ directory)
 vim.api.nvim_set_hl(0, "@custom.number.dimmed", { fg = "#A1A9AE" })
