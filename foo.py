@@ -29,7 +29,12 @@ try:
 except:
     pass
 
+
+### Test cases for builtin highlighting
+
 q = enumerate([10, 20, 30])
+r = type(q)
+s = getattr(r, "__name__")
 
 
 ### Test cases for string reflow macro

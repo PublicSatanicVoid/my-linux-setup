@@ -66,6 +66,24 @@ vim.api.nvim_create_autocmd({"BufNewFile", "BufRead"}, {
     command = "set filetype=yaml | set shiftwidth=4"
 })
 
+-- When a buffer is opened with an absolute path under the cwd, shorten it to
+-- a relative path so the buffer list stays readable.
+vim.api.nvim_create_autocmd("BufAdd", {
+    callback = function(args)
+        local bufname = args.match
+        if not bufname or bufname == "" then return end
+        if not vim.startswith(bufname, "/") then return end
+
+        local cwd = vim.fn.getcwd() .. "/"
+        if vim.startswith(bufname, cwd) then
+            local rel = bufname:sub(#cwd + 1)
+            if rel ~= "" then
+                vim.api.nvim_buf_set_name(args.buf, rel)
+            end
+        end
+    end,
+})
+
 -- Highlighting override for color scheme (see highlights.scm in after/ directory)
 vim.api.nvim_set_hl(0, "@custom.number.dimmed", { fg = "#A1A9AE" })
 vim.api.nvim_set_hl(0, "@custom.parameter.dimmed", { fg = "#A1A9AE" })
