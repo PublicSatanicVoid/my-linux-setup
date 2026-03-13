@@ -17,6 +17,7 @@ def foobar(x, y):
     """don't return x + y"""
     return None
 
+
 def baz(x, y, z):
     return None
 
@@ -28,6 +29,8 @@ try:
 except:
     pass
 
+q = enumerate([10, 20, 30])
+
 
 ### Test cases for string reflow macro
 
@@ -36,7 +39,7 @@ s1 = "another very long string foo bar baz qux quux the quick brown fox jumps ov
 baz(
     "a",
     "another very long string foo bar baz qux quux the quick brown fox jumps over the lazy dog sally sells seashells by the seashore",
-    "b"
+    "b",
 )
 
 print(
@@ -47,7 +50,9 @@ s2 = "another very long string foo bar baz qux quux the quick brown fox jumps ov
 
 s3 = "abc"
 
-s4aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa = "abcdefghi"
+s4aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa = (
+    "abcdefghi"
+)
 
 s5 = f"another very long string foo bar baz qux quux the quick {12345678901234567} brown fox jumps over the lazy dog sally sells seashells by the seashore"
 
@@ -60,6 +65,7 @@ p = "("
 
 
 ### Test case for pinned context lines while scrolling
+
 
 def bigfunction():
     x = 1
