@@ -193,7 +193,9 @@ local T = {
             langs = { "lua", "yaml", "vim", "bash", "python", "rust", "c", "javascript", "markdown", "rst" }
 
             local spice_tree_sitter_src = "~/opt/tree-sitter-spice"
-            if vim.fn.isdirectory(spice_tree_sitter_src) then
+            local have_spice = vim.fn.isdirectory(vim.fs.normalize(spice_tree_sitter_src))
+            if have_spice == 1 or have_spice == true then
+                print("jahdjashdjs")
                 vim.api.nvim_create_autocmd("User", {
                     pattern = "TSUpdate",
                     callback = function()
