@@ -20,7 +20,7 @@ end
 
 local excluded_py_paths = get_site_config("nvim-python-excludepaths.lua", {})
 local default_py_env = get_site_config("nvim-python-default-exe.lua", nil)
-    or vim.fn.exepath("python3")
+    or vim.fn.resolve(vim.fn.exepath("python3"))
 
 -- Strip /bin/python[3.x] suffix to get the environment prefix
 default_py_env = default_py_env:match("^(.+)/bin/python[%d.]*$") or default_py_env
