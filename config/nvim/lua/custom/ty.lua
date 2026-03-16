@@ -14,7 +14,8 @@ end
 --
 -- ty natively discovers $VIRTUAL_ENV and .venv in the project root, and
 -- searches upward for ty.toml/pyproject.toml for configuration. This module
--- adds support for: arbitrarily-named venvs, shebang-based interpreter
+-- adds support for: arbitrarily-named venvs (including venvs that live
+-- outside/above the workspace directory), shebang-based interpreter
 -- detection, separate workspace roots for navigating into third-party and
 -- stdlib code, and environment inheritance for typeshed stubs.
 
@@ -93,7 +94,13 @@ local function detect_python_lib(fname)
     return nil, nil
 end
 
+-- Directories that should never be considered as virtualenvs, even if they
+-- happen to contain pyvenv.cfg (belt-and-suspenders alongside stop_dirs).
+local system_prefixes = { [''] = true, ['/usr'] = true, ['/opt'] = true, ['/usr/local'] = true }
+
 --- Walk upward from `fname` to discover workspace context.
+--- The walk collects the first project root and the first venv independently,
+--- so a venv further up the directory tree than the workspace is still found.
 --- Returns: (project_root, venv_path, has_ty_toml, python_lib_dir)
 local function discover_workspace(fname)
     local lib_env, lib_root = detect_python_lib(fname)
@@ -111,17 +118,29 @@ local function discover_workspace(fname)
     if not start_stat then return nil, nil, false, nil end
     local start_dev = start_stat.dev
 
+    local found_project = nil
+    local found_venv = nil
+    local found_ty_toml = false
+
     while path do
         if stop_dirs[path] or path == home then break end
 
         local stat = vim.loop.fs_stat(path)
         if not stat or stat.dev ~= start_dev then break end
 
-        if is_venv(path) then
-            return nil, path, false, nil
+        if not found_venv and is_venv(path) and not system_prefixes[path] then
+            found_venv = path
         end
 
-        if has_project_marker(path) then
+        if not found_project and has_project_marker(path) then
+            found_project = path
+            found_ty_toml = has_ty_toml(path)
+        end
+
+        -- Scan children for venvs. At the project root this finds the
+        -- conventional .venv/ dir; above it this finds venvs that live
+        -- outside the workspace (the newly-permitted layout).
+        if not found_venv and not system_prefixes[path] then
             local child_venvs = find_child_venvs(path)
             if #child_venvs > 1 then
                 vim.notify(
@@ -131,13 +150,17 @@ local function discover_workspace(fname)
                     vim.log.levels.WARN
                 )
             end
-            return path, child_venvs[1], has_ty_toml(path), nil
+            if child_venvs[1] then
+                found_venv = child_venvs[1]
+            end
         end
+
+        if found_project and found_venv then break end
 
         path = vim.fs.dirname(path)
     end
 
-    return nil, nil, false, nil
+    return found_project, found_venv, found_ty_toml, nil
 end
 
 --- Parse the shebang line, resolve symlinks, and return the canonical path.
