@@ -550,12 +550,13 @@ theme "rose-pine"
 // The name of the default layout to load on startup
 // Default: "default"
 // 
-default_layout ".config/zellij/layouts/layout1.kdl"
- 
+//default_layout ".config/zellij/layouts/layout1.kdl"
+//default_layout "default" 
+
 // The folder in which Zellij will look for layouts
 // (Requires restart)
 // 
-layout_dir "~/.config/zellij/layouts"
+//layout_dir "~/.config/zellij/layouts"
  
 // The folder in which Zellij will look for themes
 // (Requires restart)
