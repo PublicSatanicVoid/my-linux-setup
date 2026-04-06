@@ -142,7 +142,7 @@ require("blink.cmp.completion.list").show = function(ctx, items_by_source)
         return true
     end
 
-    for id in { "lsp", "buffer" } do
+    for id in ipairs({ "lsp", "buffer" }) do
         items_by_source[id] = items_by_source[id] and vim.iter(items_by_source[id]):filter(filter):totable()
     end
     return original(ctx, items_by_source)
@@ -220,6 +220,9 @@ vim.g.gitblame_message_template = "    <author>, <date> • [<sha>] <summary>"
 --vim.keymap.set("n", "<leader>h", function()
 --    harpoon.ui:toggle_quick_menu(harpoon:list())
 --end)
+
+
+require("ftFT").setup()
 
 
 map("n", "<leader>S", "<cmd>lua require('spectre').toggle()<CR>", "Toggle Spectre")
