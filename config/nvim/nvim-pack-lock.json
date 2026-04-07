@@ -1,0 +1,41 @@
+{
+  "plugins": {
+    "blink.cmp": {
+      "rev": "78336bc89ee5365633bcf754d93df01678b5c08f",
+      "src": "https://github.com/saghen/blink.cmp",
+      "version": "1.0.0 - 2.0.0"
+    },
+    "bufstop": {
+      "rev": "929adfa82dca38b1834406a4a987cdf290a8d94a",
+      "src": "https://github.com/mihaifm/bufstop"
+    },
+    "ftFT.nvim": {
+      "rev": "f3e43c9584e14b27f04c27a95a9d9f0e58dfec02",
+      "src": "https://github.com/gukz/ftFT.nvim"
+    },
+    "git-blame.nvim": {
+      "rev": "5c536e2d4134d064aa3f41575280bc8a2a0e03d7",
+      "src": "https://github.com/f-person/git-blame.nvim"
+    },
+    "nightfox.nvim": {
+      "rev": "fb2c77f5d90676f7b5925ff15c3031384780ae8d",
+      "src": "https://github.com/PublicSatanicVoid/nightfox.nvim"
+    },
+    "nvim-treesitter": {
+      "rev": "4916d6592ede8c07973490d9322f187e07dfefac",
+      "src": "https://github.com/nvim-treesitter/nvim-treesitter"
+    },
+    "nvim-treesitter-context": {
+      "rev": "b0c45cefe2c8f7b55fc46f34e563bc428ef99636",
+      "src": "https://github.com/nvim-treesitter/nvim-treesitter-context"
+    },
+    "plenary.nvim": {
+      "rev": "b9fd5226c2f76c951fc8ed5923d85e4de065e509",
+      "src": "https://github.com/nvim-lua/plenary.nvim"
+    },
+    "telescope.nvim": {
+      "rev": "7ef4d6dccb78ee71e552bbd866176762ad328afa",
+      "src": "https://github.com/nvim-telescope/telescope.nvim"
+    }
+  }
+}
