@@ -126,6 +126,7 @@ local function setup_autocomplete()
         }
     })
 
+    -- https://github.com/saghen/blink.cmp/issues/1222#issuecomment-2891921393
     local original = require("blink.cmp.completion.list").show
     require("blink.cmp.completion.list").show = function(ctx, items_by_source)
         local seen = {}
