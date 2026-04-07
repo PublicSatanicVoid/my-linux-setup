@@ -9,9 +9,6 @@ vim.keymap.set("n", "<leader>q", vim.diagnostic.setloclist, opts)
 
 -- LSP-specific behavior per buffer
 local on_attach = function(client, bufnr)
-    -- Enable completion triggered by <c-x><c-o>
-    vim.bo[bufnr].omnifunc = "v:lua.vim.lsp.omnifunc"
-
     -- Mappings.
     -- See `:help vim.lsp.*` for documentation on any of the below functions
     local bufopts = { noremap=true, silent=true, buffer=bufnr }
@@ -107,7 +104,7 @@ vim.lsp.config['rust_analyzer'] = {
 }
 
 
----- TypeScript language server
+-- TypeScript language server
 vim.lsp.config['tsserver'] = {
     init_options = { hostInfo = 'neovim' },
     filetypes = {
@@ -125,5 +122,5 @@ vim.lsp.config['tsserver'] = {
 
 vim.lsp.enable({'ruff', 'clangd', 'rust_analyzer', 'tsserver'})
 
---require("custom.basedpyright").setup_basedpyright(neovim_venv, on_attach)
+-- Ty language server for Python
 require("custom.ty").setup_ty(neovim_venv, on_attach)

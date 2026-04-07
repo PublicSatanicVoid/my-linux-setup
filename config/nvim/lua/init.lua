@@ -1,5 +1,8 @@
+if vim.loader then
+    vim.loader.enable()
+end
 require("set")
-require("plugins_init")
+require("plugins")
 require("remap")
 require("func")
 require("lsp")

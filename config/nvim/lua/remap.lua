@@ -42,3 +42,28 @@ map(
     end,
     "Reflow single-line Python string"
 )
+
+
+map("n", "<leader>sf", "<cmd>Telescope find_files<CR>", "Find files")
+map("n", "<leader>sn", "<cmd>lua require('telescope.builtin').find_files({cwd=require('telescope.utils').buffer_dir()})<CR>", "Find files in current dir")
+map("n", "<leader>sg", "<cmd>Telescope live_grep<CR>", "Live grep")
+map("n", "<leader>ss", "<cmd>Telescope lsp_document_symbols<CR>", "Document symbols")
+map("n", "<leader>sc", "<cmd>lua require('custom.telescope').lsp_classes()<CR>", "Find classes in file")
+map("n", "<leader>sm", "<cmd>lua require('custom.telescope').lsp_context_symbols()<CR>", "Find symbols in current class")
+map("n", "<leader>sb", "<cmd>Telescope current_buffer_fuzzy_find<CR>", "Search in buffer")
+
+map("n", "<leader>b", function()
+    vim.cmd("BufstopFast")
+    _G.bufstop_shorten_paths()
+end, "Buffer picker")
+
+--vim.keymap.set("n", "<leader>a", function() harpoon:list():add() end)
+--vim.keymap.set("n", "<leader>d", function() harpoon:list():remove() end)
+--vim.keymap.set("n", "<leader>h", function()
+--    harpoon.ui:toggle_quick_menu(harpoon:list())
+--end)
+
+
+--map("n", "<leader>S", "<cmd>lua require('spectre').toggle()<CR>", "Toggle Spectre")
+--map("n", "<leader>sp", "<cmd>lua require('spectre').open_file_search({select_word = true})<CR>", "Search in file")
+--map({"n", "v"}, "<leader>sw", "<cmd>lua require('spectre').open_visual({select_word = true})<CR>", "Search word")
