@@ -99,7 +99,8 @@ local function setup_autocomplete()
             }
         },
         sources = {
-            default = { "lsp", "buffer" },
+            -- default = { "lsp", "buffer" },
+            default = { "lsp" },
 
             providers = {
                 -- https://cmp.saghen.dev/configuration/sources#show-buffer-completions-with-lsp
@@ -107,9 +108,10 @@ local function setup_autocomplete()
                 -- > source is disabled or returns no items. You may always show the
                 -- > buffer source via:
                 lsp = { fallbacks = {} },
+                --lsp = { fallbacks = { "buffer" } },
 
                 -- Deprioritize buffer completions, in favor of LSP completions
-                buffer = { score_offset = -5 }
+                --buffer = { score_offset = -5 }
             }
         },
         cmdline = {
@@ -126,21 +128,21 @@ local function setup_autocomplete()
         }
     })
 
-    -- https://github.com/saghen/blink.cmp/issues/1222#issuecomment-2891921393
-    local original = require("blink.cmp.completion.list").show
-    require("blink.cmp.completion.list").show = function(ctx, items_by_source)
-        local seen = {}
-        local function filter(item)
-            if seen[item.label] then return false end
-            seen[item.label] = true
-            return true
-        end
+    ---- https://github.com/saghen/blink.cmp/issues/1222#issuecomment-2891921393
+    --local original = require("blink.cmp.completion.list").show
+    --require("blink.cmp.completion.list").show = function(ctx, items_by_source)
+    --    local seen = {}
+    --    local function filter(item)
+    --        if seen[item.label] then return false end
+    --        seen[item.label] = true
+    --        return true
+    --    end
 
-        for id in ipairs({ "lsp", "buffer" }) do
-            items_by_source[id] = items_by_source[id] and vim.iter(items_by_source[id]):filter(filter):totable()
-        end
-        return original(ctx, items_by_source)
-    end
+    --    for id in ipairs({ "lsp", "buffer" }) do
+    --        items_by_source[id] = items_by_source[id] and vim.iter(items_by_source[id]):filter(filter):totable()
+    --    end
+    --    return original(ctx, items_by_source)
+    --end
 end
 
 
@@ -148,7 +150,7 @@ local function setup_treesitter()
     local tsplug = require("nvim-treesitter")
     tsplug.setup()
 
-    local langs = { "lua", "yaml", "vim", "bash", "python", "rust", "c", "javascript", "markdown", "rst" }
+    local langs = { "lua", "yaml", "vim", "bash", "python", "rust", "c", "javascript", "markdown", "rst", "go" }
 
     local spice_tree_sitter_src = "~/opt/tree-sitter-spice"
     local have_spice = vim.fn.isdirectory(vim.fs.normalize(spice_tree_sitter_src))

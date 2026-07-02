@@ -15,8 +15,8 @@ map("n", "S", ":%s%%%gn<Left><Left><Left><Left>", "Search")
 map({"v", "x"}, "<leader>y", '"+y', "Yank to system clipboard")
 
 -- Buffer switching
-map("n", "<leader>n", "<cmd>bprev<CR>", "Previous buffer")
-map("n", "<leader>p", "<cmd>bnext<CR>", "Next buffer")
+map("n", "<Tab>", "<cmd>bprev<CR>", "Previous buffer")
+map("n", "<S-Tab>", "<cmd>bnext<CR>", "Next buffer")
 map("n", "<leader><leader>", "<C-^>", "Toggle last buffer")
 
 -- Terminal mode escapes

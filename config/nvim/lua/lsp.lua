@@ -122,8 +122,21 @@ vim.lsp.config['tsserver'] = {
     cmd = { "typescript-language-server", "--stdio" }
 }
 
+-- Golang language server
+vim.lsp.config['gopls'] = {
+    filetypes = { "go", "gomod", "gowork", "gotmpl" },
+    root_markers = { "go.mod", ".git" },
+    on_attach = on_attach,
+    cmd = { "gopls" },
+    settings = {
+        gopls = {
+            semanticTokens = true,
+        },
+    }
+}
 
-vim.lsp.enable({'ruff', 'clangd', 'rust_analyzer', 'tsserver'})
+
+vim.lsp.enable({'ruff', 'clangd', 'rust_analyzer', 'tsserver', 'gopls'})
 
 -- Ty language server for Python
 require("custom.ty").setup_ty(neovim_venv, on_attach)
